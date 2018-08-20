@@ -25,21 +25,72 @@ SECRET_KEY = '-%+&==jfv2cbm_n-+8j^e^xx3i09=-$4+3h)kd(nb!tz+xv2gd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+TENANT_MODEL = "customers.Client" # app.Model
+
+DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
+# These apps models will be created in the public schema 
+SHARED_APPS = (
+    'tenant_schemas',  # mandatory, should always be before any django app
+
+    # everything below here is optional
+    'customers',
+
+    # django apps
     'django.contrib.contenttypes',
+    'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.admin',
+)
+
+# This apps models will be replicated in schemas
+TENANT_APPS = (
+    # your tenant-specific apps
+    'contests',
+
+    # django apps
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.admin',
+)
+
+INSTALLED_APPS = (
+    'tenant_schemas',  # mandatory, should always be before any django app
+
+    # your tenant-specific apps
+    'customers',
+
+    # your tenant-specific apps
+    'contests',
+
+    # django apps
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    # 'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.admin',
+
+    # To serve django admin staticfiles
     'django.contrib.staticfiles',
-]
+)
+
+# For django-tenant-schemas
+# Add the middleware tenant_schemas.middleware.TenantMiddleware 
+# to the top of MIDDLEWARE_CLASSES, so that each request can be 
+# set to use the correct schema.
 
 MIDDLEWARE = [
+    # For django-tenant-schemas
+    'tenant_schemas.middleware.TenantMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -75,11 +126,20 @@ WSGI_APPLICATION = 'aucarvideo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    'ENGINE': 'tenant_schemas.postgresql_backend',
+    'NAME': 'postgres',
+    'USER': 'postgres', 
+    'PASSWORD': 'postgres',
+    'HOST': '172.17.0.2',
+    'PORT': '5432',
     }
 }
 
+# Add tenant_schemas.routers.TenantSyncRouter to your DATABASE_ROUTERS setting, 
+# so that the correct apps can be synced, depending on what’s being synced (shared or tenant).
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -118,3 +178,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# The storage API will not isolate media per tenant. 
+# Your MEDIA_ROOT will be a shared space between all tenants.
+
+# To avoid this you should configure a tenant aware storage
+# backend - you will be warned if this is not the case.
+MEDIA_ROOT = '/data/media'
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
