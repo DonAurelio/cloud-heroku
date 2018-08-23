@@ -40,7 +40,7 @@ SHARED_APPS = (
     # everything below here is optional
     'customers',
     'phome',
-
+    'register',
     # django apps
     'django.contrib.contenttypes',
     'django.contrib.auth',
@@ -68,8 +68,7 @@ INSTALLED_APPS = (
     # your tenant-specific apps
     'customers',
     'phome',
-
-    # your tenant-specific apps
+    'register',
     'contests',
 
     # django apps
