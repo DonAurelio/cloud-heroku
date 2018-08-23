@@ -1,4 +1,5 @@
 {% load static %}
+{% load bootstrap3 %}
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if !IE]><!-->
@@ -48,8 +49,8 @@
             </div>
             <!-- end brand -->
             <div class="login-content">
-                <form action="index.html" method="POST" class="margin-bottom-0">
-                    <div class="form-group m-b-20">
+                <form action="{% url 'register:signup' %}" method="POST" class="margin-bottom-0">{% csrf_token %}
+                    <!-- <div class="form-group m-b-20">
                         <input type="text" class="form-control input-lg" placeholder="Email Address" />
                     </div>
                     <div class="form-group m-b-20">
@@ -59,7 +60,9 @@
                         <label>
                             <input type="checkbox" /> Remember Me
                         </label>
-                    </div>
+                    </div> -->
+                    
+                    {% bootstrap_form client_form %}
                     <div class="login-buttons">
                         <button type="submit" class="btn btn-success btn-block btn-lg">Sign me in</button>
                     </div>

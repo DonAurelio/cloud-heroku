@@ -5,4 +5,4 @@ from customers.models import Client
 class ClientForm(ModelForm):
      class Meta:
          model = Client
-         fields = ['name']
+         fields = ['name',"domain_url", "schema_name"]

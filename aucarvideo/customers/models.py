@@ -10,6 +10,6 @@ class Client(TenantMixin):
     """
 
     # The name of the client's enterprice
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     # The date on which the tenant was created
     created_on = models.DateField(auto_now_add=True)
