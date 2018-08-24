@@ -25,12 +25,12 @@ class LoginView(TemplateView):
                 print(user)
                 login(request, user)
                 return HttpResponse('exiiitooo')
-            else:
-                template_name = 'login/login.html'
-                context = {
-                    'login_form': login_form
-                    }
-                return render(request, template_name, context)
+        else:
+            template_name = 'login/login.html'
+            context = {
+                'login_form': login_form
+            }
+            return render(request, template_name, context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
