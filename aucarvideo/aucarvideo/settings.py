@@ -53,6 +53,7 @@ SHARED_APPS = (
 TENANT_APPS = (
     # your tenant-specific apps
     'contests',
+    'login',
 
     # django apps
     'django.contrib.contenttypes',
@@ -70,6 +71,7 @@ INSTALLED_APPS = (
     'phome',
     'register',
     'contests',
+    'login',
 
     # django apps
     'django.contrib.contenttypes',
