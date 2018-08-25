@@ -6,13 +6,13 @@ class VideoContest(models.Model):
 
     # The name of the competition
     name = models.CharField(max_length=100,blank=True,null=True)
-    # The banner image of the contest
+    # The banner image of the contests
     banner =  models.ImageField(upload_to='contests/banner',blank=True,null=True)
     # The conetxt unique URL
     url = models.URLField(max_length=200, blank=True,null=True)
-    # The date on which te contest start
+    # The date on which te contests start
     start_date = models.DateField(blank=True,null=True)
-    # The date on which the contest ends
+    # The date on which the contests ends
     end_date = models.DateField(blank=True,null=True)
     # Description of the award
     award_description = models.TextField(blank=True,null=True)
@@ -49,7 +49,7 @@ class Video(models.Model):
 
     # The proper video uploaded by the participant
     file = models.FileField(upload_to='contests/videos')
-    # The contest to which the video belongs
+    # The contests to which the video belongs
     contest = models.ForeignKey(VideoContest,on_delete=models.CASCADE)
     # The participant who uploaded the video
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)

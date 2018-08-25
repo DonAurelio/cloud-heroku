@@ -18,4 +18,4 @@ class ParticipantAdmin(admin.ModelAdmin):
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
     list_display = ('id','file','contest','participant','uploaded_at','status')
-    search_fields = ('file','contest')
+    search_fields = ('file','contests')
