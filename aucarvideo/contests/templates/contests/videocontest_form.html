@@ -387,11 +387,8 @@
 				<!-- begin panel -->
 				<div class="panel panel-inverse">
 					<div class="panel-body">
-						<p>
-							<a href="form_editable.html" class="btn btn-primary btn-xs active" data-editable="popup">Nuevo concurso</a>
-						</p>
 					  <div class="row">
-						<form action="{% url 'contests:newContest' %}" method="POST" class="margin-bottom-0">{% csrf_token %}
+						<form action="{% url 'contests:videocontest_form' %}" method="POST" class="margin-bottom-0">{% csrf_token %}
 						<!-- <div class="form-group m-b-20">
 							<input type="text" class="form-control input-lg" placeholder="Email Address" />
 						</div>
