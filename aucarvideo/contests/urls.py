@@ -2,8 +2,8 @@
 
 from django.urls import path
 
-from thome.views import Thome
+from contests.views import NewContest
 
 urlpatterns = [
-    path('thome/', Thome.as_view(), name='thome'),
+    path('videocontest_form/', NewContest.as_view(), name='videocontest_form'),
 ]
