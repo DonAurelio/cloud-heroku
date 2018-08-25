@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.views.generic.edit import CreateView
+from contests.models import VideoContest
 
-# Create your views here.
-
+class NewContest(CreateView):
+    model = VideoContest
+    fields = ['name','banner','url','url','start_date','end_date','award_description']
 
