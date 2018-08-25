@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
-from aucarvideo.contests.models import VideoContest
+from contests.models import VideoContest
 
 
 class Thome(TemplateView):

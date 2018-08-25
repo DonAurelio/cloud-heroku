@@ -1,6 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.views.generic.base import TemplateView
-from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 
@@ -24,7 +23,7 @@ class LoginView(TemplateView):
             if user is not None:
                 print(user)
                 login(request, user)
-                return HttpResponse('exiiitooo')
+                return redirect('thome:thome')
         else:
             template_name = 'login/login.html'
             context = {
