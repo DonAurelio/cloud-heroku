@@ -54,6 +54,7 @@ TENANT_APPS = (
     # your tenant-specific apps
     'contests',
     'login',
+    'thome',
 
     # django apps
     'django.contrib.contenttypes',
@@ -72,6 +73,7 @@ INSTALLED_APPS = (
     'register',
     'contests',
     'login',
+    'thome',
 
     # django apps
     'django.contrib.contenttypes',

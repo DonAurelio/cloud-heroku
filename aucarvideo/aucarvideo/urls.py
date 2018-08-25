@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include(('phome.urls', 'phome'), namespace='phome')),
     path('register/', include(('register.urls', 'register'), namespace='register')),
     path('login/', include(('login.urls', 'login'), namespace='login')),
+    path('thome/', include(('thome.urls', 'thome'), namespace='thome')),
 ]
