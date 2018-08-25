@@ -47,7 +47,7 @@
 			<div class="container-fluid">
 				<!-- begin mobile sidebar expand / collapse button -->
 				<div class="navbar-header">
-					<a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> Color Admin</a>
+					<a class="navbar-brand"><span class="navbar-logo"></span>  AuCarVideo</a>
 					<button type="button" class="navbar-toggle" data-click="sidebar-toggled">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -58,21 +58,8 @@
 				
 				<!-- begin header navigation right -->
 				<ul class="nav navbar-nav navbar-right">
-					<li>
-						<form class="navbar-form full-width">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Enter keyword" />
-								<button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
-							</div>
-						</form>
-					</li>
-					<li class="dropdown">
-						<a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle f-s-14">
-							<i class="fa fa-bell-o"></i>
-							<span class="label">5</span>
-						</a>
+				<!-- class="dropdown">
 						<ul class="dropdown-menu media-list pull-right animated fadeInDown">
-                            <li class="dropdown-header">Notifications (5)</li>
                             <li class="media">
                                 <a href="javascript:;">
                                     <div class="pull-left media-object bg-red"><i class="fa fa-bug"></i></div>
@@ -124,11 +111,11 @@
                                 <a href="javascript:;">View more</a>
                             </li>
 						</ul>
-					</li>
+					</li>-->
 					<li class="dropdown navbar-user">
 						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
 							<img src="assets/img/user-13.jpg" alt="" /> 
-							<span class="hidden-xs">Adam Schwartz</span> <b class="caret"></b>
+							<span class="hidden-xs">Opciones<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu animated fadeInLeft">
 							<li class="arrow"></li>
@@ -394,16 +381,14 @@
 		<div id="content" class="content">
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header">Concursos <small>header small text goes here...</small></h1>
+			<h1 class="page-header">Concursos</h1>
 			<!-- end page-header -->
 			
 			<!-- begin panel -->
 			<div class="panel panel-inverse">
 			    <div class="panel-body">
 			        <p>
-			            <span class="m-r-5">Mode:</span> 
-			            <a href="form_editable.html" class="btn btn-primary btn-xs active" data-editable="popup">Popup</a>
-			            <a href="form_editable.html?c=inline" class="btn btn-primary btn-xs" data-editable="inline">Inline</a>
+			            <a href="form_editable.html" class="btn btn-primary btn-xs active" data-editable="popup">Nuevo concurso</a>
 			        </p>
 			        <div class="table-responsive">
                         <table id="concurso" class="table table-bordered table-striped">
@@ -436,10 +421,6 @@
 							{% endfor %}
                             </tbody>
                         </table>
-                    </div>
-                    <h3><i class="fa fa-terminal"></i> Console <small>(all ajax requests here are emulated)</small></h3>
-                    <div>
-                        <textarea id="console" rows="8" class="form-control"></textarea>
                     </div>
 			    </div>
 			</div>
