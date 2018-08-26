@@ -22,4 +22,6 @@ urlpatterns = [
     path('register/', include(('register.urls', 'register'), namespace='register')),
     path('login/', include(('login.urls', 'login'), namespace='login')),
     path('thome/', include(('thome.urls', 'thome'), namespace='thome')),
+    path('contests/', include(('contests.urls','contests'), namespace='contests'
+                                                                      '')),
 ]

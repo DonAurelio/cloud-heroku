@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse
 from register.forms import ClientForm
@@ -18,9 +18,23 @@ class SignUpView(TemplateView):
     def post(self, request,*args,**kwargs):
         client_form = ClientForm(request.POST)
         if client_form.is_valid():
-            client_form.save()
+
+            url = client_form.cleaned_data ["domain_url"]
+            client_form2 = client_form.save(commit=False)
+            domine = url
+            client_form2.domain_url = domine + ".localhost"
+
+            # print(client_form.cleaned_data) 
+            # print(url)
+            client_form2.save()
+
+
+            # domain_url = client_form.URLField(queryset=..., to_field_name="domain_url")
+            # client_form.save()
+
+           
+            return redirect('http://'+client_form2.domain_url+':8000/login/login')
             
-            return HttpResponse('exiiitooo')
         else:
             template_name = 'register/login.html'
             context = {
