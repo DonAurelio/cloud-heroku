@@ -5,17 +5,17 @@ class VideoContest(models.Model):
 
 
     # The name of the competition
-    name = models.CharField(max_length=100,blank=True,null=True)
+    name = models.CharField(max_length=100,blank=False,null=False)
     # The banner image of the contests
-    banner =  models.ImageField(upload_to='contests/banner',blank=True,null=True)
+    banner = models.ImageField(upload_to='contests/banner',blank=True,null=False)
     # The conetxt unique URL
-    url = models.URLField(max_length=200, blank=True,null=True)
+    url = models.URLField(max_length=200, blank=False,null=False, unique=True)
     # The date on which te contests start
-    start_date = models.DateField(blank=True,null=True)
+    start_date = models.DateField(blank=False,null=False)
     # The date on which the contests ends
-    end_date = models.DateField(blank=True,null=True)
+    end_date = models.DateField(blank=False,null=False)
     # Description of the award
-    award_description = models.TextField(blank=True,null=True)
+    award_description = models.TextField(blank=False,null=False)
 
 
 class Participant(models.Model):
