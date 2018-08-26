@@ -197,6 +197,7 @@ STATICFILES_DIRS = [
 
 # To avoid this you should configure a tenant aware storage
 # backend - you will be warned if this is not the case.
-MEDIA_ROOT = '/data/media'
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
