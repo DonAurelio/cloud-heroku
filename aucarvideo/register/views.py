@@ -17,7 +17,8 @@ class SignUpView(TemplateView):
 
     def post(self, request,*args,**kwargs):
         client_form = ClientForm(request.POST)
-        if client_form.is_valid():
+        user_form = UserCreationForm(request.POST)
+        if client_form.is_valid() and user_form.is_valid():
 
             url = client_form.cleaned_data ["domain_url"]
             client_form2 = client_form.save(commit=False)
@@ -27,6 +28,8 @@ class SignUpView(TemplateView):
             # print(client_form.cleaned_data) 
             # print(url)
             client_form2.save()
+            user_form.save()
+
 
 
             # domain_url = client_form.URLField(queryset=..., to_field_name="domain_url")
@@ -39,6 +42,7 @@ class SignUpView(TemplateView):
             template_name = 'register/login.html'
             context = {
                 'client_form': client_form,
+                'user_form': user_form,
             }
 
             return render(request,template_name,context)
