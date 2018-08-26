@@ -11,7 +11,7 @@
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 	<meta content="" name="description" />
 	<meta content="" name="author" />
-	
+
 	<!-- ================== BEGIN BASE CSS STYLE ================== -->
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
 	<link href="{% static 'assets/plugins/jquery-ui-1.10.4/themes/base/minified/jquery-ui.min.css' %}" rel="stylesheet" />
@@ -38,7 +38,7 @@
 	<!-- begin #page-loader -->
 	<div id="page-loader" class="fade in"><span class="spinner"></span></div>
 	<!-- end #page-loader -->
-	
+
 	<!-- begin #page-container -->
 	<div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
 		<!-- begin #header -->
@@ -55,7 +55,7 @@
 					</button>
 				</div>
 				<!-- end mobile sidebar expand / collapse button -->
-				
+
 				<!-- begin header navigation right -->
 				<ul class="nav navbar-nav navbar-right">
 				<!-- class="dropdown">
@@ -114,7 +114,7 @@
 					</li>-->
 					<li class="dropdown navbar-user">
 						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="assets/img/user-13.jpg" alt="" /> 
+							<img src="assets/img/user-13.jpg" alt="" />
 							<span class="hidden-xs">Opciones<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu animated fadeInLeft">
@@ -133,7 +133,7 @@
 			<!-- end container-fluid -->
 		</div>
 		<!-- end #header -->
-		
+
 		<!-- begin #sidebar -->
 		<div id="sidebar" class="sidebar">
 			<!-- begin sidebar scrollbar -->
@@ -181,7 +181,7 @@
 						    <span>
 						        UI Elements
 					            <span class="label label-theme m-l-5">NEW</span>
-						    </span> 
+						    </span>
 						</a>
 						<ul class="sub-menu">
 							<li><a href="ui_general.html">General</a></li>
@@ -201,7 +201,7 @@
 						    <i class="fa fa-file-o"></i>
 						    <span>
 						        Form Stuff
-					        </span> 
+					        </span>
 						</a>
 						<ul class="sub-menu">
 							<li><a href="form_elements.html">Form Elements</a></li>
@@ -338,7 +338,7 @@
 					<li class="has-sub">
 						<a href="javascript:;">
 						    <b class="caret pull-right"></b>
-						    <i class="fa fa-align-left"></i> 
+						    <i class="fa fa-align-left"></i>
 						    <span>Menu Level</span>
 						</a>
 						<ul class="sub-menu">
@@ -376,14 +376,14 @@
 		</div>
 		<div class="sidebar-bg"></div>
 		<!-- end #sidebar -->
-		
+
 		<!-- begin #content -->
 		<div id="content" class="content">
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
 			<h1 class="page-header">Concursos</h1>
 			<!-- end page-header -->
-			
+
 			<!-- begin panel -->
 			<div class="panel panel-inverse">
 			    <div class="panel-body">
@@ -394,10 +394,11 @@
                         <table id="concurso" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nombre del concurso</th>
-                                    <th>Fecha de inicio</th>
-                                    <th>Fecha de finalización</th>
-									<th>Opciones</th>
+                                    <th class="text-center">Nombre del concurso</th>
+                                    <th class="text-center">Fecha de inicio</th>
+                                    <th class="text-center">Fecha de finalización</th>
+									<th class="text-center">URL</th>
+									<th class="text-center">Opciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -413,10 +414,11 @@
                                     {{ concursos_ordenados.end_date }}
                                 	</td>
 									<td class="text-center">
-                                    <a href="" class="btn btn-info">
-                                        Ver detalle
-                                    </a>
-                                </td>
+                                    {{ concursos_ordenados.url}}
+                                	</td>
+									<td class="text-center">
+                                    <a href="{% url 'contests:videocontest_confirm_delete' concursos_ordenados.id %}">Eliminar</a>
+                                	</td>
 								</tr>
 							{% endfor %}
                             </tbody>
@@ -427,7 +429,7 @@
 			<!-- end panel -->
 		</div>
 		<!-- end #content -->
-		
+
         <!-- begin theme-panel -->
         <div class="theme-panel">
             <a href="javascript:;" data-click="theme-panel-expand" class="theme-collapse-btn"><i class="fa fa-cog"></i></a>
@@ -481,13 +483,13 @@
             </div>
         </div>
         <!-- end theme-panel -->
-		
+
 		<!-- begin scroll to top btn -->
 		<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
 		<!-- end scroll to top btn -->
 	</div>
 	<!-- end page container -->
-	
+
 	<!-- ================== BEGIN BASE JS ================== -->
 	<script src="{% static 'assets/plugins/jquery-1.8.2/jquery-1.8.2.min.js' %}"></script>
 	<script src="{% static 'assets/plugins/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js' %}"></script>
@@ -500,7 +502,7 @@
 	<script src="{% static 'assets/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
 	<script src="{% static 'assets/plugins/jquery-cookie/jquery.cookie.js' %}"></script>
 	<!-- ================== END BASE JS ================== -->
-	
+
 	<!-- ================== BEGIN PAGE LEVEL JS ================== -->
 	<script src="{% static 'assets/plugins/bootstrap3-editable/js/bootstrap-editable.min.js' %}"></script>
 	<script src="{% static 'assets/plugins/bootstrap3-editable/inputs-ext/address/address.js' %}"></script>
