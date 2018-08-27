@@ -40,7 +40,8 @@
             <!-- begin brand -->
             <div class="login-header">
                 <div class="brand">
-                    <span class="logo"></span> AuCarVideo
+                    <span class="logo"></span> {{ request.tenant.name |title }}
+                    <small>Bienvenido a esta organización</small>
                 </div>
                 <div class="icon">
                     <i class="fa fa-sign-in"></i>
@@ -53,9 +54,6 @@
                     {% bootstrap_form login_form %}
                     <div class="login-buttons">
                         <button type="submit" class="btn btn-success btn-block btn-lg">Login</button>
-                    </div>
-                    <div class="m-t-20">
-                        Not a member yet? Click <a href="#">here</a> to register.
                     </div>
                 </form>
             </div>

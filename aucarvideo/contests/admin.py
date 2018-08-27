@@ -7,7 +7,7 @@ from contests.models import Video
 
 @admin.register(Contest)
 class ContestAdmin(admin.ModelAdmin):
-    list_display = ('id','name','url','start_date','end_date','award_description')
+    list_display = ('id','url','name','start_date','end_date','award_description')
     search_fields = ('name',)
 
 @admin.register(Participant)

@@ -33,14 +33,19 @@
     <!-- end #page-loader -->
     
     <!-- begin #page-container -->
+    <!-- begin #page-container -->
+    {% if user.is_authenticated %}
+    <div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
+    {% else %}
     <div id="page-container" class="fade page-without-sidebar page-header-fixed">
+    {% endif %}
         <!-- begin #header -->
         <div id="header" class="header navbar navbar-default navbar-fixed-top">
             <!-- begin container-fluid -->
             <div class="container-fluid">
                 <!-- begin mobile sidebar expand / collapse button -->
                 <div class="navbar-header">
-                    <a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> {{ request.tenant.name }}</a>
+                    <a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> {{ request.tenant.name |title }}</a>
                     <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -49,16 +54,18 @@
                 </div>
                 <!-- end mobile sidebar expand / collapse button -->
                 
-                <!-- begin header navigation right -->
+                                <!-- begin header navigation right -->
                 <ul class="nav navbar-nav navbar-right">
                     {% if request.user.is_authenticated %}
                     <li class="dropdown navbar-user">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="{% static 'assets/img/user-13.jpg' %}" alt="" />
-                            {% if request.user.first_name or request.user.last_name %}
+                            <i class="fa fa-2x p-r-5 fa-user"></i>
+                            {% if request.user.first_name  %}
                             <span class="hidden-xs">{{ request.user.first_name }} {{ request.user.last_name }}</span> <b class="caret"></b>
-                            {% else %}
+                            {% elif request.user.email %}
                             <span class="hidden-xs">{{ request.user.email }}</span> <b class="caret"></b>
+                            {% else %}
+                            <span class="hidden-xs">{{ request.user.username }}</span> <b class="caret"></b>
                             {% endif %}
                         </a>
                         <ul class="dropdown-menu animated fadeInLeft">
@@ -66,8 +73,15 @@
                             {% if request.user.is_staff %}
                             <li><a href="{% url 'admin:login' %}">Setting</a></li>
                             {% endif %}
-                            <li><a href="{% url 'admin:logout' %}">Log Out</a></li>
+                            <li><a href="{% url 'auth_tenants:logout' %}">Log Out</a></li>
                         </ul>
+                    </li>
+                    {% else %}
+                    <li class="dropdown navbar-user">
+                        <a href="{% url 'auth_tenants:login' %}">
+                            <i class="fa fa-2x p-r-5 fa-user"></i>
+                            <span class="hidden-xs">Iniciar sesion</span> <b class="caret"></b>
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
@@ -76,6 +90,51 @@
             <!-- end container-fluid -->
         </div>
         <!-- end #header -->
+        
+        {% if user.is_authenticated %}
+        <!-- begin #sidebar -->
+        <div id="sidebar" class="sidebar">
+            <!-- begin sidebar scrollbar -->
+            <div data-scrollbar="true" data-height="100%">
+                <!-- begin sidebar user -->
+                <ul class="nav">
+                    <li class="nav-profile">
+                        <div class="image">
+                            <a href="javascript:;"><img src="{% static 'assets/img/user-13.jpg' %}" alt="" /></a>
+                        </div>
+                        <div class="info">
+                            Sean Ngu
+                            <small>Front end developer</small>
+                        </div>
+                    </li>
+                </ul>
+                <!-- end sidebar user -->
+
+                <!-- begin sidebar nav -->
+                <ul class="nav">
+                    <li class="nav-header">Navegación</li>
+                    <li class="has-sub active">
+                        <a href="javascript:;">
+                            <b class="caret pull-right"></b>
+                            <i class="fa fa-laptop"></i>
+                            <span>
+                                Concursos
+                                <span class="label label-theme m-l-5">NEW</span>
+                            </span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="active"><a href="{% url 'contests:contest_create' %}">Nuevo</a></li>
+                            <li><a href="{% url 'contests:contest_admin_list' %}">Listado <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- end sidebar nav -->
+            </div>
+            <!-- end sidebar scrollbar -->
+        </div>
+        <div class="sidebar-bg"></div>
+        <!-- end #sidebar -->
+        {% endif %}
         
         {% block content %}
         <!-- begin #content -->

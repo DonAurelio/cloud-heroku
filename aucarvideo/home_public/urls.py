@@ -6,6 +6,6 @@ from home_public.views import Index
 
 
 urlpatterns = [
-    path('', Index.as_view(), name='Index'),
+    path('', Index.as_view(), name='index'),
 
 ]

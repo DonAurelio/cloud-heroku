@@ -3,13 +3,12 @@ from django.db import models
 
 class Contest(models.Model):
 
-
+    # The conetxt unique URL
+    url = models.CharField(max_length=200,blank=True,null=True,unique=True)
     # The name of the competition
-    name = models.CharField(max_length=100,blank=False,null=False)
+    name = models.CharField(max_length=100,blank=False,null=False,unique=True)
     # The banner image of the contests
     banner = models.ImageField(upload_to='contests/banner',blank=True,null=False)
-    # The conetxt unique URL
-    url = models.URLField(max_length=200, blank=False,null=False, unique=True)
     # The date on which te contests start
     start_date = models.DateField(blank=False,null=False)
     # The date on which the contests ends

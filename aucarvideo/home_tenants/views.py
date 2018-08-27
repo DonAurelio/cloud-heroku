@@ -6,6 +6,6 @@ class Index(TemplateView):
     def get(self, request,*args,**kwargs):
 
         if request.user.is_authenticated:
-            return redirect('contests:list_admin')
+            return redirect('contests:contest_admin_list')
 
-        return redirect('contests:list')
+        return redirect('contests:contest_list')

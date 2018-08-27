@@ -1,4 +1,4 @@
-{% extends "base_admin.html" %}
+{% extends "base.html" %}
 {% load static %}
 {% load bootstrap3 %}
 
@@ -8,6 +8,7 @@
 
 {% block custom_css %}
 {{ block.super }}
+<link href="{% static 'assets/plugins/bootstrap-datepicker/css/datetimepicker3.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block sidebar %}
@@ -25,7 +26,7 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Dashboard <small>header small text goes here...</small></h1>
+    <h1 class="page-header">Concurso <small>mantente al día la información de tus concursos</small></h1>
     <!-- end page-header -->
 
     <!-- begin row -->
@@ -44,13 +45,9 @@
                   <h4 class="panel-title">Datos del Concurso</h4>
               </div>
               <div class="panel-body">
-                <form action="{% url 'contests:create' %}" method="POST" class="margin-bottom-0">
+                <form method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
                   {% bootstrap_form form %}
-                  <!-- <button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button> -->
-<!--                   <div class="login-buttons">
-                    <button type="submit" class="btn btn-success btn-block btn-lg">Save</button>
-                  </div> -->
                   <div class="col-md-8 col-md-offset-10">
                     <button type="submit" class="btn btn-sm btn-primary m-r-5">Aceptar</button>
                   </div>
@@ -72,6 +69,13 @@
 
 {% block custom_js %}
 {{ block.super }}
+<script src="{% static 'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js' %}"></script>
+<script type="text/javascript">
+$( function() {
+  $( "#id_start_date" ).datepicker();
+  $( "#id_end_date" ).datepicker();
+});
+</script>
 {% endblock %}
 
 {% block init_js %}

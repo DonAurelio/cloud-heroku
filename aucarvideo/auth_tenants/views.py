@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import TemplateView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
+from django.contrib.auth import views
 
 
 class RegisterView(TemplateView):
@@ -48,7 +49,7 @@ class LoginView(TemplateView):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('contests:list_admin')
+                return redirect('home_tenants:index')
         else:
             template_name = 'auth_tenants/login.html'
             context = {
@@ -56,3 +57,9 @@ class LoginView(TemplateView):
             }
             return render(request, template_name, context)
 
+
+class LogoutView(views.LogoutView):
+    """Deals with user logout process."""
+
+    # The URL to redirect to after logout. Defaults to settings.LOGOUT_REDIRECT_URL.
+    next_page = '/'
