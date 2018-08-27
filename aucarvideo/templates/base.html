@@ -54,8 +54,12 @@
                     {% if request.user.is_authenticated %}
                     <li class="dropdown navbar-user">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="{% static 'assets/img/user-13.jpg' %}" alt="" /> 
+                            <img src="{% static 'assets/img/user-13.jpg' %}" alt="" />
+                            {% if request.user.first_name or request.user.last_name %}
                             <span class="hidden-xs">{{ request.user.first_name }} {{ request.user.last_name }}</span> <b class="caret"></b>
+                            {% else %}
+                            <span class="hidden-xs">{{ request.user.email }}</span> <b class="caret"></b>
+                            {% endif %}
                         </a>
                         <ul class="dropdown-menu animated fadeInLeft">
                             <li class="arrow"></li>

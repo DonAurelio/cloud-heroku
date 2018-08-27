@@ -31,6 +31,10 @@ TENANT_MODEL = "customers.Client" # app.Model
 
 DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 
+# This variable was created to give this domain name 
+# to all tenants created
+DOMAIN_NAME = 'aucarvideo'
+
 # Application definition
 
 # These apps models will be created in the public schema 
@@ -39,8 +43,8 @@ SHARED_APPS = (
 
     # everything below here is optional
     'customers',
-    'phome',
-    'register',
+    'home_public',
+
     # django apps
     'django.contrib.contenttypes',
     'django.contrib.auth',
@@ -52,9 +56,11 @@ SHARED_APPS = (
 # This apps models will be replicated in schemas
 TENANT_APPS = (
     # your tenant-specific apps
+    
+    # 'login',
+    'auth_tenants',
+    'home_tenants',
     'contests',
-    'login',
-    'thome',
 
     # django apps
     'django.contrib.contenttypes',
@@ -69,11 +75,13 @@ INSTALLED_APPS = (
 
     # your tenant-specific apps
     'customers',
-    'phome',
-    'register',
+    'home_public',
+    'auth_tenants',
+    'home_tenants',
     'contests',
-    'login',
-    'thome',
+    # 'login',
+    # 'home_tenats',
+
 
     # django apps
     'django.contrib.contenttypes',
@@ -108,7 +116,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'aucarvideo.urls'
+# ROOT_URLCONF = 'aucarvideo.urls'
+ROOT_URLCONF = 'aucarvideo.urls_tenants'
+PUBLIC_SCHEMA_URLCONF = 'aucarvideo.urls_public'
 
 TEMPLATES = [
     {

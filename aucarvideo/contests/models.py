@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class VideoContest(models.Model):
+class Contest(models.Model):
 
 
     # The name of the competition
@@ -50,7 +50,7 @@ class Video(models.Model):
     # The proper video uploaded by the participant
     file = models.FileField(upload_to='contests/videos')
     # The contests to which the video belongs
-    contest = models.ForeignKey(VideoContest,on_delete=models.CASCADE)
+    contest = models.ForeignKey(Contest,on_delete=models.CASCADE)
     # The participant who uploaded the video
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     # The date on which the video was uploaded

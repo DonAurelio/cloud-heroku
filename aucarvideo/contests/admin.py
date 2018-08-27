@@ -1,12 +1,12 @@
 from django.contrib import admin
 
-from contests.models import VideoContest
+from contests.models import Contest
 from contests.models import Participant
 from contests.models import Video
 
 
-@admin.register(VideoContest)
-class VideoContestAdmin(admin.ModelAdmin):
+@admin.register(Contest)
+class ContestAdmin(admin.ModelAdmin):
     list_display = ('id','name','url','start_date','end_date','award_description')
     search_fields = ('name',)
 
