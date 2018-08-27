@@ -417,7 +417,9 @@
                                     {{ concursos_ordenados.url}}
                                 	</td>
 									<td class="text-center">
-                                    <a href="{% url 'contests:videocontest_confirm_delete' concursos_ordenados.id %}">Eliminar</a>
+										<a href="{% url 'contests:videocontest_confirm_delete' concursos_ordenados.id %}" class="btn btn-info">Eliminar</a>
+										<a href="{% url 'contests:editContest' concursos_ordenados.id %}" class="btn btn-info">Editar</a>
+										<a href="{% url 'contests:video_list' concursos_ordenados.id %}" class="btn btn-info">Ver concurso</a>
                                 	</td>
 								</tr>
 							{% endfor %}

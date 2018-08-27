@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 
+
 class Thome(TemplateView):
     def get(self, request,*args,**kwargs):
         concursos = list()
