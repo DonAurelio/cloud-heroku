@@ -381,15 +381,13 @@
 		<div id="content" class="content">
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header">Concursos</h1>
+			<h1 class="page-header">Videos del concurso </h1>
 			<!-- end page-header -->
 
 			<!-- begin panel -->
 			<div class="panel panel-inverse">
 			    <div class="panel-body">
-			        <p>
-			            <a href="{% url 'contests:videocontest_form' %}" class="btn btn-primary btn-xs active" data-editable="popup">Nuevo concurso</a>
-			        </p>
+
 			        <div class="table-responsive">
                         <table id="videos" class="table table-bordered table-striped">
                             <thead>
@@ -400,28 +398,36 @@
 									<th class="text-center">Participante</th>
                                     <th class="text-center">Fecha de creación</th>
                                     <th class="text-center">Estado</th>
-									<th class="text-center">Ver vide</th>
-									<th class="text-center">Opciones</th>
+									<th class="text-center">Video original</th>
+									<th class="text-center">Video onvertido</th>
                                 </tr>
                             </thead>
                             <tbody>
-							{% for concursos_ordenados in objets %}
+							{% for videos in videos %}
 								<tr>
 									<td class="text-center">
-                                    {{ concursos_ordenados.name }}
+                                    {{ videos.contest.name }}
                                 	</td>
 									<td class="text-center">
-                                    {{ concursos_ordenados.start_date }}
+                                    {{ videos.file }}
                                 	</td>
 									<td class="text-center">
-                                    {{ concursos_ordenados.end_date }}
+                                    {{ videos.participant.email }}
                                 	</td>
 									<td class="text-center">
-                                    {{ concursos_ordenados.url}}
+                                    {{ videos.participant.first_name }} {{ videos.participant.last_name }}
                                 	</td>
 									<td class="text-center">
-										<a href="{% url 'contests:videocontest_confirm_delete' concursos_ordenados.id %}" class="btn btn-info">Eliminar</a>
-										<a href="{% url 'contests:editContest' concursos_ordenados.id %}" class="btn btn-info">Editar</a>
+                                    {{ videos.uploaded_at }}
+                                	</td>
+									<td class="text-center">
+                                    {{ videos.status }}
+                                	</td>
+									<td class="text-center">
+										<a href="{{ videos.file }}">{{ videos.file }}</a>
+                                	</td>
+									<td class="text-center">
+										<a href="{{ videos.file }}">{{ videos.file }}</a>
                                 	</td>
 								</tr>
 							{% endfor %}
@@ -430,6 +436,9 @@
                     </div>
 			    </div>
 			</div>
+			<p>
+				<a href="{% url 'thome:thome' %}" class="btn btn-primary btn-xs active" data-editable="popup">Volver</a>
+			</p>
 			<!-- end panel -->
 		</div>
 		<!-- end #content -->
