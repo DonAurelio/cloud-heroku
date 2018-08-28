@@ -13,3 +13,4 @@ class Client(TenantMixin):
     name = models.CharField(max_length=100, unique=True)
     # The date on which the tenant was created
     created_on = models.DateField(auto_now_add=True)
+

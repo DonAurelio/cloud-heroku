@@ -74,6 +74,7 @@
                     <td class="text-center">
                       <a href="{% url 'contests:contest_update' concurso.url %}"><i class="fa fa-2x fa-edit"></i></a>
                       <a href="{% url 'contests:contest_delete' concurso.pk %}"><i class="fa fa-2x fa-trash"></i></a>
+                      <a href="{% url 'contests:contest_detail' concurso.url %}"><i class="fa fa-2x fa-eye"></i></a>
                     </td>
                   </tr>
                   {% endfor %}

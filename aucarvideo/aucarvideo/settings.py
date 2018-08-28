@@ -29,8 +29,6 @@ ALLOWED_HOSTS = ['*']
 
 TENANT_MODEL = "customers.Client" # app.Model
 
-DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
-
 # This variable was created to give this domain name 
 # to all tenants created
 DOMAIN_NAME = 'aucarvideo'
@@ -209,5 +207,3 @@ STATICFILES_DIRS = [
 # backend - you will be warned if this is not the case.
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'

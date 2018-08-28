@@ -49,17 +49,11 @@ class Video(models.Model):
     # The proper video uploaded by the participant
     file = models.FileField(upload_to='contests/videos')
     # The contests to which the video belongs
-    contest = models.ForeignKey(Contest,on_delete=models.CASCADE)
+    contest = models.ForeignKey(Contest,on_delete=models.CASCADE,blank=True,null=True)
     # The participant who uploaded the video
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     # The date on which the video was uploaded
     uploaded_at = models.DateField(auto_now_add=True)
     # The status of the video convertion.
     status = models.CharField(max_length=20,choices=STATUS,default=PROCESSING)
-
-
-
-
-
-
 

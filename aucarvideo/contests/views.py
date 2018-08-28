@@ -1,6 +1,7 @@
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import UpdateView
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.shortcuts import reverse, render
@@ -10,6 +11,9 @@ from django.shortcuts import get_object_or_404
 
 from contests.models import Contest
 from contests.models import Video
+
+from contests.forms import VideoForm
+from contests.forms import ParticipantForm
 
 import re
 
@@ -88,6 +92,22 @@ class ContestCreate(CreateView):
         return reverse('contests:contest_admin_list')
 
 
+class ContestDetail(DetailView):
+    """
+    View for contest detail for
+    both purposes, admin and general public.
+    """
+
+    model = Contest
+    template_name = 'contests/contest_detail.html'
+
+    def get_object(self):
+        """
+        Return a the contest with the given URL.
+        """
+        return get_object_or_404(self.model, url=self.kwargs['url'])
+
+
 class ContestList(ListView):
     """
     View for contest objects listing 
@@ -121,7 +141,9 @@ class ContestUpdate(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_object(self):
-        print('URL', self.model, self.kwargs, self.kwargs['url'], type(self.kwargs['url']))
+        """
+        Return the contest with the given URL.
+        """
         return get_object_or_404(self.model, url=self.kwargs['url'])
 
     def get_success_url(self):
@@ -158,6 +180,47 @@ class ContestAdminList(ListView):
     #     }
 
     #     return render(request, template_name, context)
+
+
+class VideoCreate(TemplateView):
+    """
+    View for video objects creation.
+    """
+
+    def get(self,request,*args,**kwargs):
+        video_form = VideoForm()
+        participant_form = ParticipantForm()
+
+        template_name = 'contests/video_form.html'
+        context = {
+            'video_form': video_form,
+            'participant_form': participant_form
+        }
+
+        return render(request,template_name,context)
+
+    def post(self,request,*args,**kwargs):
+        video_form = VideoForm(request.POST,request.FILES)
+        participant_form = ParticipantForm(request.POST)
+
+        if video_form.is_valid() and participant_form.is_valid():
+            participant = participant_form.save()
+            contest = Contest.objects.get(pk=kwargs.get('pk'))
+
+            video = video_form.save(commit=False)
+            video.contest = contest
+            video.participant = participant
+            video.save()
+
+            return HttpResponseRedirect(reverse('home_tenants:index'))
+
+        template_name = 'contests/video_form.html'
+        context = {
+            'video_form': video_form,
+            'participant_form': participant_form
+        }
+
+        return render(request,template_name,context)
 
 
 class VideoAdminList(ListView):
