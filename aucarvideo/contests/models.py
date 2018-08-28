@@ -16,6 +16,9 @@ class Contest(models.Model):
     # Description of the award
     award_description = models.TextField(blank=False,null=False)
 
+    def __str__(self):
+        return self.name.title()
+
 
 class Participant(models.Model):
     """
@@ -29,6 +32,9 @@ class Participant(models.Model):
     last_name = models.CharField(max_length=100,blank=True,null=True)
     # The email of the person who upload the video
     email = models.EmailField(max_length=100,blank=True,null=True)
+
+    def __str__(self):
+        return self.email
 
 
 

@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/contest/list',ContestAdminList.as_view(),name='contest_admin_list'),
 
     path('contest/<int:pk>/video/add',VideoCreate.as_view(),name='video_create'),
-    path('contest/<str:url>/video/list',VideoAdminList.as_view(),name='video_admin_list'),
+    path('contest/<int:pk>/video/list',VideoAdminList.as_view(),name='video_admin_list'),
     # path('contest/<int:url>/video/list/',VideoAdminList.as_view(),name='video_admin_list'),
 
 

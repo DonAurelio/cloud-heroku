@@ -31,48 +31,38 @@
           <a href="#show-all" class="btn btn-default btn-xs active" data-option-value="*">
               Show All
           </a>
-          <a href="#gallery-group-1" class="btn btn-default btn-xs" data-option-value=".gallery-group-1">
-              Gallery Group 1
-          </a>
-          <a href="#gallery-group-2" class="btn btn-default btn-xs" data-option-value=".gallery-group-2">
-              Gallery Group 2
-          </a>
-          <a href="#gallery-group-3" class="btn btn-default btn-xs" data-option-value=".gallery-group-3">
-              Gallery Group 3
-          </a>
-          <a href="#gallery-group-4" class="btn btn-default btn-xs" data-option-value=".gallery-group-4">
-              Gallery Group 4
-          </a>
       </span>
   </div>
   <div id="gallery" class="gallery">
-      <div class="image gallery-group-1">
-          <div class="image-inner">
-              <video class="video-js" controls>
-                <source src="http://hello.localhost:8000/media/video1.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-              <p class="image-caption">
-                  #1382 - 3D Arch
-              </p>
+      {% for video in object.video_set.all %}
+      <div class="image">
+        <div class="image-inner">
+          <video class="video-js" controls>
+            <source src="http://hello.localhost:8000/media/video1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <p class="image-caption">
+              #1382 - 3D Arch
+            </p>
           </div>
           <div class="image-info">
-              <h5 class="title">Lorem ipsum dolor sit amet</h5>
-              <div class="pull-right">
-                  <small>by</small> <a href="javascript:;">Sean Ngu</a>
-              </div>
-              <div class="rating">
-                  <span class="star active"></span>
-                  <span class="star active"></span>
-                  <span class="star active"></span>
-                  <span class="star"></span>
-                  <span class="star"></span>
-              </div>
-              <div class="desc">
-                  Nunc velit urna, aliquam at interdum sit amet, lacinia sit amet ligula. Quisque et erat eros. Aenean auctor metus in tortor placerat, non luctus justo blandit.
-              </div>
+            <h5 class="title">Lorem ipsum dolor sit amet</h5>
+            <div class="pull-right">
+              <small>by</small> <a href="javascript:;">Sean Ngu</a>
+            </div>
+            <div class="rating">
+              <span class="star active"></span>
+              <span class="star active"></span>
+              <span class="star active"></span>
+              <span class="star"></span>
+              <span class="star"></span>
+            </div>
+            <div class="desc">
+              Nunc velit urna, aliquam at interdum sit amet, lacinia sit amet ligula. Quisque et erat eros. Aenean auctor metus in tortor placerat, non luctus justo blandit.
+            </div>
           </div>
-      </div>
+        </div>
+      {% endfor %}
   </div>
   <div class="btn-group pull-right float-btn">
     <a href="{% url 'contests:video_create' object.pk %}">

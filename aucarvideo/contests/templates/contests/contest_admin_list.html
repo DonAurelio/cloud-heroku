@@ -7,6 +7,7 @@
 
 {% block custom_css %}
 {{ block.super }}
+<link href="{% static 'assets/css/float-btn.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block sidebar %}
@@ -32,15 +33,6 @@
       <div class="col-md-12">
         <div class="panel panel-inverse">
           <div class="panel-heading">
-            <div class="btn-group pull-right">
-                <button type="button" class="btn btn-success btn-xs">Acción</button>
-                <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="{% url 'contests:contest_create' %}">Nuevo</a></li>
-                </ul>
-            </div>
             <h4 class="panel-title">Concursos</h4>
           </div>
           <div class="panel-body">
@@ -60,7 +52,7 @@
                   {% for concurso in object_list %}
                   <tr>
                     <td class="text-center">
-                      <a href="{% url 'contests:video_admin_list' concurso.url %}">{{ concurso.name }}</a>
+                      <a href="{% url 'contests:video_admin_list' concurso.pk %}">{{ concurso.name |title }}</a>
                     </td>
                     <td class="text-center">
                       {{ concurso.start_date }}
@@ -83,8 +75,8 @@
             </div>
             {% else %}
             <div class="alert alert-info fade in m-b-15">
-              <strong>Success!</strong>
-              Aún hay videos en el presente concurso!
+              <strong>Información!</strong>
+              Aún no hay videos en el presente concurso
               <span class="close" data-dismiss="alert">×</span>
             </div>
             {% endif %}
@@ -114,6 +106,11 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="btn-group pull-right float-btn">
+      <a href="{% url 'contests:contest_create' %}">
+        <button type="button" class="btn btn-success "><i class="fa fa-plus"></i></button>
+      </a>
     </div>
 </div>
 <!-- end #content -->

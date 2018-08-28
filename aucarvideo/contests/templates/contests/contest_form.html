@@ -48,8 +48,9 @@
                 <form method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
                   {% bootstrap_form form %}
-                  <div class="col-md-8 col-md-offset-10">
-                    <button type="submit" class="btn btn-sm btn-primary m-r-5">Aceptar</button>
+                  <div class="pull-right">
+                    <input class="btn btn-success text-white custom-shadow" type="submit" value="Aceptar"/>
+                    <button onclick="window.history.back();" class="btn btn-light custom-shadow" type="button">Cancelar</button>
                   </div>
                 </form>
               </div>

@@ -212,7 +212,10 @@ class VideoCreate(TemplateView):
             video.participant = participant
             video.save()
 
-            return HttpResponseRedirect(reverse('home_tenants:index'))
+            current_contest_pk = kwargs.get('pk')
+            return HttpResponseRedirect(
+                reverse('contests:video_admin_list', kwargs={'pk':current_contest_pk})
+            )
 
         template_name = 'contests/video_form.html'
         context = {
@@ -236,6 +239,12 @@ class VideoAdminList(ListView):
         """
         Return videos filtered by contest
         """
-        contest_url = self.kwargs.get('url')
-        videos = Video.objects.filter(contest__url=contest_url)
+        contest_pk = self.kwargs.get('pk')
+        videos = Video.objects.filter(contest__pk=contest_pk)
         return videos
+
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        contest_pk = self.kwargs.get('pk')
+        context['contest'] = Contest.objects.get(pk=contest_pk)
+        return context
