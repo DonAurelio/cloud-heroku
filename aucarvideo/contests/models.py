@@ -25,6 +25,11 @@ class Contest(models.Model):
         # Ordering by descending order
         ordering = ['-start_date']
 
+    def public_videos_set(self):
+        return self.video_set.all().exclude(
+            status=self.video.PROCESSING
+        )
+
 
 class Participant(models.Model):
     """

@@ -34,7 +34,8 @@
       </span>
   </div>
   <div id="gallery" class="gallery">
-      {% for video in object.video_set.all %}
+      {% for video in object.public_videos_set %}
+      {% if  %}
       <div class="image">
         <div class="image-inner">
           <video class="video-js" controls>

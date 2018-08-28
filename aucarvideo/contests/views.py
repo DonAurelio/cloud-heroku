@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
+from django.db import transaction
 
 from contests.models import Contest
 from contests.models import Video
@@ -210,42 +211,48 @@ class VideoCreate(TemplateView):
             participant = participant_form.save()
             contest = Contest.objects.get(pk=kwargs.get('pk'))
 
-            video = video_form.save(commit=False)
-            video.contest = contest
-            video.participant = participant
-            video.save()
-
-            # If the uploaded video already has the .mp4
-            # format it will not be converted.
-            if '.mp4' in video.file.name:
-                video.status = Video.CONVERTED
+            # If some error happens during the processing 
+            # of this block of code the database is 
+            # rolled back, i.e, in case the email
+            # sending fails or some process carried 
+            # out on the following block of code.
+            with transaction.atomic():
+                video = video_form.save(commit=False)
+                video.contest = contest
+                video.participant = participant
                 video.save()
 
-                # Participants email notification
-                contest = video.contest.name.title()
-                subject = f'Video Publicado'
-                message = f"""
-                Tu video '{video.name}' ha sido publicado
-                directamente ya que cumple con el formato
-                que requiere el concurso.
-                """
-            else:
-                # Participants email notification
-                contest = video.contest.name.title()
-                subject = f'Video para Procesamiento'
-                message = f"""
-                Hemos recibido tu video '{video.name}' y los estamos  procesado para  
-                que  sea  publicado. Tan  pronto el  video quede publicado 
-                en la página del concurso te notificaremos por email.
-                """
-            
-            send_mail(
-                subject,
-                message,
-                'aucarvideo@gmail.com',
-                [video.participant.email],
-                fail_silently=False,
-            )
+                # If the uploaded video already has the .mp4
+                # format it will not be converted.
+                if '.mp4' in video.file.name:
+                    video.status = Video.CONVERTED
+                    video.save()
+
+                    # Participants email notification
+                    contest = video.contest.name.title()
+                    subject = f'Video Publicado'
+                    message = f"""
+                    Tu video '{video.name}' ha sido publicado
+                    directamente ya que cumple con el formato
+                    que requiere el concurso.
+                    """
+                else:
+                    # Participants email notification
+                    contest = video.contest.name.title()
+                    subject = f'Video para Procesamiento'
+                    message = f"""
+                    Hemos recibido tu video '{video.name}' y los estamos  procesado para  
+                    que  sea  publicado. Tan  pronto el  video quede publicado 
+                    en la página del concurso te notificaremos por email.
+                    """
+                
+                send_mail(
+                    subject,
+                    message,
+                    'aucarvideo@gmail.com',
+                    [video.participant.email],
+                    fail_silently=False,
+                )
          
 
             current_contest_pk = kwargs.get('pk')
