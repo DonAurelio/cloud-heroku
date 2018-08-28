@@ -28,48 +28,54 @@ class VidesProcessor(object):
     def public_url(self):
         return f'http://{self.hostname}:{self.port}/api/client/list'
 
-    def _get_tenant_url(self,domain_url,port):
-        return f'http://{domain_url}:{port}/api/contest/videos/status/'
+    def _get_tenant_url(self,domain_url):
+        return f'http://{domain_url}:{self.port}/api/contest/videos/status/'
 
     def _request_tenants_urls(self):
         response = requests.get(self.public_url)
         return response.json()
 
     def _request_videos_urls(self):
-        videos_urls = []
+        videos_by_domain = {}
         tenants_urls = self._request_tenants_urls()
         for domain_url in tenants_urls:
-            tenant_url = self._get_tenant_url(domain_url,self.port)
+            tenant_url = self._get_tenant_url(domain_url)
             response = requests.get(tenant_url)
-            videos_urls += response.json()
+            data = response.json()
+            if data:
+                videos_by_domain[domain_url] = response.json()
 
-        return videos_urls
+        return videos_by_domain
 
     def process_videos(self):
 
-        videos_paths = self._request_videos_urls()
+        videos_by_domain = self._request_videos_urls()
+
+        if videos_by_domain:
+            success_code = 0
+            for  domain_url, video_info in videos_by_domain.items():
+                videos_by_domain_processed[domain_url] = []
+                for video_id, input_file, output_file in video_info:
+                    return_code = self._process_video(input_file,output_file)
+
+                    if return_code == success_code:
+                        # An erro has ocurred during videos processing
+                        logging.info(f'Process success {input_file}')
+                        videos_by_domain_processed[domain_url].append(video_id)
+                    else:
+                        # Video processing was complited correctly
+                        logging.error(f'{process.stderr} {input_file}')
+                        # WE HAVE TO NOTIFY WEB APP WHEN A VIDEO FAILS 
+                        # IN PROCESSING
+
+            # After all videos were processed we have to notify 
+            # to the webapp which videos where processed so 
+            # it change them status to 'Converted' in the database
+            self._notify_web_app(videos_by_domain_processed)
         
-        if not videos_paths:
+        else:
             logging.info('No videos for processing')
 
-        success_code = 0
-        for video_id, input_file, output_file in videos_paths:
-            return_code = self._process_video(input_file,output_file)
-
-            if return_code != success_code:
-                # An erro has ocurred during videos processing
-                logging.error(f'{process.stderr} {input_file}')
-                self.error_videos_id.append(video_id)
-
-            else:
-                # Video processing was complited correctly
-                logging.info(f'Process success {input_file}')
-                self.succes_videos_id.append(video_id)
-
-        # After all videos were processed we have to notify 
-        # to the webapp which videos where processed so 
-        # it change them status to 'Converted' in the database
-        self._notify_web_app()
 
     def _process_video(self,input_file,output_file):
         # Remove the first '/' on the video path
@@ -93,8 +99,20 @@ class VidesProcessor(object):
 
         return process.returncode
 
-    def _notify_web_app(self):
-        pass
+    def _notify_web_app(self,videos_by_domain_processed):
+        logging.info(f'Start converted videos notification process')
+        
+        for domain_url, videos_ids in videos_by_domain_processed.items():
+            url = self._get_tenant_url(domain_url)
+            response = requests.post(url, data = {'videos_ids':videos_ids})
+
+            if response.status_code == 200:
+                logging.info(f'Notification success to {domain_url} about video {videos_ids}')
+            else:
+                logging.error(f'Notification error to {domain_url} regarding videos {videos_ids}')
+
+        logging.info(f'End converted videos notification process')
+
 
 
 if __name__ == '__main__':

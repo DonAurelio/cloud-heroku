@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from contests.models import Contest
 from contests.models import Video
@@ -261,6 +262,10 @@ class VideoAdminList(ListView):
 
 class VideoProcessingStatus(TemplateView):
 
+    @csrf_exempt
+    def dispatch(self,request,*args,**kwargs):
+        return super().dispatch(request,*args,**kwargs)
+
     def get(self,request,*args,**kwargs):
         pending_videos = Video.objects.filter(
             status=Video.PROCESSING,
@@ -276,8 +281,12 @@ class VideoProcessingStatus(TemplateView):
         return JsonResponse(data=paths,safe=False)
 
     def post(self,request,*args,**kwargs):
-        video_id = request.POST.get('id')
-        processed_video_name = request.POST.get('name')
+        videos_ids = request.POST.get('videos_ids')
+
+        for video_id in videos_ids:
+            video = Video.objects.get(id=video_id)
+            video.change_to_conveted_status()
+            video.save()
 
         return JsonResponse(data=None,status=200,safe=False)
 

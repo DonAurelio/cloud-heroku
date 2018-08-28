@@ -81,6 +81,9 @@ class Video(models.Model):
         # converted file
         return f'{file_name}_{self.CONVERTED}.mp4'
 
+    def change_to_conveted_status(self):
+        self.status = self.CONVERTED
+
 
 #     def notify_video_publication(self):
 #         send_mail(
