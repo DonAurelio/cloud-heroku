@@ -8,9 +8,7 @@ from django.shortcuts import reverse, render
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.core.paginator import Paginator
-from django.core.paginator import EmptyPage
-from django.core.paginator import PageNotAnInteger
+from django.http import JsonResponse
 
 from contests.models import Contest
 from contests.models import Video
@@ -215,6 +213,13 @@ class VideoCreate(TemplateView):
             video.participant = participant
             video.save()
 
+            # If the uploaded video already has the .mp4
+            # format it will not be converted.
+            if '.mp4' in video.file.name:
+                video.status = Video.CONVERTED
+                video.save()
+         
+
             current_contest_pk = kwargs.get('pk')
             return HttpResponseRedirect(
                 reverse('contests:video_admin_list', kwargs={'pk':current_contest_pk})
@@ -228,6 +233,11 @@ class VideoCreate(TemplateView):
 
         return render(request,template_name,context)
 
+    def notify_video_publication(self):
+        pass
+        
+    def _notify_video_processing(self):
+        pass
 
 class VideoAdminList(ListView):
     """
@@ -252,3 +262,14 @@ class VideoAdminList(ListView):
         contest_pk = self.kwargs.get('pk')
         context['contest'] = Contest.objects.get(pk=contest_pk)
         return context
+
+
+class VideoProcessingStatus(TemplateView):
+
+    def get(self,request,*args,**kwargs):
+        pending_videos = Video.objects.filter(status=Video.PROCESSING)
+        pending_video_list = [ video.file.url for video in pending_videos ]
+
+        return JsonResponse(data=pending_video_list,safe=False)
+
+

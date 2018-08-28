@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
+from django.contrib.auth.forms import UserCreationForm
+from django.conf import settings
+from django.http import JsonResponse
 
 from customers.forms import ClientForm
-from django.contrib.auth.forms import UserCreationForm
-
-from django.conf import settings
+from customers.models import Client
 
 
 class ClientCreate(TemplateView):
@@ -36,3 +37,12 @@ class ClientCreate(TemplateView):
             }
 
             return render(request,template_name,context)
+
+
+class ClientListJson(TemplateView):
+
+    def get(self,request,*args,**kwargs):
+        clients = Client.objects.all().exclude(schema_name='public')
+        clients = [ client.domain_url for client in clients ]
+
+        return JsonResponse(data=clients,safe=False)

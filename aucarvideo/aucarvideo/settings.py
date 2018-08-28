@@ -33,6 +33,13 @@ TENANT_MODEL = "customers.Client" # app.Model
 # to all tenants created
 DOMAIN_NAME = 'aucarvideo'
 
+# Mail settings
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = "587"
+EMAIL_HOST_USER = "ossounivalle.adm@gmail.com"
+EMAIL_HOST_PASSWORD = "ossounivalle123"
+EMAIL_USE_TLS = True
+
 # Application definition
 
 # These apps models will be created in the public schema 

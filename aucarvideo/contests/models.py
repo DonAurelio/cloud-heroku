@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.mail import send_mail
 
 
 class Contest(models.Model):
@@ -65,4 +66,17 @@ class Video(models.Model):
     class Meta:
         # Ordering by descending order
         ordering = ['-uploaded_at']
+
+#     def notify_video_publication(self):
+#         send_mail(
+#             subject=self.participant.email, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None
+#     'Subject here',
+#     'Here is the message.',
+#     'from@example.com',
+#     ['to@example.com'],
+#     fail_silently=False,
+# )
+        
+#     def _notify_video_processing(self):
+#         pass
 

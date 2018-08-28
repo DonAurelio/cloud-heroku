@@ -12,6 +12,7 @@ from contests.views import ContestDelete
 
 from contests.views import VideoCreate
 from contests.views import VideoAdminList
+from contests.views import VideoProcessingStatus
 
 
 urlpatterns = [
@@ -24,6 +25,7 @@ urlpatterns = [
 
     path('contest/<int:pk>/video/add',VideoCreate.as_view(),name='video_create'),
     path('contest/<int:pk>/video/list',VideoAdminList.as_view(),name='video_admin_list'),
+    path('contest/videos/status',VideoProcessingStatus.as_view(),name='video_status'),
     # path('contest/<int:url>/video/list/',VideoAdminList.as_view(),name='video_admin_list'),
 
 
