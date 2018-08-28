@@ -67,6 +67,21 @@ class Video(models.Model):
         # Ordering by descending order
         ordering = ['-uploaded_at']
 
+    def was_processed(self):
+        """
+        If the uploaded video has .mp4 it does not
+        need to be converted. So it was not converted.
+        """
+        return '.mp4' in file.url
+
+    def get_converted_url(self):
+        # File name without extension
+        file_name = self.file.url[:-4]
+        # The name of the file that should be assigned to the 
+        # converted file
+        return f'{file_name}_{self.CONVERTED}.mp4'
+
+
 #     def notify_video_publication(self):
 #         send_mail(
 #             subject=self.participant.email, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None

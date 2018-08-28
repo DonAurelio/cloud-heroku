@@ -233,11 +233,6 @@ class VideoCreate(TemplateView):
 
         return render(request,template_name,context)
 
-    def notify_video_publication(self):
-        pass
-        
-    def _notify_video_processing(self):
-        pass
 
 class VideoAdminList(ListView):
     """
@@ -267,9 +262,23 @@ class VideoAdminList(ListView):
 class VideoProcessingStatus(TemplateView):
 
     def get(self,request,*args,**kwargs):
-        pending_videos = Video.objects.filter(status=Video.PROCESSING)
-        pending_video_list = [ video.file.url for video in pending_videos ]
+        pending_videos = Video.objects.filter(
+            status=Video.PROCESSING,
+        ).exclude(
+            file__icontains='.mp4'
+        )
 
-        return JsonResponse(data=pending_video_list,safe=False)
+        paths = []
+        for video in pending_videos:
+            data = (video.file.url, video.get_converted_url())
+            paths.append(data)
+
+        return JsonResponse(data=paths,safe=False)
+
+    def post(self,request,*args,**kwargs):
+        video_id = request.POST.get('id')
+        processed_video_name = request.POST.get('name')
+
+        return JsonResponse(data=None,status=200,safe=False)
 
 

@@ -8,5 +8,5 @@ from customers.views import ClientListJson
 
 urlpatterns = [
     path('create/', ClientCreate.as_view(), name='create'),
-    path('client/list/json', ClientListJson.as_view(), name='client_list_json'),
+    path('api/client/list/', ClientListJson.as_view(), name='client_list_json'),
 ]

@@ -16,16 +16,16 @@ from contests.views import VideoProcessingStatus
 
 
 urlpatterns = [
-    path('contest/add', ContestCreate.as_view(), name='contest_create'),
-    path('contest/<int:pk>/delete',ContestDelete.as_view(),name='contest_delete'),
-    path('contest/<str:url>/update',ContestUpdate.as_view(),name='contest_update'),
-    path('contest/<str:url>/detail',ContestDetail.as_view(),name='contest_detail'),
+    path('contest/add/', ContestCreate.as_view(), name='contest_create'),
+    path('contest/<int:pk>/delete/',ContestDelete.as_view(),name='contest_delete'),
+    path('contest/<str:url>/update/',ContestUpdate.as_view(),name='contest_update'),
+    path('contest/<str:url>/detail/',ContestDetail.as_view(),name='contest_detail'),
     path('contest/list/',ContestList.as_view(),name='contest_list'),
-    path('admin/contest/list',ContestAdminList.as_view(),name='contest_admin_list'),
+    path('admin/contest/list/',ContestAdminList.as_view(),name='contest_admin_list'),
 
-    path('contest/<int:pk>/video/add',VideoCreate.as_view(),name='video_create'),
-    path('contest/<int:pk>/video/list',VideoAdminList.as_view(),name='video_admin_list'),
-    path('contest/videos/status',VideoProcessingStatus.as_view(),name='video_status'),
+    path('contest/<int:pk>/video/add/',VideoCreate.as_view(),name='video_create'),
+    path('contest/<int:pk>/video/list/',VideoAdminList.as_view(),name='video_admin_list'),
+    path('api/contest/videos/status/',VideoProcessingStatus.as_view(),name='video_status'),
     # path('contest/<int:url>/video/list/',VideoAdminList.as_view(),name='video_admin_list'),
 
 
