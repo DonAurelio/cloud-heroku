@@ -44,7 +44,10 @@
                     <th class="text-center">Nombre</th>
                     <th class="text-center">Fecha de creación</th>
                     <th class="text-center">Subido por</th>
+                    <th class="text-center">Email</th>
                     <th class="text-center">Estado</th>
+                    <th class="text-center">Original</th>
+                    <th class="text-center">Convertido</th>
                     <th class="text-center">Opciones</th>
                   </tr>
                 </thead>
@@ -58,11 +61,21 @@
                       {{ video.uploaded_at }}
                     </td>
                     <td class="text-center">
+                      {{ video.participant.first_name }} {{ video.participant.last_name }}
+                    </td>
+                    <td class="text-center">
                       {{ video.participant.email }}
                     </td>
                     <td class="text-center">
                       {{ video.status}}
                     </td>
+                    <td class="text-center">
+                      <video class="video-js" width="100%" height="100%" controls>
+                        <source src="{{ video.file.url }}" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                    </td>
+                    <td></td>
                     <td class="text-center">
                       <a href=""><i class="fa fa-2x fa-edit"></i></a>
                       <a href=""><i class="fa fa-2x fa-trash"></i></a>

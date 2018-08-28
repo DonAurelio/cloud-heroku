@@ -8,6 +8,9 @@ from django.shortcuts import reverse, render
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
 
 from contests.models import Contest
 from contests.models import Video
@@ -234,6 +237,7 @@ class VideoAdminList(ListView):
 
     model = Video
     template_name = 'contests/video_admin_list.html'
+    paginate_by = 50
 
     def get_queryset(self):
         """

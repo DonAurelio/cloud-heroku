@@ -8,7 +8,7 @@
 {% block custom_css %}
 <!-- ================== BEGIN PAGE LEVEL STYLE ================== -->
 <link href="{% static 'assets/plugins/isotope/isotope.css' %}" rel="stylesheet" />
-<link href="{% static 'assets/plugins/video/css/video-js.css' %}" rel="stylesheet" />
+<link href="{% static 'assets/plugins/videojs/video.css' %}" rel="stylesheet" />
 <link href="{% static 'assets/css/float-btn.css' %}" rel="stylesheet" />
 <!-- ================== END PAGE LEVEL STYLE ================== -->
 {% endblock %}
@@ -38,7 +38,7 @@
       <div class="image">
         <div class="image-inner">
           <video class="video-js" controls>
-            <source src="http://hello.localhost:8000/media/video1.mp4" type="video/mp4">
+            <source src="{{ video.file.url }}" type="video/mp4">
               Your browser does not support the video tag.
             </video>
             <p class="image-caption">
@@ -83,7 +83,7 @@
 <script src="{% static 'assets/js/gallery.demo.min.js' %}"></script>
 <script src="{% static 'assets/js/apps.min.js' %}"></script>
 
-<script src="{% static 'assets/plugins/video/css/video-js.css' %}"></script>
+<script src="{% static 'assets/plugins/videojs/video.js' %}"></script>
 <!-- ================== END PAGE LEVEL JS ================== -->
 {% endblock %}
 

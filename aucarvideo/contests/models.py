@@ -37,7 +37,6 @@ class Participant(models.Model):
         return self.email
 
 
-
 class Video(models.Model):
     """
     A video represents a video that a participant
@@ -62,4 +61,8 @@ class Video(models.Model):
     uploaded_at = models.DateField(auto_now_add=True)
     # The status of the video convertion.
     status = models.CharField(max_length=20,choices=STATUS,default=PROCESSING)
+
+    class Meta:
+        # Ordering by descending order
+        ordering = ['-uploaded_at']
 
