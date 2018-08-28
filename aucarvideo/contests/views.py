@@ -270,7 +270,7 @@ class VideoProcessingStatus(TemplateView):
 
         paths = []
         for video in pending_videos:
-            data = (video.file.url, video.get_converted_url())
+            data = (video.id,video.file.url, video.get_converted_url())
             paths.append(data)
 
         return JsonResponse(data=paths,safe=False)
