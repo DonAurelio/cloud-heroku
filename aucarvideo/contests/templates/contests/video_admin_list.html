@@ -68,9 +68,13 @@
                       {{ video.status}}
                     </td>
                     <td class="text-center">
+                      {% if video.url %}
                       <video id="my_video" width="100%" height="100%" controls>
                         <source src="{{ video.url }}" type="video/mp4">
                       </video>
+                      {% else %}
+                        No disponible
+                      {% endif%}
                     </td>
                   </tr>
                   {% endfor %}

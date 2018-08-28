@@ -220,6 +220,32 @@ class VideoCreate(TemplateView):
             if '.mp4' in video.file.name:
                 video.status = Video.CONVERTED
                 video.save()
+
+                # Participants email notification
+                contest = video.contest.name.title()
+                subject = f'Video Publicado'
+                message = f"""
+                Tu video '{video.name}' ha sido publicado
+                directamente ya que cumple con el formato
+                que requiere el concurso.
+                """
+            else:
+                # Participants email notification
+                contest = video.contest.name.title()
+                subject = f'Video para Procesamiento'
+                message = f"""
+                Hemos recibido tu video '{video.name}' y los estamos  procesado para  
+                que  sea  publicado. Tan  pronto el  video quede publicado 
+                en la página del concurso te notificaremos por email.
+                """
+            
+            send_mail(
+                subject,
+                message,
+                'aucarvideo@gmail.com',
+                [video.participant.email],
+                fail_silently=False,
+            )
          
 
             current_contest_pk = kwargs.get('pk')
@@ -279,7 +305,7 @@ class VideoProcessingStatus(TemplateView):
             data = (
                 video.id, 
                 video.file.url, 
-                video.converted_url()
+                video.converted_url
             )
             paths.append(data)
 
@@ -287,25 +313,25 @@ class VideoProcessingStatus(TemplateView):
         return JsonResponse(data=paths,safe=False)
 
     def post(self,request,*args,**kwargs):
-        videos_ids = request.POST.get('videos_ids')
+        video_id = request.POST.get('video_id')
+        video_id = int(video_id)
 
-        for video_id in videos_ids:
-            video = Video.objects.get(id=video_id)
-            video.status = video.CONVERTED
-            video.save()
+        video = Video.objects.get(id=video_id)
+        video.status = video.CONVERTED
+        video.save()
 
-            # Participants email notification
-            contest = video.contest.name.title()
-            subject = f'Video Publicado en {contest}'
-            message = f'El video {video.name} ha sido publicado satisfactoriamente'
-            
-            send_mail(
-                subject,
-                message,
-                'ossounivalle.adm@gmail.com',
-                [video.participant.email],
-                fail_silently=False,
-            )
+        # Participants email notification
+        contest = video.contest.name.title()
+        subject = f'Video Publicado en {contest}'
+        message = f'El video {video.name} ha sido publicado satisfactoriamente'
+        
+        send_mail(
+            subject,
+            message,
+            'ossounivalle.adm@gmail.com',
+            [video.participant.email],
+            fail_silently=False,
+        )
 
         return JsonResponse(data=None,status=200,safe=False)
 

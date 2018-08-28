@@ -36,8 +36,8 @@ DOMAIN_NAME = 'aucarvideo'
 # Mail settings
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = "587"
-EMAIL_HOST_USER = "ossounivalle.adm@gmail.com"
-EMAIL_HOST_PASSWORD = "ossounivalle123"
+EMAIL_HOST_USER = os.environ.get('AUCARVIDEO_EMAIL','')
+EMAIL_HOST_PASSWORD = os.environ.get('AUCARVIDEO_PASSWORD','')
 EMAIL_USE_TLS = True
 
 # Application definition

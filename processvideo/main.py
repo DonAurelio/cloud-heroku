@@ -50,30 +50,26 @@ class VidesProcessor(object):
     def process_videos(self):
 
         videos_by_domain = self._request_videos_urls()
-        videos_by_domain_processed = {}
+
 
         if videos_by_domain:
             success_code = 0
             for  domain_url, video_info in videos_by_domain.items():
-                videos_by_domain_processed[domain_url] = []
+
                 for video_id, input_file, output_file in video_info:
                     return_code = self._process_video(input_file,output_file)
 
                     if return_code == success_code:
                         # An erro has ocurred during videos processing
                         logging.info(f'Process success {input_file}')
-                        videos_by_domain_processed[domain_url].append(video_id)
+                        self._notify_web_app(domain_url,video_id)
+
                     else:
                         # Video processing was complited correctly
                         logging.error(f'{process.stderr} {input_file}')
                         # WE HAVE TO NOTIFY WEB APP WHEN A VIDEO FAILS 
                         # IN PROCESSING
-
-            # After all videos were processed we have to notify 
-            # to the webapp which videos where processed so 
-            # it change them status to 'Converted' in the database
-            self._notify_web_app(videos_by_domain_processed)
-        
+       
         else:
             logging.info('No videos for processing')
 
@@ -82,9 +78,16 @@ class VidesProcessor(object):
         # Remove the first '/' on the video path
         input_file = input_file[1:]
         output_file = output_file[1:]
-        
+
         input_file = os.path.join(self.media_path,input_file)
         output_file = os.path.join(self.media_path,output_file)
+
+        exists = os.path.isfile(output_file)
+        if exists:
+            # If the files already exists.
+            # it is not neccesarry to perform
+            #  processign again
+            return 0
 
         logging.info(f'Start processing {input_file} to {output_file}')
 
@@ -100,20 +103,15 @@ class VidesProcessor(object):
 
         return process.returncode
 
-    def _notify_web_app(self,videos_by_domain_processed):
-        logging.info(f'Start converted videos notification process')
-        
-        for domain_url, videos_ids in videos_by_domain_processed.items():
-            url = self._get_tenant_url(domain_url)
-            response = requests.post(url, data = {'videos_ids':videos_ids})
+    def _notify_web_app(self,domain_url,video_id):
+                
+        url = self._get_tenant_url(domain_url)
+        response = requests.post(url, data = {'video_id':video_id})
 
-            if response.status_code == 200:
-                logging.info(f'Notification success to {domain_url} about video {videos_ids}')
-            else:
-                logging.error(f'Notification error to {domain_url} regarding videos {videos_ids}')
-
-        logging.info(f'End converted videos notification process')
-
+        if response.status_code == 200:
+            logging.info(f'Notification success to {domain_url} about video {video_id}')
+        else:
+            logging.error(f'Notification error to {domain_url} regarding videos {video_id}')
 
 
 if __name__ == '__main__':

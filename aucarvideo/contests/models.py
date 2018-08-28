@@ -21,6 +21,10 @@ class Contest(models.Model):
     def __str__(self):
         return self.name.title()
 
+    class Meta:
+        # Ordering by descending order
+        ordering = ['-start_date']
+
 
 class Participant(models.Model):
     """
