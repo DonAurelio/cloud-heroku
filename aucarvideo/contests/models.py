@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.mail import send_mail
+
+import os
 
 
 class Contest(models.Model):
@@ -67,34 +68,22 @@ class Video(models.Model):
         # Ordering by descending order
         ordering = ['-uploaded_at']
 
-    def was_processed(self):
-        """
-        If the uploaded video has .mp4 it does not
-        need to be converted. So it was not converted.
-        """
-        return '.mp4' in file.url
+    @property
+    def url(self):
+        if '.mp4' in self.file.url:
+            return self.file.url 
 
-    def get_converted_url(self):
+        if self.status == self.CONVERTED:
+            return self.converted_url
+
+    @property
+    def converted_url(self):
         # File name without extension
         file_name = self.file.url[:-4]
         # The name of the file that should be assigned to the 
         # converted file
         return f'{file_name}_{self.CONVERTED}.mp4'
 
-    def change_to_conveted_status(self):
-        self.status = self.CONVERTED
-
-
-#     def notify_video_publication(self):
-#         send_mail(
-#             subject=self.participant.email, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None
-#     'Subject here',
-#     'Here is the message.',
-#     'from@example.com',
-#     ['to@example.com'],
-#     fail_silently=False,
-# )
-        
-#     def _notify_video_processing(self):
-#         pass
-
+    @property
+    def name(self):
+        return os.path.basename(self.file.name)

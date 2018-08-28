@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 from contests.models import Contest
 from contests.models import Video
@@ -275,8 +276,13 @@ class VideoProcessingStatus(TemplateView):
 
         paths = []
         for video in pending_videos:
-            data = (video.id,video.file.url, video.get_converted_url())
+            data = (
+                video.id, 
+                video.file.url, 
+                video.converted_url()
+            )
             paths.append(data)
+
 
         return JsonResponse(data=paths,safe=False)
 
@@ -285,8 +291,21 @@ class VideoProcessingStatus(TemplateView):
 
         for video_id in videos_ids:
             video = Video.objects.get(id=video_id)
-            video.change_to_conveted_status()
+            video.status = video.CONVERTED
             video.save()
+
+            # Participants email notification
+            contest = video.contest.name.title()
+            subject = f'Video Publicado en {contest}'
+            message = f'El video {video.name} ha sido publicado satisfactoriamente'
+            
+            send_mail(
+                subject,
+                message,
+                'ossounivalle.adm@gmail.com',
+                [video.participant.email],
+                fail_silently=False,
+            )
 
         return JsonResponse(data=None,status=200,safe=False)
 

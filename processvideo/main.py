@@ -50,6 +50,7 @@ class VidesProcessor(object):
     def process_videos(self):
 
         videos_by_domain = self._request_videos_urls()
+        videos_by_domain_processed = {}
 
         if videos_by_domain:
             success_code = 0
