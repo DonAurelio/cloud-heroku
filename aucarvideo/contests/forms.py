@@ -6,7 +6,7 @@ from contests.models import Participant
 class VideoForm(ModelForm):
     class Meta:
         model = Video
-        fields = ['file']
+        fields = ['file','description']
 
 
 class ParticipantForm(ModelForm):

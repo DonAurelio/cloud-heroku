@@ -26,8 +26,8 @@ class Contest(models.Model):
         ordering = ['-start_date']
 
     def public_videos_set(self):
-        return self.video_set.all().exclude(
-            status=self.video.PROCESSING
+        return self.video_set.exclude(
+            status='Processing'
         )
 
 
@@ -70,6 +70,8 @@ class Video(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     # The date on which the video was uploaded
     uploaded_at = models.DateField(auto_now_add=True)
+    # How the vieo is related with the product the organization promotes
+    description = models.CharField(max_length=20)
     # The status of the video convertion.
     status = models.CharField(max_length=20,choices=STATUS,default=PROCESSING)
 

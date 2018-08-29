@@ -1,3 +1,5 @@
+ # -*- coding: utf-8 -*-
+
 """
 Django settings for aucarvideo project.
 
@@ -40,6 +42,7 @@ EMAIL_HOST_USER = os.environ.get('AUCARVIDEO_EMAIL','')
 EMAIL_HOST_PASSWORD = os.environ.get('AUCARVIDEO_PASSWORD','')
 EMAIL_USE_TLS = True
 
+print(EMAIL_HOST_USER)
 # Application definition
 
 # These apps models will be created in the public schema 
