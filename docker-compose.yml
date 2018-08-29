@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres
+    env_file: environment
+    restart: on-failure
+    expose:
+      - "5432"
+
+  web:
+    build: ./aucarvideo
+    env_file: environment
+    restart: on-failure
+    volumes:
+      - ./aucarvideo:/usr/src/app
+      - static:/usr/src/app/static
+    entrypoint: ./entrypoint.sh
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx
+    restart: on-failure
+    ports: 
+     - "80:80"
+    volumes:
+     - static:/usr/share/nginx/html/static
+     - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - web
+
+volumes:
+  static:

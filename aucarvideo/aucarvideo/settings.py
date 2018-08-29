@@ -17,6 +17,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Cheking if the application is running in a production environment
+PRODUCTION = True if 'PRODUCTION' in os.environ else False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -25,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '-%+&==jfv2cbm_n-+8j^e^xx3i09=-$4+3h)kd(nb!tz+xv2gd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if PRODUCTION else True
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,7 +44,6 @@ EMAIL_HOST_USER = os.environ.get('AUCARVIDEO_EMAIL','')
 EMAIL_HOST_PASSWORD = os.environ.get('AUCARVIDEO_PASSWORD','')
 EMAIL_USE_TLS = True
 
-print(EMAIL_HOST_USER)
 # Application definition
 
 # These apps models will be created in the public schema 
@@ -150,17 +151,29 @@ WSGI_APPLICATION = 'aucarvideo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-    'ENGINE': 'tenant_schemas.postgresql_backend',
-    'NAME': 'postgres',
-    'USER': 'postgres', 
-    'PASSWORD': 'postgres',
-    'HOST': '172.17.0.2',
-    'PORT': '5432',
+if not PRODUCTION:
+    DATABASES = {
+        'default': {
+        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'NAME': 'postgres',
+        'USER': 'postgres', 
+        'PASSWORD': 'postgres',
+        'HOST': '172.17.0.2',
+        'PORT': '5432',
+        }
     }
-}
 
+if PRODUCTION:
+    DATABASES = {
+        'default': {
+        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_PASS'],
+        'HOST': os.environ['DB_SERVICE'],
+        'PORT': os.environ['DB_PORT']
+        }
+    }
 # Add tenant_schemas.routers.TenantSyncRouter to your DATABASE_ROUTERS setting, 
 # so that the correct apps can be synced, depending on what’s being synced (shared or tenant).
 DATABASE_ROUTERS = (
@@ -205,10 +218,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
+if not PRODUCTION:
+    STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "static"),
-]
+    ]
 
+if PRODUCTION:
+    STATIC_ROOT = os.path.join(BASE_DIR,"static")
 
 # The storage API will not isolate media per tenant. 
 # Your MEDIA_ROOT will be a shared space between all tenants.

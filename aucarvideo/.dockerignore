@@ -1,0 +1,4 @@
+# To prevent copy these files into the container
+Dockerfile
+.env/
+req_dev.txt

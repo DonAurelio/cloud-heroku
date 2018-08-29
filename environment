@@ -1,0 +1,9 @@
+PRODUCTION=on
+DB_NAME=aucarvideo
+DB_USER=aucarvideo
+DB_PASS=aucarvideo
+DB_SERVICE=postgres
+DB_PORT=5432
+POSTGRES_DB=aucarvideo
+POSTGRES_PASSWORD=aucarvideo
+POSTGRES_USER=aucarvideo
