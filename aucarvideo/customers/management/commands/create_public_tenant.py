@@ -18,7 +18,7 @@ class Command(BaseCommand):
         )
         if created:
             success_message = self.style.SUCCESS(
-                'Successfully created public tenant!'
+                f'Successfully created {public_tenant.domain_url} public tenant!'
             )
             self.stdout.write(success_message)
         else:

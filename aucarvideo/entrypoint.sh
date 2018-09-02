@@ -5,9 +5,13 @@
 # may fail
 source secrets.sh
 
+# ./manage.py makemigrations customers --noinput --merge
+
 ./manage.py makemigrations --noinput --merge
 
 ./manage.py migrate_schemas --noinput
+
+# ./manage.py migrate_schemas --shared --noinput
 
 # colecting staticfiles in sstatic dir
 ./manage.py collectstatic --noinput

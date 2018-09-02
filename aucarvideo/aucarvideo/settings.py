@@ -27,15 +27,16 @@ PRODUCTION = True if 'PRODUCTION' in os.environ else False
 SECRET_KEY = '-%+&==jfv2cbm_n-+8j^e^xx3i09=-$4+3h)kd(nb!tz+xv2gd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if PRODUCTION else True
+DEBUG = True if PRODUCTION else True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*'] if 'PRODUCTION' in os.environ else ['*'] 
 
 TENANT_MODEL = "customers.Client" # app.Model
 
 # This variable was created to give this domain name 
 # to all tenants created
-DOMAIN_NAME = 'aucarvideo'
+DOMAIN_NAME = 'aucarvideo.com'
+CREATED_TENANT_REDIRECTION_PORT = '80' if PRODUCTION else '8000' 
 
 # Mail settings
 EMAIL_HOST = "smtp.gmail.com"
@@ -112,18 +113,33 @@ INSTALLED_APPS = (
 # to the top of MIDDLEWARE_CLASSES, so that each request can be 
 # set to use the correct schema.
 
-MIDDLEWARE = [
-    # For django-tenant-schemas
-    'tenant_schemas.middleware.TenantMiddleware',
+if not PRODUCTION:
+    MIDDLEWARE = [
+        # For django-tenant-schemas
+        'tenant_schemas.middleware.TenantMiddleware',
 
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ]
+
+if PRODUCTION:
+    MIDDLEWARE = [
+        # For django-tenant-schemas
+        'customers.middleware.XHeaderTenantMiddleware',
+
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ]
 
 # ROOT_URLCONF = 'aucarvideo.urls'
 ROOT_URLCONF = 'aucarvideo.urls_tenants'

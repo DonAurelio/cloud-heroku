@@ -27,8 +27,10 @@ class ClientCreate(TemplateView):
             client.domain_url = client.name + '.' + settings.DOMAIN_NAME
             client.schema_name = client.name
             client.save()
+
+            port = settings.CREATED_TENANT_REDIRECTION_PORT
            
-            return redirect('http://'+client.domain_url+':8000/auth_tenants/register')
+            return redirect(f"http://{client.domain_url}:{port}/auth_tenants/register")
             
         else:
             template_name = 'customers/client_form.html'
