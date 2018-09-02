@@ -7,7 +7,7 @@ from auth_tenants.views import LoginView
 from auth_tenants.views import LogoutView
 
 urlpatterns = [
-    path('register/', RegisterView.as_view(), name='register'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path('auth_tenants/register/', RegisterView.as_view(), name='register'),
+    path('auth_tenants/login/', LoginView.as_view(), name='login'),
+    path('auth_tenants/logout/', LogoutView.as_view(), name='logout'),
 ]
