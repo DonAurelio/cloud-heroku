@@ -40,11 +40,63 @@ sudo pip install docker-compose
 
 ## Setting Up the Development Environment
 
-Create the development database using Docker.
+Create the development database using Docker. **Note: The data base container is created only the first time, to run the database in subsequent situations use 'docker start aucarvideo_db'.**
 
 ```sh
 docker run --name aucarvideo_db -e POSTGRES_PASSWORD=aucarvideo -e POSTGRES_DB=aucarvideo -e POSTGRES_USER=aucarvideo -d postgres
 ```
+
+Check the database is running in the container
+
+```sh
+sudo docker ps
+```
+
+the output should look as follows:
+
+```sh
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+54504cdafc1d        postgres            "docker-entrypoint.s…"   48 seconds ago      Up 41 seconds       5432/tcp            aucarvideo_db
+```
+
+Verify the ip of the database server with the following command
+
+```sh
+docker inspect aucarvideo_db | grep IPAddress
+```
+
+the output should look as bellow, where **172.17.0.2** is the IP Address of the database server.
+
+```sh
+"SecondaryIPAddresses": null,
+"IPAddress": "172.17.0.2",
+        "IPAddress": "172.17.0.2",
+```
+
+Please place that IP Address on the **secrets.sh** file needed to run the project. **IMPORTANT: THIS PROJECT DOES NOT HAVE THE secrets.sh file SO YOU NEED TO ASK FOR IT TO THE ADMIN OF THIS PROJECT. THE SECRECTS FILE CONTAIN CONFIGURATION INFORMATION NEEDED FOR THE PROJECT TO RUN PROPERLY SUCH US DATABASE PASSWORDS, THE PROJECT SECURITY KEY, EMAIL USERNAME AND PASSWD, ETC.** 
+
+```sh
+sudo nano secrects.sh
+```
+
+Modify the **DB_HOST** variables for the IP Address of the database.
+
+```sh
+...
+
+# For development change this to the IP 
+# of the database service.
+export DB_HOST="172.17.0.2"
+
+...
+```
+
+Load the secrects into the system env variables.
+
+```sh
+source secrects.sh
+```
+
 
 Create the python virtualenvironment in the **aucarvideo** folder.
 
@@ -152,7 +204,9 @@ Enter to the public web site http://aucarvideo.com:8000/.
 
 ## For Production
 
-The application will be configured and deployed with docker-compose.
+**IMPORTANT: THIS PROJECT DOES NOT HAVE THE secrets.sh file SO YOU NEED TO ASK FOR IT TO THE ADMIN OF THIS PROJECT. THE SECRECTS FILE CONTAIN CONFIGURATION INFORMATION NEEDED FOR THE PROJECT TO RUN PROPERLY SUCH US DATABASE PASSWORDS, THE PROJECT SECURITY KEY, EMAIL USERNAME AND PASSWD, ETC.**
+
+Before run the project, **place the secrets.sh file on the aucarvideo directory**. Then you can run the application and docker-compose will configure it automatically.
 
 ```sh
 docker-compose up -d postgres
