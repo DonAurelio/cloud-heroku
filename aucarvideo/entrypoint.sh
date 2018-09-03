@@ -1,14 +1,9 @@
-#!/bin/sh
-
-# Activating bash shell
-bash
+#!/bin/bash
 
 # Setting env variables required to send emails
-# If this variables are not set the application
-# may fail
+# and other settings required for the application 
+# to work correctly
 source secrets.sh
-
-# ./manage.py makemigrations customers --noinput --merge
 
 ./manage.py makemigrations --noinput --merge
 

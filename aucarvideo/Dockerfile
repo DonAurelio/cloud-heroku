@@ -14,7 +14,7 @@ COPY . .
 
 RUN apt-get update -y
 
-RUN apt-get install -y libpq-dev python3-dev
+RUN apt-get install -y libpq-dev python3-dev nano
 
 # Installing requirements
 RUN pip3.6 install --no-cache-dir -r req_prod.txt

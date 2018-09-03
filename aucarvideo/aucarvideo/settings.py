@@ -24,18 +24,28 @@ PRODUCTION = True if 'PRODUCTION' in os.environ else False
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-%+&==jfv2cbm_n-+8j^e^xx3i09=-$4+3h)kd(nb!tz+xv2gd'
+SECRET_KEY = os.environ.get('SECRET_KEY','')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if PRODUCTION else True
 
-ALLOWED_HOSTS = ['*'] if 'PRODUCTION' in os.environ else ['*'] 
+ALLOWED_HOSTS = ['*']
 
-TENANT_MODEL = "customers.Client" # app.Model
+# The name of the tenant model
+TENANT_MODEL = "customers.Client"
 
-# This variable was created to give this domain name 
-# to all tenants created
+# The domain name for the public tenant.
+# This constant is used also as base for all 
+# tenants urls created on the aplication. 
+# For example: a new tenant example1
+# will have example1.aucarvideo.com url.
 DOMAIN_NAME = 'aucarvideo.com'
+
+# When a tenant is created, we need to redirec to
+# specific tenant url. If we are in development this 
+# tenant will run over the 8000 for, but, in production
+# will run over the 80
+# we use this contant on 'customer.views'. 
 CREATED_TENANT_REDIRECTION_PORT = '80' if PRODUCTION else '8000' 
 
 # Mail settings
@@ -56,11 +66,11 @@ SHARED_APPS = (
     'home_public',
 
     # django apps
-    'django.contrib.contenttypes',
-    'django.contrib.auth',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.admin',
+    # 'django.contrib.contenttypes',
+    # 'django.contrib.auth',
+    # 'django.contrib.sessions',
+    # 'django.contrib.messages',
+    # 'django.contrib.admin',
 )
 
 # This apps models will be replicated in schemas
@@ -92,7 +102,6 @@ INSTALLED_APPS = (
     # 'login',
     # 'home_tenats',
 
-
     # django apps
     'django.contrib.contenttypes',
     'django.contrib.auth',
@@ -113,36 +122,29 @@ INSTALLED_APPS = (
 # to the top of MIDDLEWARE_CLASSES, so that each request can be 
 # set to use the correct schema.
 
-if not PRODUCTION:
-    MIDDLEWARE = [
-        # For django-tenant-schemas
-        'tenant_schemas.middleware.TenantMiddleware',
+MIDDLEWARE = [
+    # For django-tenant-schemas
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
-        'django.middleware.security.SecurityMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-        'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    ]
+if not PRODUCTION:
+    # For django-tenant-schemas
+    MIDDLEWARE = ['tenant_schemas.middleware.TenantMiddleware'] + MIDDLEWARE
 
 if PRODUCTION:
-    MIDDLEWARE = [
-        # For django-tenant-schemas
-        'customers.middleware.XHeaderTenantMiddleware',
+    # For django-tenant-schemas
+    MIDDLEWARE = ['customers.middleware.XHeaderTenantMiddleware'] + MIDDLEWARE
 
-        'django.middleware.security.SecurityMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-        'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    ]
 
-# ROOT_URLCONF = 'aucarvideo.urls'
+# URLs for the tenants
 ROOT_URLCONF = 'aucarvideo.urls_tenants'
+# URL for the public application
 PUBLIC_SCHEMA_URLCONF = 'aucarvideo.urls_public'
 
 TEMPLATES = [
@@ -167,29 +169,19 @@ WSGI_APPLICATION = 'aucarvideo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-if not PRODUCTION:
-    DATABASES = {
-        'default': {
-        'ENGINE': 'tenant_schemas.postgresql_backend',
-        'NAME': 'postgres',
-        'USER': 'postgres', 
-        'PASSWORD': 'postgres',
-        'HOST': '172.17.0.2',
-        'PORT': '5432',
-        }
+DATABASES = {
+    'default': {
+    'ENGINE': 'tenant_schemas.postgresql_backend',
+    'NAME': os.environ.get('DB_NAME','postgres'),
+    'USER': os.environ.get('DB_NAME','postgres'),
+    'PASSWORD': os.environ.get('DB_PASS','postgres'),
+    # If your are in development put in '' the IP addres
+    # of the postgres server
+    'HOST': os.environ.get('DB_SERVICE',''),
+    'PORT': os.environ.get('DB_PORT','5432')
     }
+}
 
-if PRODUCTION:
-    DATABASES = {
-        'default': {
-        'ENGINE': 'tenant_schemas.postgresql_backend',
-        'NAME': os.environ['DB_NAME'],
-        'USER': os.environ['DB_USER'],
-        'PASSWORD': os.environ['DB_PASS'],
-        'HOST': os.environ['DB_SERVICE'],
-        'PORT': os.environ['DB_PORT']
-        }
-    }
 # Add tenant_schemas.routers.TenantSyncRouter to your DATABASE_ROUTERS setting, 
 # so that the correct apps can be synced, depending on what’s being synced (shared or tenant).
 DATABASE_ROUTERS = (
