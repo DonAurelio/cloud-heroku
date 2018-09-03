@@ -20,7 +20,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(('home_public.urls', 'home_public'), namespace='home_public')),
     path('', include(('customers.urls', 'customers'), namespace='customers')),
-    # path('login/', include(('login.urls', 'login'), namespace='login')),
-    # path('thome/', include(('thome.urls', 'thome'), namespace='thome')),
-    # path('contests/', include(('contests.urls','contests'), namespace='contests')),
 ]

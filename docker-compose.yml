@@ -4,35 +4,25 @@ services:
 
   postgres:
     image: postgres
-    env_file: environment
     restart: always
+    environment:
+      - POSTGRES_DB=aucarvideo
+      - POSTGRES_PASSWORD=aucarvideo
+      - POSTGRES_USER=aucarvideo
     expose:
       - "5432"
 
   web:
     build: ./aucarvideo
-    env_file: environment
     restart: always
+    entrypoint: ./entrypoint.sh
+    environment:
+      - PRODUCTION=on
     volumes:
       - ./aucarvideo:/usr/src/app
-      # - ./resolv.conf:/etc/resolv.conf
       - static:/usr/src/app/static
-    entrypoint: ./entrypoint.sh
     depends_on:
       - postgres
-    # dns:
-    #   - 190.157.8.33
-    #   - 190.157.8.1
-    #   - 8.8.8.8
-      # - nginx
-    # dns: 8.8.8.8
-    # dns_opt:
-    #   - use-vc
-    #   - no-tld-query
-
-        # volumes:
-        #     - ./resolv.conf:/etc/resolv.conf
-
 
   nginx:
     image: nginx

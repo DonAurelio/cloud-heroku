@@ -172,12 +172,12 @@ WSGI_APPLICATION = 'aucarvideo.wsgi.application'
 DATABASES = {
     'default': {
     'ENGINE': 'tenant_schemas.postgresql_backend',
-    'NAME': os.environ.get('DB_NAME','postgres'),
-    'USER': os.environ.get('DB_NAME','postgres'),
-    'PASSWORD': os.environ.get('DB_PASS','postgres'),
+    'NAME': os.environ.get('DB_NAME'),
+    'USER': os.environ.get('DB_USER'),
+    'PASSWORD': os.environ.get('DB_PASS'),
     # If your are in development put in '' the IP addres
     # of the postgres server
-    'HOST': os.environ.get('DB_SERVICE',''),
+    'HOST': os.environ.get('DB_SERVICE' if PRODUCTION else 'DB_HOST') ,
     'PORT': os.environ.get('DB_PORT','5432')
     }
 }
