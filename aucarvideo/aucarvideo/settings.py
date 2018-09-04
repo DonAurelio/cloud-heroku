@@ -27,7 +27,7 @@ PRODUCTION = True if 'PRODUCTION' in os.environ else False
 SECRET_KEY = os.environ.get('SECRET_KEY','')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if PRODUCTION else True
+DEBUG = False if PRODUCTION else True
 
 ALLOWED_HOSTS = ['*']
 

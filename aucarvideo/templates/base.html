@@ -103,8 +103,8 @@
                             <a href="javascript:;"><img src="{% static 'assets/img/user-13.jpg' %}" alt="" /></a>
                         </div>
                         <div class="info">
-                            Sean Ngu
-                            <small>Front end developer</small>
+                            {{ user.username |title }}
+                            <small>Administrador</small>
                         </div>
                     </li>
                 </ul>
@@ -114,18 +114,13 @@
                 <ul class="nav">
                     <li class="nav-header">Navegación</li>
                     <li class="has-sub active">
-                        <a href="javascript:;">
-                            <b class="caret pull-right"></b>
-                            <i class="fa fa-laptop"></i>
+                        <a href="{% url 'contests:contest_admin_list' %}">
+                            <!-- <b class="caret pull-right"></b> -->
+                            <i class="fa fa-video-camera"></i>
                             <span>
                                 Concursos
-                                <span class="label label-theme m-l-5">NEW</span>
                             </span>
                         </a>
-                        <ul class="sub-menu">
-                            <li class="active"><a href="{% url 'contests:contest_create' %}">Nuevo</a></li>
-                            <li><a href="{% url 'contests:contest_admin_list' %}">Listado <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
-                        </ul>
                     </li>
                 </ul>
                 <!-- end sidebar nav -->

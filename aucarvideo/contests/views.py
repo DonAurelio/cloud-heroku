@@ -97,20 +97,32 @@ class ContestCreate(CreateView):
         return reverse('contests:contest_admin_list')
 
 
-class ContestDetail(DetailView):
+class ContestDetail(ListView):
     """
-    View for contest detail for
-    both purposes, admin and general public.
+    View for contest detail, the contest
+    detail contains the contest itself and 
+    a list of videos that belongs to the contest.
     """
 
-    model = Contest
+    model = Video
     template_name = 'contests/contest_detail.html'
+    paginate_by = 50
 
-    def get_object(self):
+    def get_queryset(self):
         """
-        Return a the contest with the given URL.
+        Return videos filtered by contest
         """
-        return get_object_or_404(self.model, url=self.kwargs['url'])
+        contest_url = self.kwargs.get('url')
+        videos = Video.objects.filter(contest__url=contest_url)
+        # If the video has URL it was already converted 
+        videos = [ video for video in videos if video.url ]
+        return videos
+
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        contest_url = self.kwargs.get('url')
+        context['contest'] = Contest.objects.get(url=contest_url)
+        return context
 
 
 class ContestList(ListView):
@@ -172,19 +184,6 @@ class ContestAdminList(ListView):
     model = Contest
     paginate_by = 10
     template_name = 'contests/contest_admin_list.html'
-
-    # def get(self, request,*args,**kwargs):
-    #     concursos = list()
-    #     concursos = Contest.objects.all()
-
-    #     concursos_ordenados = sorted(concursos, key=lambda x: x.start_date, reverse=True)
-
-    #     template_name = 'contests/contest_admin_list.html'
-    #     context = {
-    #         'concursos': concursos_ordenados
-    #     }
-
-    #     return render(request, template_name, context)
 
 
 class VideoCreate(TemplateView):

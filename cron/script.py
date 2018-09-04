@@ -12,7 +12,6 @@ import time
 
 logging.basicConfig(
     format='%(levelname)s : %(asctime)s : %(message)s',
-    filename='processing.log',
     level=logging.DEBUG
 )
 
@@ -20,16 +19,16 @@ logging.basicConfig(
 logging.getLogger().addHandler(logging.StreamHandler())
 
 
-def timerize(func):
-    def wrapper(self,input_file,output_file):
+def take_time(func):
+    def wrapper(*args):
         start = time.time()
-        
-        values = func(self,input_file,output_file)
-        
+        values = func(*args)
         end = time.time()
-        text = f'{end-start}\t{input_file}\t{output_file}\n'
+        file_size = os.path.getsize(file_path)
+        text = f'{end-start}\t{file_size}\t{input_file}\t{output_file}\n'
 
         with open('time.log','w+') as file:
+            print(f'video processing time {end-start}')
             file.write(text)
 
         return values
@@ -110,7 +109,19 @@ class VidesProcessor(object):
             for  domain_url, video_info in videos_by_domain.items():
 
                 for video_id, input_file, output_file in video_info:
+
+                    #  Take time of video processing step
+                    start = time.time()
                     code, out, err  = self._process_video(input_file,output_file)
+                    end = time.time()
+
+                    #  Save the time in miliseconds, the video processing
+                    #  status code, input and output files path.
+                    file_size = os.path.getsize(input_file)
+                    with open('time.log','w+') as file:
+                        text = f'{end-start}\t{code}\t{file_size}\t{input_file}\t{output_file}\n'
+                        logging.info(text)
+                        file.write(text)
 
                     if code == success_code:
                         
@@ -128,7 +139,7 @@ class VidesProcessor(object):
         else:
             logging.info('No videos for processing')
 
-    @timerize
+    @take_time
     def _process_video(self,input_file,output_file):
         # Remove the first '/' on the video path
         input_file = input_file[1:]
