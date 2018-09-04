@@ -8,7 +8,6 @@ rm -f $cronfile
 # mkfifo /usr/src/app/cron.log
 touch /usr/src/app/cron.log
 
-
 cat /dev/null > $cronfile
 for cronvar in ${!CRON_*}; do
 	cronvalue=${!cronvar}

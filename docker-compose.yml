@@ -49,9 +49,8 @@ services:
     # restart: always
     entrypoint: ./entrypoint.sh
     environment:
-      - CRON_MINUTE=*/1 * * * * root echo "Hello minute"
-      # - CRON_MINUTE=*/1 * * * * root /usr/src/app/script.sh
-      # - CRON_HOUR=0 * * * * root echo "Hello hour"
+      # - CRON_MINUTE=*/1 * * * * root echo "Hello minute"
+      - CRON_MINUTE=*/1 * * * * root /usr/src/app/script.py /usr/src/app/ nginx 80
     volumes:
       - ./cron:/usr/src/app/
       # The media folder is being shared 
