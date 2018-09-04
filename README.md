@@ -208,8 +208,13 @@ Enter to the public web site http://aucarvideo.com:8000/.
 
 Before run the project, **place the secrets.sh file on the aucarvideo directory**. Then you can run the application and docker-compose will configure it automatically.
 
+
 ```sh
 docker-compose up -d postgres
+```
+
+```sh
+docker-compose up -d cron
 ```
 
 ```sh

@@ -24,13 +24,15 @@ def timerize(func):
     def wrapper(self,input_file,output_file):
         start = time.time()
         
-        func(self,input_file,output_file)
+        values = func(self,input_file,output_file)
         
         end = time.time()
-        text = f'{end-start}\t{input_file}\t{output_file}'
+        text = f'{end-start}\t{input_file}\t{output_file}\n'
 
         with open('time.log','w+') as file:
-            print(text,end='\n',file=file)
+            file.write(text)
+
+        return values
 
     return wrapper
 
@@ -53,7 +55,7 @@ class VidesProcessor(object):
     def server_url(self,path=''):
         return f'http://{self.hostname}:{self.port}{path}'
 
-    def _request_tenants_urls():
+    def _request_tenants_urls(self):
         url = self.server_url(path='/api/client/list')
         response = requests.get(
             url=url, 
@@ -108,18 +110,20 @@ class VidesProcessor(object):
             for  domain_url, video_info in videos_by_domain.items():
 
                 for video_id, input_file, output_file in video_info:
-                    return_code = self._process_video(input_file,output_file)
+                    code, out, err  = self._process_video(input_file,output_file)
 
-                    if return_code == success_code:
-                        # An erro has ocurred during videos processing
+                    if code == success_code:
+                        
+                        # Video processing was converted correctly
                         logging.info(f'Process success {input_file}')
                         self._notify_web_app(domain_url,video_id)
-
-                    else:
-                        # Video processing was complited correctly
-                        logging.error(f'{process.stderr} {input_file}')
                         # WE HAVE TO NOTIFY WEB APP WHEN A VIDEO FAILS 
                         # IN PROCESSING
+
+                    else:
+                        # An erro has ocurred during videos processing
+                        logging.error(f'{out} {err} {input_file}')
+                        
        
         else:
             logging.info('No videos for processing')
@@ -138,7 +142,7 @@ class VidesProcessor(object):
             # If the files already exists.
             # it is not neccesarry to perform
             #  processign again
-            return 0
+            return 0, None, None
 
         logging.info(f'Start processing {input_file} to {output_file}')
 
@@ -152,7 +156,7 @@ class VidesProcessor(object):
             universal_newlines=True,
         )
 
-        return process.returncode
+        return process.returncode, process.stdout, process.stderr
 
     def _notify_web_app(self,domain_url,video_id):
         
@@ -173,7 +177,3 @@ if __name__ == '__main__':
 
     processor = VidesProcessor(media_path,hostname,port)
     processor.process_videos()
-
-
-
-

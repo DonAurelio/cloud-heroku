@@ -21,4 +21,4 @@ cron
 
 # Print the output
 tail -f /usr/src/app/cron.log
-# watch cron.log 
+# watch /usr/src/app/cron.log
