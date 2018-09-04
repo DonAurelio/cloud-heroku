@@ -2,10 +2,12 @@
 
 cronfile=/etc/cron.d/cron
 
-rm -f cron.log
+rm -f /usr/src/app/cron.log
 rm -f $cronfile
 
-mkfifo cron.log
+# mkfifo /usr/src/app/cron.log
+touch /usr/src/app/cron.log
+
 
 cat /dev/null > $cronfile
 for cronvar in ${!CRON_*}; do
@@ -19,4 +21,5 @@ echo >> $cronfile # Newline is required
 cron
 
 # Print the output
-# tail -f cron.log
+tail -f /usr/src/app/cron.log
+# watch cron.log 

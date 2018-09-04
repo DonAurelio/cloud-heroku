@@ -4,7 +4,8 @@ import logging
 import sys
 import subprocess
 import os
-
+#!/usr/local/bin/python3.6
+# -*- coding: utf-8 -*-
 
 logging.basicConfig(
     format='%(levelname)s : %(asctime)s : %(message)s',
@@ -15,7 +16,7 @@ class VidesProcessor(object):
 
     def __init__(self,media_path,hostname='localhost',port='8000'):
         
-        logging.info(f'Procesing path {media_path}')
+        logging.info(f'Procesing path "{media_path}"')
         
         self.media_path = media_path
         self.hostname = hostname
@@ -37,15 +38,22 @@ class VidesProcessor(object):
 
     def _request_videos_urls(self):
         videos_by_domain = {}
-        tenants_urls = self._request_tenants_urls()
-        for domain_url in tenants_urls:
-            tenant_url = self._get_tenant_url(domain_url)
-            response = requests.get(tenant_url)
-            data = response.json()
-            if data:
-                videos_by_domain[domain_url] = response.json()
 
-        return videos_by_domain
+        try:
+            tenants_urls = self._request_tenants_urls()
+            for domain_url in tenants_urls:
+                tenant_url = self._get_tenant_url(domain_url)
+                response = requests.get(tenant_url)
+                data = response.json()
+                if data:
+                    videos_by_domain[domain_url] = response.json()
+
+                return videos_by_domain
+        except requests.exceptions.ConnectionError as e:
+            logging.error(
+                f'Connection can not be stablished {self.hostname} {self.port}'
+            )
+
 
     def process_videos(self):
 
@@ -116,9 +124,9 @@ class VidesProcessor(object):
 
 if __name__ == '__main__':
 
-    media_path = sys.argv[1] if len(sys.argv) > 0 else ''
-    hostname = sys.argv[2] if len(sys.argv) > 1 else 'localhost'
-    port = sys.argv[3] if len(sys.argv) > 2 else '8000'
+    media_path = sys.argv[1] if len(sys.argv) > 1 else ''
+    hostname = sys.argv[2] if len(sys.argv) > 2 else 'localhost'
+    port = sys.argv[3] if len(sys.argv) > 3 else '8000'
 
     processor = VidesProcessor(media_path,hostname,port)
     processor.process_videos()
