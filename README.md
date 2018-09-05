@@ -214,15 +214,15 @@ docker-compose up -d postgres
 ```
 
 ```sh
-docker-compose up -d cron
-```
-
-```sh
 docker-compose up -d web
 ```
 
 ```sh
 docker-compose up -d nginx
+```
+
+```sh
+docker-compose up -d cron
 ```
 
 Enter to the public web site http://aucarvideo.com/.

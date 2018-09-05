@@ -27,8 +27,10 @@ services:
       # The media folder is being shared 
       # between 'web' and 'cron' services
       - media:/usr/src/app/media
-    depends_on:
-      - postgres
+    # depends_on:
+    #   - postgres
+    #   - nginx
+    #   - cron
 
   nginx:
     image: nginx
@@ -39,10 +41,11 @@ services:
       # The static folder is being shared 
       # between 'web' and 'nginx' services,
       # so nginx can serve the static files.
-      - static:/usr/share/nginx/html/static
+      - static:/usr/src/app/static
       - ./nginx/conf.d:/etc/nginx/conf.d
-    depends_on:
-      - web
+      # The media folder is being shared 
+      # between 'web' and 'cron' services
+      - media:/usr/src/app/media
 
   cron:
     build: ./cron

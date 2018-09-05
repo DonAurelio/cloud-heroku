@@ -19,23 +19,6 @@ logging.basicConfig(
 logging.getLogger().addHandler(logging.StreamHandler())
 
 
-def take_time(func):
-    def wrapper(*args):
-        start = time.time()
-        values = func(*args)
-        end = time.time()
-        file_size = os.path.getsize(file_path)
-        text = f'{end-start}\t{file_size}\t{input_file}\t{output_file}\n'
-
-        with open('time.log','w+') as file:
-            print(f'video processing time {end-start}')
-            file.write(text)
-
-        return values
-
-    return wrapper
-
-
 class VidesProcessor(object):
 
     WEB_PUBLIC_URL = 'aucarvideo.com'
@@ -110,18 +93,7 @@ class VidesProcessor(object):
 
                 for video_id, input_file, output_file in video_info:
 
-                    #  Take time of video processing step
-                    start = time.time()
                     code, out, err  = self._process_video(input_file,output_file)
-                    end = time.time()
-
-                    #  Save the time in miliseconds, the video processing
-                    #  status code, input and output files path.
-                    file_size = os.path.getsize(input_file)
-                    with open('time.log','w+') as file:
-                        text = f'{end-start}\t{code}\t{file_size}\t{input_file}\t{output_file}\n'
-                        logging.info(text)
-                        file.write(text)
 
                     if code == success_code:
                         
@@ -139,7 +111,6 @@ class VidesProcessor(object):
         else:
             logging.info('No videos for processing')
 
-    @take_time
     def _process_video(self,input_file,output_file):
         # Remove the first '/' on the video path
         input_file = input_file[1:]
@@ -157,6 +128,8 @@ class VidesProcessor(object):
 
         logging.info(f'Start processing {input_file} to {output_file}')
 
+        #  Take time of video processing step
+        start = time.time()
         command = f'ffmpeg -i {input_file} {output_file}'
         
         process = subprocess.run(
@@ -166,6 +139,15 @@ class VidesProcessor(object):
             shell=True, 
             universal_newlines=True,
         )
+        end = time.time()
+
+        #  Save the time in miliseconds, the video processing
+        #  status code, input and output files path.
+        file_size = os.path.getsize(input_file)
+        with open('/usr/src/app/time.log','w+') as file:
+            text = f'{end-start}\t{process.returncode}\t{file_size}\t{input_file}\t{output_file}\n'
+            logging.info(text)
+            file.write(text)
 
         return process.returncode, process.stdout, process.stderr
 
