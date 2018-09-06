@@ -4,8 +4,13 @@ services:
 
   postgres:
     image: postgres
-    restart: always
+    # The on-failure policy restarts a container if the 
+    # exit code indicates an on-failure error.
+    restart: on-failure
     environment:
+      # This environmet variables 
+      # are needed by the container to
+      # create de database.
       - POSTGRES_DB=aucarvideo
       - POSTGRES_PASSWORD=aucarvideo
       - POSTGRES_USER=aucarvideo
@@ -14,54 +19,79 @@ services:
 
   web:
     build: ./aucarvideo
-    restart: always
+    restart: on-failure
     entrypoint: ./entrypoint.sh
     environment:
+      # The production variable is needed by the 
+      # web service beacuse if this variables was
+      # set, the django application settings is 
+      # configured for deployment.
       - PRODUCTION=on
     volumes:
+
+      # Every changes made in the aucarvideo source code
+      # is being seen by the container. Some times 
+      # container reboot is required.
       - ./aucarvideo:/usr/src/app
+
       # The static folder is being shared 
       # between 'web' and 'nginx' services,
       # so nginx can serve the static files.
       - static:/usr/src/app/static
+
       # The media folder is being shared 
       # between 'web' and 'cron' services
       - media:/usr/src/app/media
-    # depends_on:
-    #   - postgres
-    #   - nginx
-    #   - cron
 
   nginx:
     image: nginx
+
+    # The on-failure policy restarts a container if the 
+    # exit code indicates an on-failure error.
     restart: on-failure
+
+    # The HOST port 80 is mapped with CONTAINER 80 port
+    # HOST:CONTAINER
     ports: 
       - "80:80"
     volumes:
+
+      # Nginx general config file
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+      # Nginx django proxy server config file 
+      - ./nginx/conf.d:/etc/nginx/conf.d
+
       # The static folder is being shared 
       # between 'web' and 'nginx' services,
       # so nginx can serve the static files.
       - static:/usr/src/app/static
-      - ./nginx/conf.d:/etc/nginx/conf.d
+
       # The media folder is being shared 
       # between 'web' and 'cron' services
       - media:/usr/src/app/media
 
   cron:
     build: ./cron
-    # restart: always
+    restart: on-failure
     entrypoint: ./entrypoint.sh
     environment:
+
+      # This environment variables is needed by the cron job
+      # and is set when the container starts. This each env 
+      # variable set a cron job on the containers when it starts 
       # - CRON_MINUTE=*/1 * * * * root echo "Hello minute"
       - CRON_MINUTE=*/1 * * * * root /usr/src/app/script.py /usr/src/app/ nginx 80
     volumes:
+
+      # Every changes made in the aucarvideo source code
+      # is being seen by the container. Some times 
+      # container reboot is required.
       - ./cron:/usr/src/app/
+
       # The media folder is being shared 
       # between 'web' and 'cron' services
       - media:/usr/src/app/media
-    # To keep container running
-    # stdin_open: true
-    # tty: true
 
 volumes:
   static:

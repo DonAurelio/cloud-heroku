@@ -225,7 +225,39 @@ docker-compose up -d nginx
 docker-compose up -d cron
 ```
 
-Enter to the public web site http://aucarvideo.com/.
+Enter to the public web site http://aucarvideo.com/. Note: with -d flag services run as daemon processed, i.e., if your reboot your computer the services will start automatically.
+
+To shuot down all services run the following command:
+
+```sh
+docker-compose down
+```
+
+If you perform some change in the service some times you need to rebbot it.
+
+```sh
+docker-compose restart <service_name>
+```
+
+Some settings require you rebuild the container again.
+
+1. Stop the service
+
+```sh
+docker-compose stop <service_name>
+```
+
+2. Remove the service container
+
+```sh
+docker-compose rm <service_name>
+```
+
+3. Start the service again.
+
+```sh
+docker-compose rm <service_name>
+```
 
 # References
 
