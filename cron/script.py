@@ -49,7 +49,7 @@ status += 'CLIENTS_LIST_URL:' + CLIENTS_LIST_URL + '\n'
 status += 'CLIENT_VIDEO_STATUS_URL:' + CLIENT_VIDEO_STATUS_URL
 
 logging.info(status)
-
+lock = multiprocessing.Lock()
 
 def get_clients_urls():
     """
@@ -142,12 +142,15 @@ def timer(func):
 
         #  Save the time in miliseconds, the video processing
         #  status code, input and output files path.
-        with open(LOG_FILE_PATH,'w+') as file:
-            input_file_path = os.path.join(MEDIA_PATH,args[0][1:])
-            file_size = os.path.getsize(input_file_path)
-            text = f'{end-start}\t{code}\t{file_size}\t{args[0]}\t{args[1]}\n'
-            logging.info(text)
-            file.write(text)
+        
+        with lock:
+            with open(LOG_FILE_PATH,'a+') as file:
+                input_file_path = os.path.join(MEDIA_PATH,args[0][1:])
+                file_size = os.path.getsize(input_file_path)
+                text = f'{end-start}\t{code}\t{file_size}\t{args[0]}\t{args[1]}\n'
+                logging.info(text)
+                file.write(text)
+
 
         return code, out, err
 
@@ -262,6 +265,28 @@ def process_videos():
     for video_info in videos_to_process:
         process_client_video(video_info)
 
+def process_videos_multithreading():
+
+    """
+        Processes the videos in parallel
+    """
+
+    videos_to_process = get_videos_to_be_processed()
+    if not videos_to_process:
+        logging.info(f'Not videos to process')
+        return
+
+    processes = int(max(multiprocessing.cpu_count() / 2,1))
+    logging.info(f'Starting multitreaing processing with {processes} processes')
+    
+
+    # start 4 worker processes
+    with multiprocessing.Pool(processes=processes) as pool:
+        pool.map(process_client_video, videos_to_process)
+        # pool.join()
+
+    logging.info(f'Ending multitreaing processing with {processes} processes')
+
 
 def notify_client(domain_url,video_id):
     """
@@ -287,4 +312,5 @@ def notify_client(domain_url,video_id):
 
 
 if __name__ == '__main__':
-    process_videos()
+    # process_videos()
+    process_videos_multithreading()
