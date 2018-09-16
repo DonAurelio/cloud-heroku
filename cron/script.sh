@@ -2,6 +2,8 @@
 
 # Reference: https://bencane.com/2015/09/22/preventing-duplicate-cron-job-executions/
 
+echo "Testing if another cron is running"
+
 PIDFILE=/usr/src/app/script.pid
 if [ -f $PIDFILE ]
 then
