@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.db import transaction
 
+from django.utils.decorators import method_decorator
 
 from contests.models import Contest
 from contests.models import Video
@@ -21,7 +22,10 @@ from contests.forms import VideoForm
 from contests.forms import ParticipantForm
 
 import re
+import logging
 
+
+logger = logging.getLogger(__name__)
 
 # Reference: https://blog.dolphm.com/slugify-a-string-in-python/
 def slugify(s):
@@ -186,12 +190,13 @@ class ContestAdminList(ListView):
     template_name = 'contests/contest_admin_list.html'
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class VideoCreate(TemplateView):
     """
     View for video objects creation.
     """
 
-    @csrf_exempt
+    # @csrf_exempt
     def dispatch(self,request,*args,**kwargs):
         return super().dispatch(request,*args,**kwargs)
 
@@ -208,58 +213,73 @@ class VideoCreate(TemplateView):
         return render(request,template_name,context)
 
     def post(self,request,*args,**kwargs):
+
         video_form = VideoForm(request.POST,request.FILES)
         participant_form = ParticipantForm(request.POST)
+
+        needs_send_mail = request.POST.get('send_mail',None)
 
         if video_form.is_valid() and participant_form.is_valid():
             participant = participant_form.save()
             contest = Contest.objects.get(pk=kwargs.get('pk'))
 
-            # If some error happens during the processing 
-            # of this block of code the database is 
-            # rolled back, i.e, in case the email
-            # sending fails or some process carried 
-            # out on the following block of code.
-            with transaction.atomic():
-                video = video_form.save(commit=False)
-                video.contest = contest
-                video.participant = participant
-                video.save()
+           
+            try:
 
-                # If the uploaded video already has the .mp4
-                # format it will not be converted.
-                if '.mp4' in video.file.name:
-                    video.status = Video.CONVERTED
+
+                # If some error happens during the processing 
+                # of this block of code the database is 
+                # rolled back, i.e, in case the email
+                # sending fails or some process carried 
+                # out on the following block of code.
+                with transaction.atomic():
+
+                    video = video_form.save(commit=False)
+                    video.contest = contest
+                    video.participant = participant
                     video.save()
 
-                    # Participants email notification
-                    contest = video.contest.name.title()
-                    subject = f'Video Publicado'
-                    message = f"""
-                    Tu video '{video.name}' ha sido publicado
-                    directamente ya que cumple con el formato
-                    que requiere el concurso.
-                    """
-                else:
-                    # Participants email notification
-                    contest = video.contest.name.title()
-                    subject = f'Video para Procesamiento'
-                    message = f"""
-                    Hemos recibido tu video '{video.name}' y los estamos  procesado para  
-                    que  sea  publicado. Tan  pronto el  video quede publicado 
-                    en la página del concurso te notificaremos por email.
-                    """
+                    # If the uploaded video already has the .mp4
+                    # format it will not be converted.
+                    if '.mp4' in video.file.name:
+                        video.status = Video.CONVERTED
+                        video.save()
+
+                        # Participants email notification
+                        contest = video.contest.name.title()
+                        subject = f'Video Publicado'
+                        message = f"""
+                        Tu video '{video.name}' ha sido publicado
+                        directamente ya que cumple con el formato
+                        que requiere el concurso.
+                        """
+                    else:
+                        # Participants email notification
+                        contest = video.contest.name.title()
+                        subject = f'Video para Procesamiento'
+                        message = f"""
+                        Hemos recibido tu video '{video.name}' y los estamos  procesado para  
+                        que  sea  publicado. Tan  pronto el  video quede publicado 
+                        en la página del concurso te notificaremos por email.
+                        """
+
                 
-                send_mail(
-                    subject,
-                    message,
-                    'aucarvideo@gmail.com',
-                    [video.participant.email],
-                    fail_silently=False,
-                )
-         
+                    if needs_send_mail:
+                        send_mail(
+                            subject,
+                            message,
+                            'aucarvideo@gmail.com',
+                            [video.participant.email],
+                            fail_silently=False,
+                        )
+
+
+            except Exception as e:
+                logger.exception(e)
+
 
             current_contest_pk = kwargs.get('pk')
+
             return HttpResponseRedirect(
                 reverse('contests:video_admin_list', kwargs={'pk':current_contest_pk})
             )
