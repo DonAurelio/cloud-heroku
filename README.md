@@ -32,6 +32,12 @@ sudo apt-get install python-pip
 sudo pip install virtualenv
 ```
 
+virtualenv .env --python=python3.6
+
+source .env/bin/activate
+
+pip3.6 install -r req_dev.txt
+
 Additional requirements for production
 
 ```sh

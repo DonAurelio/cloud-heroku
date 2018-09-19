@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.db import transaction
+from django.conf import settings
 
 from django.utils.decorators import method_decorator
 
@@ -269,6 +270,7 @@ class VideoCreate(TemplateView):
                             subject,
                             message,
                             'aucarvideo@gmail.com',
+                            # settings.EMAIL_HOST_USER,
                             [video.participant.email],
                             fail_silently=False,
                         )
@@ -360,7 +362,7 @@ class VideoProcessingStatus(TemplateView):
         send_mail(
             subject,
             message,
-            'ossounivalle.adm@gmail.com',
+            settings.EMAIL_HOST_USER,
             [video.participant.email],
             fail_silently=False,
         )
