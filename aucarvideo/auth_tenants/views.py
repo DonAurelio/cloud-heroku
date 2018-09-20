@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import TemplateView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import views
 
+from auth_tenants.forms import UserCreateForm
 
 class RegisterView(TemplateView):
     def get(self, request,*args,**kwargs):
-        user_form = UserCreationForm()
+        user_form = UserCreateForm()
         template_name = 'auth_tenants/register_form.html'
         context = {
             'user_form': user_form
@@ -16,7 +16,7 @@ class RegisterView(TemplateView):
         return render(request,template_name,context)
 
     def post(self, request,*args,**kwargs):
-        user_form = UserCreationForm(request.POST)
+        user_form = UserCreateForm(request.POST)
         if user_form.is_valid():
             user_form.save()
             return redirect('auth_tenants:login')
