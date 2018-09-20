@@ -1,6 +1,31 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django import forms
 
 import os
+import datetime
+import pytz
+
+now = datetime.datetime.now()
+
+
+def validate_star_date(start_date):
+    """Validate start date."""
+    now = datetime.date.today()
+
+    # Now datetime is naive, so it is localized
+    # to the current user timezone.
+    #now_aware = pytz.utc.localize(now)
+    now_aware = now
+
+    if start_date < now_aware:
+        raise ValidationError(
+            'Start date %(start)s must be greater than current time %(now)s',
+            params={
+                'start': start_date,
+                'now': now_aware
+            },
+)
 
 
 class Contest(models.Model):
@@ -12,7 +37,10 @@ class Contest(models.Model):
     # The banner image of the contests
     banner = models.ImageField(upload_to='contests/banner',blank=True,null=False)
     # The date on which te contests start
-    start_date = models.DateField(blank=False,null=False)
+    start_date = models.DateField(
+        validators=[validate_star_date],
+        help_text="Please use the following format: YYYY-MM-DD HH:MM:ss. e.g, 2018-08-14 22:10:24."
+    )
     # The date on which the contests ends
     end_date = models.DateField(blank=False,null=False)
     # Description of the award
@@ -29,6 +57,12 @@ class Contest(models.Model):
         return self.video_set.exclude(
             status='Processing'
         )
+
+    def clean(self):
+        """Check if start_date is lower than end_date."""
+        super(Contest, self).clean()
+        if self.start_date >= self.end_date:
+            raise forms.ValidationError('Start date must be less than the End date.')
 
 
 class Participant(models.Model):
