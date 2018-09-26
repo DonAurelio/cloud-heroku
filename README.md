@@ -298,24 +298,28 @@ exports -a
 ```sh
 service nfs start
 ```
-**IMPORTANT: Check that every machine that will be moun th nfs folder is in the same AWS EC2 Security Group and that Security Group can communicate over the NFS. If this is not set. Service can't mount the NFS shared directory.**
-
-
-### Setting up the WebServer
-
-The WS have to mount the FS folder to place there the media content uploaded by users.
-
 Install Git.
 
 ```sh
 sudo yum install git
 ```
 
-Clon this repository on the WS instance.
+Clon this repository on the **nfs folder** instance.
+
+```sh
+cd /home/ec2-user/nfs/
+```
 
 ```sh
 git clone https://github.com/ISIS4426-Desarrollo-Soluciones-Cloud/Grupo03.git
 ```
+
+**IMPORTANT: Check that every machine that will be moun th nfs folder is in the same AWS EC2 Security Group and that Security Group can communicate over the NFS. If this is not set. Service can't mount the NFS shared directory.**
+
+
+### Setting up the WebServer
+
+The WS have to mount the FS folder to place there the media content uploaded by users.
 
 ```sh
 sudo yum install -y nfs-utils
@@ -330,13 +334,13 @@ Edit the /etc/hosts file of the WS instance and place at the end the private IPv
 Mount the FS shared directory and map that remote directory with the **media** folder on the web application.
 
 ```sh
-sudo mount -t nfs nfs:/home/ec2-user/nfs /home/ec2-user/Grupo03/aucarvideo/media
+sudo mount -t nfs nfs:/home/ec2-user/nfs /home/ec2-user/app
 ```
 
 Edit the /etc/fstab and add the line below to mount the FS shared directory every time the instance starts up. 
 
 ```sh
-nfs:/home/ec2-user/nfs	/home/ec2-user/Grupo03/aucarvideo/media/	nfs	rw,sync,hard,intr	0	0
+nfs:/home/ec2-user/nfs	/home/ec2-user/app	nfs	rw,sync,hard,intr	0	0
 ```
 
 Install Docker and docker-compose in the WS instance.
@@ -353,28 +357,16 @@ sudo chmod +x /usr/local/bin/docker-compose
 Run the WS
 
 ```sh
-docker-compose up -d web -f docker-compose-web.yml
+docker-compose -f docker-compose-web.yml up -d web 
 ```
 
 ```sh
-docker-compose up -d nginx -f docker-compose-web.yml
+docker-compose -f docker-compose-web.yml up -d nginx 
 ```
 
 ### Setting up the Worker
 
 The W have to mount the FS folder to be able to process the videos placed in the media remote directory.
-
-Install Git.
-
-```sh
-sudo yum install git
-```
-
-Clon this repository on the WS instance.
-
-```sh
-git clone https://github.com/ISIS4426-Desarrollo-Soluciones-Cloud/Grupo03.git
-```
 
 ```sh
 sudo yum install -y nfs-utils
@@ -389,13 +381,13 @@ Edit the /etc/hosts file of the WS instance and place at the end the private IPv
 Mount the FS shared directory and map that remote directory with the **media** folder on the web application.
 
 ```sh
-sudo mount -t nfs nfs:/home/ec2-user/nfs /home/ec2-user/Grupo03/cron/media
+sudo mount -t nfs nfs:/home/ec2-user/nfs /home/ec2-user/app
 ```
 
 Edit the /etc/fstab and add the line below to mount the FS shared directory every time the instance starts up. 
 
 ```sh
-nfs:/home/ec2-user/nfs	/home/ec2-user/Grupo03/aucarvideo/media/	nfs	rw,sync,hard,intr	0	0
+nfs:/home/ec2-user/nfs	/home/ec2-user/app	nfs	rw,sync,hard,intr	0	0
 ```
 
 Install Docker and docker-compose in the WS instance.
