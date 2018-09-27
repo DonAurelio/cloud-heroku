@@ -23,3 +23,10 @@ services:
       # The media folder is being shared 
       # between 'nfs' and 'cron' container
       - ./cron/media:/usr/src/app/media
+    extra_hosts:
+      # Amazon WebServer instance private IPs
+      - "aucarvideo.com:172.31.20.122"
+
+      # WebServer proxy server
+      - "nginx:172.31.20.122"
+

@@ -353,11 +353,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 Run the WS
 
 ```sh
-docker-compose up -d web -f docker-compose-web.yml
+docker-compose -f docker-compose-web.yml up -d web
 ```
 
 ```sh
-docker-compose up -d nginx -f docker-compose-web.yml
+docker-compose -f docker-compose-web.yml up -d nginx
 ```
 
 ### Setting up the Worker
@@ -395,7 +395,7 @@ sudo mount -t nfs nfs:/home/ec2-user/nfs /home/ec2-user/Grupo03/cron/media
 Edit the /etc/fstab and add the line below to mount the FS shared directory every time the instance starts up. 
 
 ```sh
-nfs:/home/ec2-user/nfs	/home/ec2-user/Grupo03/aucarvideo/media/	nfs	rw,sync,hard,intr	0	0
+nfs:/home/ec2-user/nfs	/home/ec2-user/Grupo03/cron/media/	nfs	rw,sync,hard,intr	0	0
 ```
 
 Install Docker and docker-compose in the WS instance.
@@ -412,7 +412,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 Run the WS
 
 ```sh
-docker-compose up -d cron -f docker-compose-cron.yml
+docker-compose -f docker-compose-cron.yml up -d cron 
 ```
 
 # References
