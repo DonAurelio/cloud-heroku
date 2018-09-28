@@ -5,7 +5,7 @@
 # to work correctly
 source secrets.sh
 
-./manage.py makemigrations --noinput --merge
+./manage.py makemigrations --noinput
 
 ./manage.py migrate_schemas --noinput
 

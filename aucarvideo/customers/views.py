@@ -8,6 +8,7 @@ from customers.forms import ClientForm
 from customers.models import Client
 
 
+
 class ClientCreate(TemplateView):
 
     def get(self, request,*args,**kwargs):

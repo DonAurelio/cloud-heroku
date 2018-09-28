@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  cron:
+    build: ./cron
+    restart: on-failure
+    entrypoint: ./entrypoint.sh
+    environment:
+
+      # This environment variables is needed by the cron job
+      # and is set when the container starts. This each env 
+      # variable set a cron job on the containers when it starts 
+      # - CRON_MINUTE=*/1 * * * * root echo "Hello minute"
+      - CRON_MINUTE=*/1 * * * * root /usr/src/app/script.sh
+    volumes:
+
+      # Every changes made in the aucarvideo source code
+      # is being seen by the container. Some times 
+      # container reboot is required.
+      - ./cron:/usr/src/app/
+
+      # The media folder is being shared 
+      # between 'nfs' and 'cron' container
+      - ./cron/media:/usr/src/app/media
+    extra_hosts:
+      # Amazon WebServer instance private IPs
+      - "aucarvideo.com:172.31.20.122"
+
+      # WebServer proxy server
+      - "nginx:172.31.20.122"
+

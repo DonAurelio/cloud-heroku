@@ -312,5 +312,5 @@ def notify_client(domain_url,video_id):
 
 
 if __name__ == '__main__':
-    # process_videos()
-    process_videos_multithreading()
+    process_videos()
+    # process_videos_multithreading()

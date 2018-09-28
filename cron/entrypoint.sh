@@ -13,6 +13,7 @@ for cronvar in ${!CRON_*}; do
 	cronvalue=${!cronvar}
 	echo "Installing $cronvar"
 	echo "$cronvalue >> /usr/src/app/cron.log 2>&1" >> $cronfile
+	echo "Installing finished"
 done
 echo >> $cronfile # Newline is required
 

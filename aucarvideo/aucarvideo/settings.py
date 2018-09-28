@@ -49,10 +49,15 @@ DOMAIN_NAME = 'aucarvideo.com'
 CREATED_TENANT_REDIRECTION_PORT = '80' if PRODUCTION else '8000' 
 
 # Mail settings
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = "587"
-EMAIL_HOST_USER = os.environ.get('AUCARVIDEO_EMAIL','')
-EMAIL_HOST_PASSWORD = os.environ.get('AUCARVIDEO_PASSWORD','')
+if 'AWS_EMAIL' in os.environ:
+    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND','')
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID','')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY','')
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST','')
+EMAIL_PORT = os.environ.get('EMAIL_PORT','')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER','')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD','')
 EMAIL_USE_TLS = True
 
 # Application definition
@@ -172,13 +177,14 @@ WSGI_APPLICATION = 'aucarvideo.wsgi.application'
 DATABASES = {
     'default': {
     'ENGINE': 'tenant_schemas.postgresql_backend',
+    #'NAME': os.environ.get('DB_NAME' if PRODUCTION else 'POSTGRES_DB'),
     'NAME': os.environ.get('DB_NAME'),
     'USER': os.environ.get('DB_USER'),
     'PASSWORD': os.environ.get('DB_PASS'),
     # If your are in development put in '' the IP addres
     # of the postgres server
-    'HOST': os.environ.get('DB_SERVICE' if PRODUCTION else 'DB_HOST') ,
-    'PORT': os.environ.get('DB_PORT','5432')
+    'HOST': os.environ.get('DB_HOST') ,
+    'PORT': os.environ.get('DB_PORT')
     }
 }
 
