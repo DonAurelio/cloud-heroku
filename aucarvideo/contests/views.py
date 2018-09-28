@@ -269,8 +269,7 @@ class VideoCreate(TemplateView):
                         send_mail(
                             subject,
                             message,
-                            'aucarvideo@gmail.com',
-                            # settings.EMAIL_HOST_USER,
+                            settings.EMAIL_HOST_USER,
                             [video.participant.email],
                             fail_silently=False,
                         )

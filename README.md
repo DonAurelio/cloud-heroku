@@ -414,3 +414,6 @@ docker-compose -f docker-compose-cron.yml up -d cron
 
 [django-bootstrap3](https://github.com/dyve/django-bootstrap3)
 
+
+
+python3.6 cron/script.py ${PWD}/aucarvideo/ localhost 8000 ${PWD}/cron/time.log
