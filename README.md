@@ -4,66 +4,25 @@ Aucarvideo is a SaaS application on which an organization (tenant) is registered
 
 We use the **Semi Isolated Tennancy Approach** by meas of django-tenant-schema module. Semi Isolated Approach: Shared Database, Separate Schemas. One database for all tenants, but one schema per tenant.
 
-## Requirements
+## Development Requirements
 
-Requirements for development
+1. Install docker.io
+2. Install python-virtualenv
+3. Install docker-compose
 
-```sh
-sudo apt-get update
-```
+## Run in Development
 
-```sh
-sudo apt-get install docker.io
-```
+Create the development database using Docker.
 
 ```sh
-sudo groupadd docker
+docker run --name aucarvideo_db \
+	-e POSTGRES_PASSWORD=aucarvideo \
+	-e POSTGRES_DB=aucarvideo \
+	-e POSTGRES_USER=aucarvideo \
+	-d postgres
 ```
 
-```sh
-sudo usermod -aG docker $USER
-```
-
-```sh
-sudo reboot now
-```
-
-```sh
-sudo apt-get install python-pip
-```
-
-```sh
-sudo pip install virtualenv
-```
-
-Additional requirements for production
-
-```sh
-sudo pip install docker-compose
-```
-
-## Setting Up the Development Environment
-
-Create the development database using Docker. **Note: The data base container is created only the first time, to run the database in subsequent situations use 'docker start aucarvideo_db'.**
-
-```sh
-docker run --name aucarvideo_db -e POSTGRES_PASSWORD=aucarvideo -e POSTGRES_DB=aucarvideo -e POSTGRES_USER=aucarvideo -d postgres
-```
-
-Check the database is running in the container
-
-```sh
-sudo docker ps
-```
-
-the output should look as follows:
-
-```sh
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
-54504cdafc1d        postgres            "docker-entrypoint.s…"   48 seconds ago      Up 41 seconds       5432/tcp            aucarvideo_db
-```
-
-Verify the ip of the database server with the following command
+Get database running container ip:
 
 ```sh
 docker inspect aucarvideo_db | grep IPAddress
@@ -76,6 +35,8 @@ the output should look as bellow, where **172.17.0.2** is the IP Address of the 
 "IPAddress": "172.17.0.2",
         "IPAddress": "172.17.0.2",
 ```
+
+Request the admin for the secrects.sh file needed to run this application 
 
 Please place that IP Address on the **secrets.sh** file needed to run the project. **IMPORTANT: THIS PROJECT DOES NOT HAVE THE secrets.sh file SO YOU NEED TO ASK FOR IT TO THE ADMIN OF THIS PROJECT. THE SECRECTS FILE CONTAIN CONFIGURATION INFORMATION NEEDED FOR THE PROJECT TO RUN PROPERLY SUCH US DATABASE PASSWORDS, THE PROJECT SECURITY KEY, EMAIL USERNAME AND PASSWD, ETC.** 
 

@@ -1,5 +1,5 @@
 from celery import Celery
-from processing import process_video
+from worker.celery.processing import process_video
 
 import os
 

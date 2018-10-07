@@ -11,6 +11,4 @@ docker run -d --name cloud_rabbit \
 	-e RABBITMQ_DEFAULT_PASS=aucarvideo \
 	-e RABBITMQ_DEFAULT_VHOST=aucarvideo
 	rabbitmq:3
-
-
 ```

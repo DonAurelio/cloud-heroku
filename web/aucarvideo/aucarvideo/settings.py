@@ -105,7 +105,7 @@ INSTALLED_APPS = (
     'home_tenants',
     'contests',
 
-    'workers',
+    'worker',
 
     # django apps
     'django.contrib.contenttypes',

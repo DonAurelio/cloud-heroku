@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # IP Address of the web server (or load balancer)
-export WEB_IP=""
+export WEB_IP="localhost"
 # Port on which the web server (or load balancer) is running
-export WEB_PORT=""
+export WEB_PORT="8000"
 # Filename of the file on which logs will be written
 export WEB_LOG_FILE_PATH="/usr/src/app/worker.log"
 # Endpoint url of the web API to notify the status of the video convertion
@@ -14,9 +14,9 @@ export VIDEO_NOTIF_ENPOINT_URL="http://${WEB_IP}:${WEB_PORT}/api/contest/videos/
 export MEDIA_PATH=/home/app/
 
 # Broker IP
-export BROKER_IP=""
+export BROKER_IP="$(docker inspect -f "{{ .NetworkSettings.Networks.bridge.IPAddress }}" aucar_rabbit)"
 # Borker Port
-export BROKER_PORT=""
+export BROKER_PORT="5672"
 # Broker virtualhost
 export BROKER_VHOST="aucarvideo"
 # Broker username
