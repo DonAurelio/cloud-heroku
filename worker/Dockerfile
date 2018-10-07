@@ -8,10 +8,10 @@ LABEL maintainer="Aurelio Vivas <aa.vivas@uniandes.edu.co>"
 RUN apt-get update
 
 # Install the ffmpeg package to video convertion
-RUN apt-get install -y ffmpeg cron
+RUN apt-get install -y ffmpeg
 
 # Working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /home/app
 
 # Copy the project into the container current workdir
 COPY . .

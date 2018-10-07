@@ -104,8 +104,8 @@ INSTALLED_APPS = (
     'auth_tenants',
     'home_tenants',
     'contests',
-    # 'login',
-    # 'home_tenats',
+
+    'workers',
 
     # django apps
     'django.contrib.contenttypes',
@@ -247,3 +247,7 @@ if PRODUCTION:
 # backend - you will be warned if this is not the case.
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#  Celery settings
+# CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL','')

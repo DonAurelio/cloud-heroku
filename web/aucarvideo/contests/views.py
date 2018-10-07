@@ -22,6 +22,8 @@ from contests.models import Video
 from contests.forms import VideoForm
 from contests.forms import ParticipantForm
 
+from worker.celery import tasks as celery_tasks
+
 import re
 import logging
 
@@ -263,6 +265,17 @@ class VideoCreate(TemplateView):
                         que  sea  publicado. Tan  pronto el  video quede publicado 
                         en la página del concurso te notificaremos por email.
                         """
+
+                        domain_url = request.tenant.domain_url,
+                        video_id = video.id, 
+                        input_file = video.file.url, 
+                        output_file =  video.converted_url
+
+                        # Sending the videp processing job to the queue
+                        celery_tasks.task_process_video.delay(
+                            domain_url, video_id, 
+                            input_file, output_file
+                        )
 
                 
                     if needs_send_mail:
