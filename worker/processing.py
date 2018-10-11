@@ -11,7 +11,7 @@ import multiprocessing
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MEDIA_PATH = os.path.join(BASE_DIR, 'aucarvideo/media')
+MEDIA_PATH = os.path.join(BASE_DIR, './media')
 
 
 logging.basicConfig(

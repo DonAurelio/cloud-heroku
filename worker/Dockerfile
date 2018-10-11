@@ -13,6 +13,9 @@ RUN apt-get install -y ffmpeg
 # Working directory inside the container
 WORKDIR /home/app
 
+# the NFS mount folder
+RUN mkdir -p /home/app/nfs
+
 # Copy the project into the container current workdir
 COPY . .
 

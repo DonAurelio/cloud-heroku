@@ -2,21 +2,6 @@ version: '3'
 
 services:
 
-  postgres:
-    image: postgres
-    # The on-failure policy restarts a container if the 
-    # exit code indicates an on-failure error.
-    restart: on-failure
-    environment:
-      # This environmet variables 
-      # are needed by the container to
-      # create de database.
-      - POSTGRES_DB=aucarvideo
-      - POSTGRES_PASSWORD=aucarvideo
-      - POSTGRES_USER=aucarvideo
-    expose:
-      - "5432"
-
   web:
     build: ./aucarvideo
     restart: on-failure
@@ -66,28 +51,6 @@ services:
       # between 'web' and 'nginx' services,
       # so nginx can serve the static files.
       - static:/usr/src/app/static
-
-      # The media folder is being shared 
-      # between 'web' and 'cron' services
-      - media:/usr/src/app/media
-
-  cron:
-    build: ./cron
-    restart: on-failure
-    entrypoint: ./entrypoint.sh
-    environment:
-
-      # This environment variables is needed by the cron job
-      # and is set when the container starts. This each env 
-      # variable set a cron job on the containers when it starts 
-      # - CRON_MINUTE=*/1 * * * * root echo "Hello minute"
-      - CRON_MINUTE=*/1 * * * * root /usr/src/app/script.sh
-    volumes:
-
-      # Every changes made in the aucarvideo source code
-      # is being seen by the container. Some times 
-      # container reboot is required.
-      - ./cron:/usr/src/app/
 
       # The media folder is being shared 
       # between 'web' and 'cron' services
