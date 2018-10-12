@@ -9,10 +9,6 @@ import os
 import time
 import multiprocessing
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MEDIA_PATH = os.path.join(BASE_DIR, './media')
-
 
 logging.basicConfig(
     format='%(levelname)s : %(asctime)s : %(message)s',
@@ -22,21 +18,24 @@ logging.basicConfig(
 # To print loggin information in the console
 logging.getLogger().addHandler(logging.StreamHandler())
 
+# The directory which contains this file
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# The path to the nfs directory on which media to be processed will reside
+NFS_PATH = os.path.join(BASE_DIR, 'nfs')
+
+# The IP and PORT of the WebService
 HOST_NAME = os.environ.get('WEB_IP')
-PORT =os.environ.get('WEB_PORT')
+PORT = os.environ.get('WEB_PORT')
 
-LOG_FILE_PATH =  os.environ.get('WEB_LOG_FILE_PATH')
-CLIENT_VIDEO_STATUS_URL = os.environ.get('VIDEO_NOTIF_ENPOINT_URL')
-
-MEDIA_PATH = os.environ.get('MEDIA_PATH')
+# The endpoint URL to send the notification when a video has been processed successfully
+CLIENT_VIDEO_STATUS_URL = "http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/"
 
 # Print the values of the varuables
 status = 'Running with settings' + '\n'
-status += 'MEDIA_PATH:' + MEDIA_PATH + '\n'
+status += 'NFS_PATH:' + NFS_PATH + '\n'
 status += 'HOST_NAME:' + HOST_NAME + '\n'
 status += 'PORT:' + PORT + '\n'
-status += 'LOG_FILE_PATH:' + LOG_FILE_PATH + '\n'
 status += 'CLIENT_VIDEO_STATUS_URL:' + CLIENT_VIDEO_STATUS_URL
 
 logging.info(status)
@@ -59,8 +58,8 @@ def process_video(input_file, output_file):
     input_file = input_file[1:]
     output_file = output_file[1:]
 
-    input_file = os.path.join(MEDIA_PATH,input_file)
-    output_file = os.path.join(MEDIA_PATH,output_file)
+    input_file = os.path.join(NFS_PATH,input_file)
+    output_file = os.path.join(NFS_PATH,output_file)
 
     exists = os.path.isfile(output_file)
     if exists:

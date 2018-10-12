@@ -4,27 +4,31 @@ Aucarvideo is a SaaS application which use **Semi Isolated Tennancy Approach** b
 
 ## Requirements
 
-1. Development: docker.io, python-virtualenv.
-2. Production: docker.io, docker-compose
+1. Development: Docker, python-virtualenv, docker-compose
+2. Production: Centos OS (AWS EC2 Instance) Docker, docker-compose
 
 ## Run in Development
 
-1. Run NFS service.
-2. Run Rabbitmq service.
-3. Run Worker service.
-4. Run Webserver as shown bellow
+**IMPORTANT:** Request the admin of this repo for the **secrects.sh** file needed to run this application and place it on aucarvideo folder. **Check the development vaiables are properly configured**.
 
-**IMPORTANT:** Request the admin of this repo for the **secrects.sh** file needed to run this application and place it on aucarvideo folder. ¡Check it out!
-.
 
 ```sh
-cat aucarvideo/secrects.sh
+cat aucarvideo/secrets.sh
 ```
+
+Get into the aucarvideo folder
+
+```sh
+cd aucarvideo/
+```
+
 
 Load the secrects into the system env variables.
 
+
+
 ```sh
-source aucarvideo/secrects.sh
+source aucarvideo/secrets.sh
 ```
 
 Create the python virtualenvironment in the **aucarvideo** folder.

@@ -10,11 +10,14 @@ RUN apt-get update
 # Install the ffmpeg package to video convertion
 RUN apt-get install -y ffmpeg
 
+# Directory on which the application will reside
+RUN mkdir -p /home/app
+
+# Directory to mount the remote nfs folder
+RUN mkdir -p /home/app/nfs
+
 # Working directory inside the container
 WORKDIR /home/app
-
-# the NFS mount folder
-RUN mkdir -p /home/app/nfs
 
 # Copy the project into the container current workdir
 COPY . .

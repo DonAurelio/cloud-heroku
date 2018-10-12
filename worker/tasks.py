@@ -6,7 +6,7 @@ import os
 app = Celery(
     'tasks', 
     backend='rpc://', 
-    broker=os.environ.get('CELERY_BROKER_URL','pyamqp://guest@localhost//')
+    broker=os.environ.get('BROKER_URL','pyamqp://guest@localhost//')
 )
 
 @app.task

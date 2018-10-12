@@ -16,5 +16,8 @@ docker run -d --name aucar_postgres \
 	-e POSTGRES_DB=aucar \
 	-e POSTGRES_USER=aucar \
 	-e POSTGRES_PASSWORD=aucar \
+	-p 8010:5432 \
 	postgres
 ```
+
+* You can access database data with pgadmin by visiting container-ip:5432 or, if you need access outside the host, on port 8010, using host-ip:8010.
