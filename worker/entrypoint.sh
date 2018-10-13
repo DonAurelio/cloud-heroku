@@ -1,5 +1,15 @@
 #!/bin/bash
 
-echo "Running Celery Worker.."
+echo "Removing log files .."
 
-celery -A tasks worker --loglevel=info --concurrency=1
+rm -rf celery.* flower.*
+
+echo "Running Supervisor .."
+
+# Start Supervisor
+supervisord -c /etc/supervisor/supervisord.conf
+
+# To check the processes are running
+# ps aux
+
+/bin/bash

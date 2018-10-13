@@ -15,21 +15,23 @@ docker build -t aucar_worker .
 
 ```sh
 export BROKER_IP="$(docker inspect -f "{{ .NetworkSettings.Networks.bridge.IPAddress }}" aucar_rabbit)"
-export BROKER_PORT=5672
-export BROKER_VHOST=aucar
-export BROKER_USER=aucar
-export BROKER_PASS=aucar
 ```
 
 ```sh
-docker run -d --name aucar_worker \
-	-e BROKER_URL="pyamqp://${BROKER_PASS}:${BROKER_USER}@${BROKER_IP}:${BROKER_PORT}/${BROKER_VHOST}" \
+docker run -it --name aucar_worker \
+	-e BROKER_URL="pyamqp://aucar:aucar@${BROKER_IP}:5672/aucar" \
 	-e WEB_IP="localhost" \
 	-e WEB_PORT="8000" \
+	-v ${PWD}/supervisor/conf.d/:/etc/supervisor/conf.d/ \
+	-v ${PWD}/supervisor/logs/:/home/app/logs/ \
 	-v ${PWD}/../web/aucarvideo:/home/app/nfs \
 	-p 8030:5555 \
 	aucar_worker \
-	/home/app/entrypoint.sh
+	./entrypoint.sh
+```
+
+```sh
+'pyamqp://${BROKER_PASS}:${BROKER_USER}@${BROKER_IP}:${BROKER_PORT}/${BROKER_VHOST}'
 ```
 
 * Celery Flower monitoring GUI port 5555
@@ -95,3 +97,9 @@ sudo usermod -a -G docker ec2-user
 sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 ```
+
+
+In the following file, we’ll create a main config for the supervisor program. The key points that you will need to take note in this file is where the supervisor logs are (/var/log/supervisor), and where the program config files are read from: files = /etc/supervisor/conf.d/*.conf
+
+https://medium.com/@channeng/celery-scheduler-part-2-managing-celery-with-supervisor-2a0c6e7f7a6e
+

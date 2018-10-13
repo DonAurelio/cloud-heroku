@@ -22,13 +22,10 @@ Get into the aucarvideo folder
 cd aucarvideo/
 ```
 
-
 Load the secrects into the system env variables.
 
-
-
 ```sh
-source aucarvideo/secrets.sh
+source secrets.sh
 ```
 
 Create the python virtualenvironment in the **aucarvideo** folder.

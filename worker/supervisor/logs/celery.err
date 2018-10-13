@@ -1,0 +1,39 @@
+INFO : 2018-10-13 01:17:15,927 : Running with settings
+NFS_PATH:/home/nfs
+HOST_NAME:localhost
+PORT:8000
+CLIENT_VIDEO_STATUS_URL:http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:/home/nfs
+HOST_NAME:localhost
+PORT:8000
+CLIENT_VIDEO_STATUS_URL:http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+/usr/local/lib/python3.6/site-packages/celery/platforms.py:796: RuntimeWarning: You're running the worker with superuser privileges: this is
+absolutely not recommended!
+
+Please specify a different user using the --uid option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  uid=uid, euid=euid, gid=gid, egid=egid,
+[2018-10-13 01:17:16,042: INFO/MainProcess] Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+[2018-10-13 01:17:16,061: INFO/MainProcess] mingle: searching for neighbors
+[2018-10-13 01:17:17,218: INFO/MainProcess] mingle: all alone
+[2018-10-13 01:17:17,359: INFO/MainProcess] celery@c44b37e95d38 ready.
+[2018-10-13 01:17:20,966: INFO/MainProcess] Events of group {task} enabled by remote.
+[2018-10-13 01:34:48,115: ERROR/MainProcess] Received unregistered task of type 'worker.celery.tasks.hello_world'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+http://docs.celeryq.org/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/celery/worker/consumer/consumer.py", line 558, in on_task_received
+    strategy = strategies[type_]
+KeyError: 'worker.celery.tasks.hello_world'

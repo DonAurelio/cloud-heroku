@@ -8,7 +8,8 @@ LABEL maintainer="Aurelio Vivas <aa.vivas@uniandes.edu.co>"
 RUN apt-get update
 
 # Install the ffmpeg package to video convertion
-RUN apt-get install -y ffmpeg
+# Supervisor to run non demonized programs in background
+RUN apt-get install -y ffmpeg supervisor
 
 # Directory on which the application will reside
 RUN mkdir -p /home/app
