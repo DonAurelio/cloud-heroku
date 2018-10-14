@@ -249,3 +249,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #  Celery settings
 # CELERY_BROKER_URL = 'amqp://localhost'
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL','')
+CELERY_TASK_SERIALIZER = 'json'

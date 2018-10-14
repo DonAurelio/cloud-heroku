@@ -180,3 +180,392 @@ WARNING : 2018-10-14 20:23:18,001 : 'registered' inspect method failed
 'registered' inspect method failed
 WARNING : 2018-10-14 20:23:18,001 : 'scheduled' inspect method failed
 'scheduled' inspect method failed
+INFO : 2018-10-14 20:58:28,382 : Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+INFO : 2018-10-14 20:58:28,401 : Visit me at http://localhost:5555
+Visit me at http://localhost:5555
+INFO : 2018-10-14 20:58:28,415 : Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+INFO : 2018-10-14 20:58:28,422 : Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.process_video']
+Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.process_video']
+INFO : 2018-10-14 20:58:28,540 : Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+WARNING : 2018-10-14 20:58:32,583 : 'stats' inspect method failed
+'stats' inspect method failed
+WARNING : 2018-10-14 20:58:32,583 : 'active_queues' inspect method failed
+'active_queues' inspect method failed
+WARNING : 2018-10-14 20:58:32,584 : 'registered' inspect method failed
+'registered' inspect method failed
+WARNING : 2018-10-14 20:58:32,584 : 'scheduled' inspect method failed
+'scheduled' inspect method failed
+Traceback (most recent call last):
+  File "/usr/local/bin/celery", line 11, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.6/site-packages/celery/__main__.py", line 16, in main
+    _main()
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 322, in main
+    cmd.execute_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 496, in execute_from_commandline
+    super(CeleryCommand, self).execute_from_commandline(argv)))
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 273, in execute_from_commandline
+    argv = self.setup_app_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 479, in setup_app_from_commandline
+    self.app = self.find_app(app)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 501, in find_app
+    return find_app(app, symbol_by_name=self.symbol_by_name)
+  File "/usr/local/lib/python3.6/site-packages/celery/app/utils.py", line 359, in find_app
+    sym = symbol_by_name(app, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 504, in symbol_by_name
+    return imports.symbol_by_name(name, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/kombu/utils/imports.py", line 56, in symbol_by_name
+    module = imp(module_name, package=package, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/celery/utils/imports.py", line 104, in import_from_cwd
+    return imp(module, package=package)
+  File "/usr/local/lib/python3.6/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 674, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 781, in get_code
+  File "<frozen importlib._bootstrap_external>", line 741, in source_to_code
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/home/app/tasks.py", line 21
+    return process_client_video(domain_url, video_id, input_file, output_file)
+                                                                             ^
+IndentationError: unindent does not match any outer indentation level
+Traceback (most recent call last):
+  File "/usr/local/bin/celery", line 11, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.6/site-packages/celery/__main__.py", line 16, in main
+    _main()
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 322, in main
+    cmd.execute_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 496, in execute_from_commandline
+    super(CeleryCommand, self).execute_from_commandline(argv)))
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 273, in execute_from_commandline
+    argv = self.setup_app_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 479, in setup_app_from_commandline
+    self.app = self.find_app(app)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 501, in find_app
+    return find_app(app, symbol_by_name=self.symbol_by_name)
+  File "/usr/local/lib/python3.6/site-packages/celery/app/utils.py", line 359, in find_app
+    sym = symbol_by_name(app, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 504, in symbol_by_name
+    return imports.symbol_by_name(name, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/kombu/utils/imports.py", line 56, in symbol_by_name
+    module = imp(module_name, package=package, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/celery/utils/imports.py", line 104, in import_from_cwd
+    return imp(module, package=package)
+  File "/usr/local/lib/python3.6/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 674, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 781, in get_code
+  File "<frozen importlib._bootstrap_external>", line 741, in source_to_code
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/home/app/tasks.py", line 21
+    return process_client_video(domain_url, video_id, input_file, output_file)
+                                                                             ^
+IndentationError: unindent does not match any outer indentation level
+Traceback (most recent call last):
+  File "/usr/local/bin/celery", line 11, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.6/site-packages/celery/__main__.py", line 16, in main
+    _main()
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 322, in main
+    cmd.execute_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 496, in execute_from_commandline
+    super(CeleryCommand, self).execute_from_commandline(argv)))
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 273, in execute_from_commandline
+    argv = self.setup_app_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 479, in setup_app_from_commandline
+    self.app = self.find_app(app)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 501, in find_app
+    return find_app(app, symbol_by_name=self.symbol_by_name)
+  File "/usr/local/lib/python3.6/site-packages/celery/app/utils.py", line 359, in find_app
+    sym = symbol_by_name(app, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 504, in symbol_by_name
+    return imports.symbol_by_name(name, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/kombu/utils/imports.py", line 56, in symbol_by_name
+    module = imp(module_name, package=package, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/celery/utils/imports.py", line 104, in import_from_cwd
+    return imp(module, package=package)
+  File "/usr/local/lib/python3.6/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 674, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 781, in get_code
+  File "<frozen importlib._bootstrap_external>", line 741, in source_to_code
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/home/app/tasks.py", line 21
+    return process_client_video(domain_url, video_id, input_file, output_file)
+                                                                             ^
+IndentationError: unindent does not match any outer indentation level
+Traceback (most recent call last):
+  File "/usr/local/bin/celery", line 11, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.6/site-packages/celery/__main__.py", line 16, in main
+    _main()
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 322, in main
+    cmd.execute_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 496, in execute_from_commandline
+    super(CeleryCommand, self).execute_from_commandline(argv)))
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 273, in execute_from_commandline
+    argv = self.setup_app_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 479, in setup_app_from_commandline
+    self.app = self.find_app(app)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 501, in find_app
+    return find_app(app, symbol_by_name=self.symbol_by_name)
+  File "/usr/local/lib/python3.6/site-packages/celery/app/utils.py", line 359, in find_app
+    sym = symbol_by_name(app, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 504, in symbol_by_name
+    return imports.symbol_by_name(name, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/kombu/utils/imports.py", line 56, in symbol_by_name
+    module = imp(module_name, package=package, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/celery/utils/imports.py", line 104, in import_from_cwd
+    return imp(module, package=package)
+  File "/usr/local/lib/python3.6/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 674, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 781, in get_code
+  File "<frozen importlib._bootstrap_external>", line 741, in source_to_code
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/home/app/tasks.py", line 21
+    return process_client_video(domain_url, video_id, input_file, output_file)
+                                                                             ^
+IndentationError: unindent does not match any outer indentation level
+Traceback (most recent call last):
+  File "/usr/local/bin/celery", line 11, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.6/site-packages/celery/__main__.py", line 16, in main
+    _main()
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 322, in main
+    cmd.execute_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/celery.py", line 496, in execute_from_commandline
+    super(CeleryCommand, self).execute_from_commandline(argv)))
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 273, in execute_from_commandline
+    argv = self.setup_app_from_commandline(argv)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 479, in setup_app_from_commandline
+    self.app = self.find_app(app)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 501, in find_app
+    return find_app(app, symbol_by_name=self.symbol_by_name)
+  File "/usr/local/lib/python3.6/site-packages/celery/app/utils.py", line 359, in find_app
+    sym = symbol_by_name(app, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/celery/bin/base.py", line 504, in symbol_by_name
+    return imports.symbol_by_name(name, imp=imp)
+  File "/usr/local/lib/python3.6/site-packages/kombu/utils/imports.py", line 56, in symbol_by_name
+    module = imp(module_name, package=package, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/celery/utils/imports.py", line 104, in import_from_cwd
+    return imp(module, package=package)
+  File "/usr/local/lib/python3.6/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 674, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 781, in get_code
+  File "<frozen importlib._bootstrap_external>", line 741, in source_to_code
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/home/app/tasks.py", line 21
+    return process_client_video(domain_url, video_id, input_file, output_file)
+                                                                             ^
+IndentationError: unindent does not match any outer indentation level
+INFO : 2018-10-14 23:17:21,375 : Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+INFO : 2018-10-14 23:17:21,395 : Visit me at http://localhost:5555
+Visit me at http://localhost:5555
+INFO : 2018-10-14 23:17:21,409 : Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+INFO : 2018-10-14 23:17:21,416 : Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.process_video']
+Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.process_video']
+INFO : 2018-10-14 23:17:21,517 : Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+WARNING : 2018-10-14 23:17:25,606 : 'stats' inspect method failed
+'stats' inspect method failed
+WARNING : 2018-10-14 23:17:25,606 : 'active_queues' inspect method failed
+'active_queues' inspect method failed
+WARNING : 2018-10-14 23:17:25,607 : 'registered' inspect method failed
+'registered' inspect method failed
+WARNING : 2018-10-14 23:17:25,607 : 'scheduled' inspect method failed
+'scheduled' inspect method failed
+WARNING : 2018-10-14 23:17:25,607 : 'active' inspect method failed
+'active' inspect method failed
+WARNING : 2018-10-14 23:17:25,608 : 'reserved' inspect method failed
+'reserved' inspect method failed
+INFO : 2018-10-14 23:30:20,209 : Running with settings
+NFS_PATH:	/home/app/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:	/home/app/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+INFO : 2018-10-14 23:30:20,221 : Visit me at http://localhost:5555
+Visit me at http://localhost:5555
+INFO : 2018-10-14 23:30:20,229 : Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+INFO : 2018-10-14 23:30:20,234 : Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.process_video']
+Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.process_video']
+INFO : 2018-10-14 23:30:20,356 : Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+WARNING : 2018-10-14 23:30:23,639 : 'stats' inspect method failed
+'stats' inspect method failed
+WARNING : 2018-10-14 23:30:23,640 : 'active_queues' inspect method failed
+'active_queues' inspect method failed
+WARNING : 2018-10-14 23:30:23,640 : 'registered' inspect method failed
+'registered' inspect method failed
+WARNING : 2018-10-14 23:30:23,640 : 'scheduled' inspect method failed
+'scheduled' inspect method failed
+INFO : 2018-10-14 23:38:09,891 : Running with settings
+NFS_PATH:	/home/app/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://192.168.0.24:8000/api/contest/videos/status/
+Running with settings
+NFS_PATH:	/home/app/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://192.168.0.24:8000/api/contest/videos/status/
+INFO : 2018-10-14 23:38:09,911 : Visit me at http://localhost:5555
+Visit me at http://localhost:5555
+INFO : 2018-10-14 23:38:09,924 : Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+INFO : 2018-10-14 23:38:09,931 : Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.process_video']
+Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.process_video']
+INFO : 2018-10-14 23:38:10,110 : Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+WARNING : 2018-10-14 23:38:13,189 : 'stats' inspect method failed
+'stats' inspect method failed
+WARNING : 2018-10-14 23:38:13,189 : 'active_queues' inspect method failed
+'active_queues' inspect method failed
+WARNING : 2018-10-14 23:38:13,190 : 'registered' inspect method failed
+'registered' inspect method failed
+WARNING : 2018-10-14 23:38:13,190 : 'scheduled' inspect method failed
+'scheduled' inspect method failed
+WARNING : 2018-10-14 23:38:13,190 : 'active' inspect method failed
+'active' inspect method failed
+WARNING : 2018-10-14 23:38:13,190 : 'reserved' inspect method failed
+'reserved' inspect method failed
+WARNING : 2018-10-14 23:38:13,190 : 'revoked' inspect method failed
+'revoked' inspect method failed
+WARNING : 2018-10-14 23:38:13,190 : 'conf' inspect method failed
+'conf' inspect method failed

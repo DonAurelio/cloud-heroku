@@ -22,14 +22,14 @@ logging.getLogger().addHandler(logging.StreamHandler())
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # The path to the nfs directory on which media to be processed will reside
-NFS_PATH = os.path.join(BASE_DIR, 'nfs')
+NFS_PATH = os.environ.get('NFS_PATH','/home/app/nfs')
 
 # The IP and PORT of the WebService
 WEB_IP = os.environ.get('WEB_IP')
 WEB_PORT = os.environ.get('WEB_PORT')
 
 # The endpoint URL to send the notification when a video has been processed successfully
-CLIENT_VIDEO_STATUS_URL = "http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/"
+CLIENT_VIDEO_STATUS_URL = f"http://{WEB_IP}:{WEB_PORT}/api/contest/videos/status/"
 
 # Print the values of the varuables
 status = 'Running with settings' + '\n'

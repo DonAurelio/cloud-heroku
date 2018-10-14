@@ -272,15 +272,22 @@ class VideoCreate(TemplateView):
                         input_file = video.file.url, 
                         output_file =  video.converted_url
 
+                        data = [
+                            domain_url, 
+                            video_id,
+                            input_file,
+                            output_file
+                        ]
+
                         # Sending the videp processing job to the queue
                         # celery_tasks.hello_world.delay()
-                        celery_app.send_task(
-                            name='tasks.hello_world', 
-                        )
                         # celery_app.send_task(
-                        #     name='tasks.task_process_video',
-                        #     args=(domain_url,video_id,input_file,output_file) 
+                        #     name='tasks.hello_world', 
                         # )
+                        celery_app.send_task(
+                            'tasks.process_video',
+                            data
+                        )
                 
                     if needs_send_mail:
                         send_mail(

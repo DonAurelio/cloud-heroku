@@ -12,18 +12,18 @@ The cellery worker is resposible for processing the videos placed in the nfs fol
 ```sh
 docker build -t aucar_worker .
 ```
+Export the **BROKER_IP**
 
 ```sh
 export BROKER_IP="$(docker inspect -f "{{ .NetworkSettings.Networks.bridge.IPAddress }}" aucar_rabbit)"
 ```
-<!-- export WEB_IP=<web-app-ip>
-export WEB_PORT=<web-app-port> -->
+Run the worker container and set the **BROKER_URL**, **WEB_IP** and **WEB_PORT** env variables.
 
 ```sh
 docker run -it --name aucar_worker \
 	-e BROKER_URL="pyamqp://aucar:aucar@${BROKER_IP}:5672/aucar" \
-	-e WEB_IP="192.168.0.24" \
-	-e WEB_PORT="8000" \
+	-e WEB_IP="<web-app-ip>" \
+	-e WEB_PORT="<web-app-port>" \
 	-v ${PWD}/supervisor/conf.d/:/etc/supervisor/conf.d/ \
 	-v ${PWD}/supervisor/logs/:/home/app/logs/ \
 	-v ${PWD}/../web/aucarvideo:/home/app/nfs \
@@ -31,13 +31,16 @@ docker run -it --name aucar_worker \
 	aucar_worker
 ```
 
+BROKER_URL has the following format:
+
 ```sh
 'pyamqp://${BROKER_PASS}:${BROKER_USER}@${BROKER_IP}:${BROKER_PORT}/${BROKER_VHOST}'
 ```
 
-* Celery Flower monitoring GUI port 5555
-* You can access monitoring GUI by visiting http://container-ip:5555 in a browser or, if you need access outside the host, on port 8030.
-* Or can then go to http://localhost:8030 or http://host-ip:8030 in a browser.
+Get the Celery Flower monitoring GUI:
+
+* Using the worker conainer http://container-ip:5555
+* Using the container hosts computer http://host-ip:8030.
 
 ## Run in AWS
 
@@ -69,7 +72,11 @@ nfs:/etc/nfs /etc/nfs	nfs	rw,sync,hard,intr	0	0
 
 ### Run the Worker in a Docker Container
 
+Exporrt the worker AWS instace env variables
+
 ```sh
+export WEB_IP="ip-web"
+export WEB_PORT="port-web"
 export BROKER_IP="ip-broker"
 export BROKER_PORT=5672
 export BROKER_VHOST=aucar
@@ -77,12 +84,17 @@ export BROKER_USER=aucar
 export BROKER_PASS=aucar
 ```
 
+Run the container that will use the env variables defined on the AWS instance
+
 ```sh
-docker run -d --name aucar_rabbit \
+docker run -it --name aucar_worker \
 	-e BROKER_URL="pyamqp://${BROKER_PASS}:${BROKER_USER}@${BROKER_IP}:${BROKER_PORT}/${BROKER_VHOST}" \
-	-e WEB_IP="ip-web" \
-	-e WEB_PORT="port-web" \
-	-v /etc/nfs:/home/app/nfs
+	-e WEB_IP=${WEB_IP} \
+	-e WEB_PORT=${WEB_PORT} \
+	-v ${PWD}/supervisor/conf.d/:/etc/supervisor/conf.d/ \
+	-v ${PWD}/supervisor/logs/:/home/app/logs/ \
+	-v /etc/nfs:/home/app/nfs \
+	-p 8030:5555 \
 	aucar_worker
 ```
 
@@ -99,8 +111,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
+# References
 
-In the following file, we’ll create a main config for the supervisor program. The key points that you will need to take note in this file is where the supervisor logs are (/var/log/supervisor), and where the program config files are read from: files = /etc/supervisor/conf.d/*.conf
-
-https://medium.com/@channeng/celery-scheduler-part-2-managing-celery-with-supervisor-2a0c6e7f7a6e
+[Supervisor and Celery](https://medium.com/@channeng/celery-scheduler-part-2-managing-celery-with-supervisor-2a0c6e7f7a6e)
 
