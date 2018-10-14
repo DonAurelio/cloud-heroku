@@ -1,4 +1,4 @@
-INFO : 2018-10-13 01:17:15,927 : Running with settings
+INFO : 2018-10-14 19:31:56,121 : Running with settings
 NFS_PATH:/home/nfs
 HOST_NAME:localhost
 PORT:8000
@@ -8,11 +8,11 @@ NFS_PATH:/home/nfs
 HOST_NAME:localhost
 PORT:8000
 CLIENT_VIDEO_STATUS_URL:http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
-INFO : 2018-10-13 01:17:15,938 : Visit me at http://localhost:5555
+INFO : 2018-10-14 19:31:56,132 : Visit me at http://localhost:5555
 Visit me at http://localhost:5555
-INFO : 2018-10-13 01:17:15,946 : Broker: amqp://aucar:**@172.17.0.2:5672/aucar
-Broker: amqp://aucar:**@172.17.0.2:5672/aucar
-INFO : 2018-10-13 01:17:15,951 : Registered tasks: 
+INFO : 2018-10-14 19:31:56,141 : Broker: amqp://aucar:**@localhost:5672/aucar
+Broker: amqp://aucar:**@localhost:5672/aucar
+INFO : 2018-10-14 19:31:56,146 : Registered tasks: 
 ['celery.accumulate',
  'celery.backend_cleanup',
  'celery.chain',
@@ -36,21 +36,147 @@ Registered tasks:
  'celery.starmap',
  'tasks.hello_world',
  'tasks.task_process_video']
-INFO : 2018-10-13 01:17:16,039 : Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+INFO : 2018-10-14 19:38:53,077 : Running with settings
+NFS_PATH:/home/nfs
+HOST_NAME:localhost
+PORT:8000
+CLIENT_VIDEO_STATUS_URL:http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:/home/nfs
+HOST_NAME:localhost
+PORT:8000
+CLIENT_VIDEO_STATUS_URL:http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+INFO : 2018-10-14 19:38:53,096 : Visit me at http://localhost:5555
+Visit me at http://localhost:5555
+INFO : 2018-10-14 19:38:53,105 : Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+INFO : 2018-10-14 19:38:53,110 : Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.task_process_video']
+Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.task_process_video']
+INFO : 2018-10-14 19:38:53,214 : Connected to amqp://aucar:**@172.17.0.2:5672/aucar
 Connected to amqp://aucar:**@172.17.0.2:5672/aucar
-WARNING : 2018-10-13 01:17:19,356 : 'stats' inspect method failed
+WARNING : 2018-10-14 19:38:56,382 : 'stats' inspect method failed
 'stats' inspect method failed
-WARNING : 2018-10-13 01:17:19,357 : 'active_queues' inspect method failed
+WARNING : 2018-10-14 19:38:56,382 : 'active_queues' inspect method failed
 'active_queues' inspect method failed
-WARNING : 2018-10-13 01:17:19,357 : 'registered' inspect method failed
+WARNING : 2018-10-14 19:38:56,383 : 'registered' inspect method failed
 'registered' inspect method failed
-WARNING : 2018-10-13 01:17:19,357 : 'scheduled' inspect method failed
+WARNING : 2018-10-14 19:38:56,383 : 'scheduled' inspect method failed
 'scheduled' inspect method failed
-WARNING : 2018-10-13 01:17:19,358 : 'active' inspect method failed
-'active' inspect method failed
-WARNING : 2018-10-13 01:17:19,358 : 'reserved' inspect method failed
-'reserved' inspect method failed
-WARNING : 2018-10-13 01:17:19,358 : 'revoked' inspect method failed
-'revoked' inspect method failed
-WARNING : 2018-10-13 01:17:19,359 : 'conf' inspect method failed
-'conf' inspect method failed
+INFO : 2018-10-14 20:16:07,721 : Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+INFO : 2018-10-14 20:16:07,739 : Visit me at http://localhost:5555
+Visit me at http://localhost:5555
+INFO : 2018-10-14 20:16:07,751 : Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+INFO : 2018-10-14 20:16:07,758 : Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.task_process_video']
+Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.task_process_video']
+INFO : 2018-10-14 20:16:07,909 : Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+WARNING : 2018-10-14 20:16:11,888 : 'stats' inspect method failed
+'stats' inspect method failed
+WARNING : 2018-10-14 20:16:11,888 : 'active_queues' inspect method failed
+'active_queues' inspect method failed
+WARNING : 2018-10-14 20:16:11,888 : 'registered' inspect method failed
+'registered' inspect method failed
+WARNING : 2018-10-14 20:16:11,888 : 'scheduled' inspect method failed
+'scheduled' inspect method failed
+INFO : 2018-10-14 20:23:13,927 : Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+INFO : 2018-10-14 20:23:13,939 : Visit me at http://localhost:5555
+Visit me at http://localhost:5555
+INFO : 2018-10-14 20:23:13,948 : Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+Broker: amqp://aucar:**@172.17.0.2:5672/aucar
+INFO : 2018-10-14 20:23:13,952 : Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.task_process_video']
+Registered tasks: 
+['celery.accumulate',
+ 'celery.backend_cleanup',
+ 'celery.chain',
+ 'celery.chord',
+ 'celery.chord_unlock',
+ 'celery.chunks',
+ 'celery.group',
+ 'celery.map',
+ 'celery.starmap',
+ 'tasks.hello_world',
+ 'tasks.task_process_video']
+INFO : 2018-10-14 20:23:14,053 : Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+WARNING : 2018-10-14 20:23:18,000 : 'stats' inspect method failed
+'stats' inspect method failed
+WARNING : 2018-10-14 20:23:18,001 : 'active_queues' inspect method failed
+'active_queues' inspect method failed
+WARNING : 2018-10-14 20:23:18,001 : 'registered' inspect method failed
+'registered' inspect method failed
+WARNING : 2018-10-14 20:23:18,001 : 'scheduled' inspect method failed
+'scheduled' inspect method failed

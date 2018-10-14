@@ -17,6 +17,9 @@ RUN mkdir -p /home/app
 # Directory to mount the remote nfs folder
 RUN mkdir -p /home/app/nfs
 
+# Directory to keep supervisor logs
+RUN mkdir -p /home/app/logs
+
 # Working directory inside the container
 WORKDIR /home/app
 
@@ -25,3 +28,7 @@ COPY . .
 
 # Installing requirements
 RUN pip3.6 install --no-cache-dir -r requirements.txt
+
+# Contaner startup script
+ENTRYPOINT ["/bin/bash", "./entrypoint.sh"]
+

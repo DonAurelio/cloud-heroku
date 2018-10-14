@@ -1,3 +1,6 @@
+# from __future__ import absolute_import, unicode_literals
+from aucarvideo.celery import app as celery_app
+
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import UpdateView
@@ -21,8 +24,6 @@ from contests.models import Video
 
 from contests.forms import VideoForm
 from contests.forms import ParticipantForm
-
-from worker.celery import tasks as celery_tasks
 
 import re
 import logging
@@ -272,12 +273,14 @@ class VideoCreate(TemplateView):
                         output_file =  video.converted_url
 
                         # Sending the videp processing job to the queue
-                        celery_tasks.hello_world.delay()
-                        # celery_tasks.task_process_video.delay(
-                        #     domain_url, video_id, 
-                        #     input_file, output_file
+                        # celery_tasks.hello_world.delay()
+                        celery_app.send_task(
+                            name='tasks.hello_world', 
+                        )
+                        # celery_app.send_task(
+                        #     name='tasks.task_process_video',
+                        #     args=(domain_url,video_id,input_file,output_file) 
                         # )
-
                 
                     if needs_send_mail:
                         send_mail(

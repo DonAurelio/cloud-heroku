@@ -25,18 +25,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NFS_PATH = os.path.join(BASE_DIR, 'nfs')
 
 # The IP and PORT of the WebService
-HOST_NAME = os.environ.get('WEB_IP')
-PORT = os.environ.get('WEB_PORT')
+WEB_IP = os.environ.get('WEB_IP')
+WEB_PORT = os.environ.get('WEB_PORT')
 
 # The endpoint URL to send the notification when a video has been processed successfully
 CLIENT_VIDEO_STATUS_URL = "http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/"
 
 # Print the values of the varuables
 status = 'Running with settings' + '\n'
-status += 'NFS_PATH:' + NFS_PATH + '\n'
-status += 'HOST_NAME:' + HOST_NAME + '\n'
-status += 'PORT:' + PORT + '\n'
-status += 'CLIENT_VIDEO_STATUS_URL:' + CLIENT_VIDEO_STATUS_URL
+status += 'NFS_PATH:' + '\t' + NFS_PATH + '\n'
+status += 'WEB_IP:' + '\t' + WEB_IP + '\n'
+status += 'WEB_PORT:' + '\t' + WEB_PORT + '\n'
+status += 'WEB_VIDEO_STAT_ENPOINT:' + '\t' + CLIENT_VIDEO_STATUS_URL
 
 logging.info(status)
 

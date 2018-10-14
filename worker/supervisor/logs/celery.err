@@ -1,4 +1,4 @@
-INFO : 2018-10-13 01:17:15,927 : Running with settings
+INFO : 2018-10-14 19:31:56,121 : Running with settings
 NFS_PATH:/home/nfs
 HOST_NAME:localhost
 PORT:8000
@@ -16,24 +16,142 @@ Please specify a different user using the --uid option.
 User information: uid=0 euid=0 gid=0 egid=0
 
   uid=uid, euid=euid, gid=gid, egid=egid,
-[2018-10-13 01:17:16,042: INFO/MainProcess] Connected to amqp://aucar:**@172.17.0.2:5672/aucar
-[2018-10-13 01:17:16,061: INFO/MainProcess] mingle: searching for neighbors
-[2018-10-13 01:17:17,218: INFO/MainProcess] mingle: all alone
-[2018-10-13 01:17:17,359: INFO/MainProcess] celery@c44b37e95d38 ready.
-[2018-10-13 01:17:20,966: INFO/MainProcess] Events of group {task} enabled by remote.
-[2018-10-13 01:34:48,115: ERROR/MainProcess] Received unregistered task of type 'worker.celery.tasks.hello_world'.
-The message has been ignored and discarded.
+[2018-10-14 19:31:56,235: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 2.00 seconds...
 
-Did you remember to import the module containing this task?
-Or maybe you're using relative imports?
+[2018-10-14 19:31:58,248: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 4.00 seconds...
 
-Please see
-http://docs.celeryq.org/en/latest/internals/protocol.html
-for more information.
+[2018-10-14 19:32:02,267: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 6.00 seconds...
 
-The full contents of the message body was:
-'[[], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (77b)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/celery/worker/consumer/consumer.py", line 558, in on_task_received
-    strategy = strategies[type_]
-KeyError: 'worker.celery.tasks.hello_world'
+[2018-10-14 19:32:08,284: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 8.00 seconds...
+
+[2018-10-14 19:32:16,304: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 10.00 seconds...
+
+[2018-10-14 19:32:26,326: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 12.00 seconds...
+
+[2018-10-14 19:32:38,354: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 14.00 seconds...
+
+[2018-10-14 19:32:52,382: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 16.00 seconds...
+
+[2018-10-14 19:33:08,413: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 18.00 seconds...
+
+[2018-10-14 19:33:26,446: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 20.00 seconds...
+
+[2018-10-14 19:33:46,481: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 22.00 seconds...
+
+[2018-10-14 19:34:08,520: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 24.00 seconds...
+
+[2018-10-14 19:34:32,553: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 26.00 seconds...
+
+[2018-10-14 19:34:58,593: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 28.00 seconds...
+
+[2018-10-14 19:35:26,635: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 30.00 seconds...
+
+[2018-10-14 19:35:56,677: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 32.00 seconds...
+
+[2018-10-14 19:36:28,726: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 32.00 seconds...
+
+[2018-10-14 19:37:00,772: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 32.00 seconds...
+
+[2018-10-14 19:37:32,821: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 32.00 seconds...
+
+[2018-10-14 19:38:04,869: ERROR/MainProcess] consumer: Cannot connect to amqp://aucar:**@127.0.0.1:5672/aucar: [Errno 111] Connection refused.
+Trying again in 32.00 seconds...
+
+INFO : 2018-10-14 19:38:53,087 : Running with settings
+NFS_PATH:/home/nfs
+HOST_NAME:localhost
+PORT:8000
+CLIENT_VIDEO_STATUS_URL:http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:/home/nfs
+HOST_NAME:localhost
+PORT:8000
+CLIENT_VIDEO_STATUS_URL:http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+/usr/local/lib/python3.6/site-packages/celery/platforms.py:796: RuntimeWarning: You're running the worker with superuser privileges: this is
+absolutely not recommended!
+
+Please specify a different user using the --uid option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  uid=uid, euid=euid, gid=gid, egid=egid,
+[2018-10-14 19:38:53,223: INFO/MainProcess] Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+[2018-10-14 19:38:53,258: INFO/MainProcess] mingle: searching for neighbors
+[2018-10-14 19:38:54,350: INFO/MainProcess] mingle: all alone
+[2018-10-14 19:38:54,376: INFO/MainProcess] celery@1c77dbcf1540 ready.
+[2018-10-14 19:38:58,117: INFO/MainProcess] Events of group {task} enabled by remote.
+INFO : 2018-10-14 20:16:07,721 : Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+/usr/local/lib/python3.6/site-packages/celery/platforms.py:796: RuntimeWarning: You're running the worker with superuser privileges: this is
+absolutely not recommended!
+
+Please specify a different user using the --uid option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  uid=uid, euid=euid, gid=gid, egid=egid,
+[2018-10-14 20:16:07,857: INFO/MainProcess] Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+[2018-10-14 20:16:07,877: INFO/MainProcess] mingle: searching for neighbors
+[2018-10-14 20:16:08,991: INFO/MainProcess] mingle: all alone
+[2018-10-14 20:16:09,021: INFO/MainProcess] celery@3cc660ae9a49 ready.
+[2018-10-14 20:16:12,770: INFO/MainProcess] Events of group {task} enabled by remote.
+INFO : 2018-10-14 20:23:13,851 : Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+Running with settings
+NFS_PATH:	/home/nfs
+WEB_IP:	192.168.0.24
+WEB_PORT:	8000
+WEB_VIDEO_STAT_ENPOINT:	http://${WEB_IP}:${WEB_PORT}/api/contest/videos/status/
+/usr/local/lib/python3.6/site-packages/celery/platforms.py:796: RuntimeWarning: You're running the worker with superuser privileges: this is
+absolutely not recommended!
+
+Please specify a different user using the --uid option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  uid=uid, euid=euid, gid=gid, egid=egid,
+[2018-10-14 20:23:13,958: INFO/MainProcess] Connected to amqp://aucar:**@172.17.0.2:5672/aucar
+[2018-10-14 20:23:13,991: INFO/MainProcess] mingle: searching for neighbors
+[2018-10-14 20:23:15,062: INFO/MainProcess] mingle: all alone
+[2018-10-14 20:23:15,097: INFO/MainProcess] celery@3cc660ae9a49 ready.
+[2018-10-14 20:23:18,969: INFO/MainProcess] Events of group {task} enabled by remote.
+[2018-10-14 20:47:33,445: INFO/MainProcess] Received task: tasks.hello_world[cef6adc2-629c-4fb5-b7a7-c89c2a581e9e]  
+/usr/local/lib/python3.6/site-packages/celery/platforms.py:796: RuntimeWarning: You're running the worker with superuser privileges: this is
+absolutely not recommended!
+
+Please specify a different user using the --uid option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  uid=uid, euid=euid, gid=gid, egid=egid,
+[2018-10-14 20:47:33,465: INFO/ForkPoolWorker-1] Task tasks.hello_world[cef6adc2-629c-4fb5-b7a7-c89c2a581e9e] succeeded in 0.01742387900048925s: 'Hello World'

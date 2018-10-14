@@ -16,18 +16,19 @@ docker build -t aucar_worker .
 ```sh
 export BROKER_IP="$(docker inspect -f "{{ .NetworkSettings.Networks.bridge.IPAddress }}" aucar_rabbit)"
 ```
+<!-- export WEB_IP=<web-app-ip>
+export WEB_PORT=<web-app-port> -->
 
 ```sh
 docker run -it --name aucar_worker \
 	-e BROKER_URL="pyamqp://aucar:aucar@${BROKER_IP}:5672/aucar" \
-	-e WEB_IP="localhost" \
+	-e WEB_IP="192.168.0.24" \
 	-e WEB_PORT="8000" \
 	-v ${PWD}/supervisor/conf.d/:/etc/supervisor/conf.d/ \
 	-v ${PWD}/supervisor/logs/:/home/app/logs/ \
 	-v ${PWD}/../web/aucarvideo:/home/app/nfs \
 	-p 8030:5555 \
-	aucar_worker \
-	./entrypoint.sh
+	aucar_worker
 ```
 
 ```sh
