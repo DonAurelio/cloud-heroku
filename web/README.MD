@@ -104,6 +104,18 @@ Enter to the public web site http://aucarvideo.com:8000/.
 
 ## Deployment in AWS
 
+Install Git.
+
+```sh
+sudo yum install git
+```
+
+Clone this repository on the Web instance.
+
+```sh
+git clone https://github.com/ISIS4426-Desarrollo-Soluciones-Cloud/Grupo03.git
+```
+
 Install nfs-utils 
 
 ```sh
@@ -119,25 +131,17 @@ Edit the /etc/hosts file of the WS instance and place at the end the private IPv
 Mount the NFS shared directory (the nfs server must be running, and in the same AWS region of web instance)
 
 ```sh
-sudo mount -t nfs nfs:/etc/nfs /home/ec2-user/Grupo03/aucarvideo/media
+sudo mkdir -p /etc/nfs
+```
+
+```sh
+sudo mount -t nfs nfs:/etc/nfs /etc/nfs
 ```
 
 Edit the /etc/fstab and add the line below to mount the FS shared directory every time the instance starts up. 
 
 ```sh
 nfs:/etc/nfs /etc/nfs	nfs	rw,sync,hard,intr	0	0
-```
-
-Install Git.
-
-```sh
-sudo yum install git
-```
-
-Clone this repository on the Web instance.
-
-```sh
-git clone https://github.com/ISIS4426-Desarrollo-Soluciones-Cloud/Grupo03.git
 ```
 
 Place into the web directory and perform

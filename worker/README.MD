@@ -46,7 +46,7 @@ Get the Celery Flower monitoring GUI:
 
 On this deployment the nfs folder is mounted on the AWS EC2 instance an shared with the container through a volume.
 
-### Configure AWS instance NFS
+Configure AWS instance NFS
 
 ```sh
 sudo yum install -y nfs-utils
@@ -59,6 +59,10 @@ Edit the /etc/hosts file of the WS instance and place at the end the private IPv
 ```
 
 Mount the FS shared directory and map that remote directory with the **media** folder on the web application.
+
+```sh
+sudo mkdir -p /etc/nfs
+```
 
 ```sh
 sudo mount -t nfs nfs:/etc/nfs /etc/nfs
