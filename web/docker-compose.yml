@@ -14,6 +14,10 @@ services:
       - PRODUCTION=on
     volumes:
 
+      # Getting the nfs shared folder by means of the host
+      # this is the folder on whihc the medio folder resides
+      - /etc/nfs:/usr/src/app
+
       # Every changes made in the aucarvideo source code
       # is being seen by the container. Some times 
       # container reboot is required.

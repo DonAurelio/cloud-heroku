@@ -122,6 +122,12 @@ Mount the NFS shared directory (the nfs server must be running, and in the same 
 sudo mount -t nfs nfs:/etc/nfs /home/ec2-user/Grupo03/aucarvideo/media
 ```
 
+Edit the /etc/fstab and add the line below to mount the FS shared directory every time the instance starts up. 
+
+```sh
+nfs:/etc/nfs /etc/nfs	nfs	rw,sync,hard,intr	0	0
+```
+
 Install Git.
 
 ```sh
