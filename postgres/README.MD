@@ -12,9 +12,9 @@ Deploy the nfs server as follows within a Docker container
 
 ```sh
 docker run -d --name aucar_postgres \
-	-e POSTGRES_DB=aucar \
-	-e POSTGRES_USER=aucar \
-	-e POSTGRES_PASSWORD=aucar \
+	-e POSTGRES_DB=aucarvideo \
+	-e POSTGRES_USER=aucarvideo \
+	-e POSTGRES_PASSWORD=aucarvideo \
 	-p 8010:5432 \
 	postgres
 ```

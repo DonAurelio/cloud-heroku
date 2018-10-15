@@ -250,3 +250,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # CELERY_BROKER_URL = 'amqp://localhost'
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL','')
 CELERY_TASK_SERIALIZER = 'json'
+
+# Stringly required for AWS
+CELERY_DEFAULT_QUEUE = 'SQSC'
+BROKER_TRANSPORT_OPTIONS = {
+    'region': 'us-west-2',
+    'polling_interval': 20,
+}
+
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_DEFAULT_QUEUE = 'SQSC'
+CELERY_RESULT_BACKEND = None # Disabling the results backend
