@@ -20,7 +20,7 @@ export BROKER_IP="$(docker inspect -f "{{ .NetworkSettings.Networks.bridge.IPAdd
 Run the worker container and set the **BROKER_URL**, **WEB_IP** and **WEB_PORT** env variables.
 
 ```sh
-docker run -it --name aucar_worker \
+docker run --name aucar_worker \
 	-e BROKER_URL="pyamqp://aucar:aucar@${BROKER_IP}:5672/aucar" \
 	-e WEB_IP="<web-app-ip>" \
 	-e WEB_PORT="<web-app-port>" \
@@ -39,8 +39,8 @@ BROKER_URL has the following format:
 
 Get the Celery Flower monitoring GUI:
 
-* Using the worker conainer http://container-ip:5555
-* Using the container hosts computer http://host-ip:8030.
+* Using the container http://container-ip:5555
+* Using the host http://host-ip:8030 or localhost:8030.
 
 ## Run in AWS
 

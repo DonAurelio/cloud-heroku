@@ -4,8 +4,8 @@ The NFS server will be available for the WebServers and Workers. So they will sh
 
 ## Requirements
 
-1. Development: docker.io
-2. Production: docker.io
+1. Development: Docker
+2. Deployment: Centos OS (AWS EC2 Instance), Docker
 
 ## Run in Development
 
@@ -15,7 +15,7 @@ Deploy the nfs server as follows within a Docker container
 docker run -d --name aucar_nfs --privileged cpuguy83/nfs-server /etc/nfs/
 ```
 
-## Run in AWS
+## Deployment in AWS
 
 The NFS Server will be setting up on bare metal in a AWS EC2 instance.
 

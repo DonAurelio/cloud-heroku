@@ -4,8 +4,8 @@ Aucarvideo is a SaaS application which use **Semi Isolated Tennancy Approach** b
 
 ## Requirements
 
-1. Development: Docker, Install python-virtualenv
-3. Production: Centos OS (AWS EC2 instance), Docker, docker-compose, nfs-utils
+1. Development: Docker, python-virtualenv
+3. Deployment: Centos OS (AWS EC2 instance), Docker, docker-compose, nfs-utils
 
 ## Content
 
@@ -18,12 +18,28 @@ Development (Local)
 	3. Web (aucarvideo)
 	4. Worker
 
-Production
+Deployment
 	
 	1. NFS
-	2. Rabbitmq
+	2. Rabbitmq or other broker
 	3. Web
 	4. Worker
+
+
+## Utilities
+
+On development or deployment some configurations would need you to install docker and docker-compose. 
+
+* Install Docker and docker-compose in Centos OS (AWS EC2 instance).
+
+```sh
+sudo yum update -y
+sudo yum install -y docker
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
 
 # References
 

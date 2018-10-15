@@ -4,10 +4,9 @@ The NFS server will be available for the WebServers and Workers. So they will sh
 
 ## Requirements
 
-1. Development: docker.io
-2. Production: docker.io
+1. Deployment: Docker
 
-## Run in Development
+## Deployment
 
 Deploy the nfs server as follows within a Docker container
 
@@ -20,4 +19,8 @@ docker run -d --name aucar_postgres \
 	postgres
 ```
 
-* You can access database data with pgadmin by visiting container-ip:5432 or, if you need access outside the host, on port 8010, using host-ip:8010.
+Acces the database with pgadmin or other tool:
+
+* Using the conainer container-ip:5432
+* Using the host host-ip:8010 or localhost:8010. 
+
