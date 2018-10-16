@@ -17,7 +17,7 @@ RUN apt-get update -y
 RUN apt-get install -y libpq-dev python3-dev nano
 
 # Installing requirements
-RUN pip3.6 install --no-cache-dir -r req_prod.txt
+RUN pip3.6 install --no-cache-dir -r requirements.txt
 
 # ENV SECRET_KEY '0p6cu%4z8!=tlrhl#ssy8ox)$#aaq8n4x%wu9g0xcd-w$01&9+'
 
