@@ -30,7 +30,7 @@ services:
 
       # The media folder is being shared 
       # between 'web' and 'cron' services
-      - media:/usr/src/app/media
+      # - media:/usr/src/app/media
 
   nginx:
     image: nginx
@@ -58,8 +58,8 @@ services:
 
       # The media folder is being shared 
       # between 'web' and 'cron' services
-      - media:/usr/src/app/media
+      - /etc/nfs:/usr/src/app/media
 
 volumes:
   static:
-  media:
+  # media:
