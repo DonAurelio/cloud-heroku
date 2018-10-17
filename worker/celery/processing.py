@@ -54,9 +54,9 @@ def process_video(input_file, output_file):
             example: /media/contests/videos/rihana_converted.mp4.
     """
 
-    # Remove the first '/' on the video path
-    input_file = input_file[1:]
-    output_file = output_file[1:]
+    # Remove the first '/media/' on the video path
+    input_file = input_file[7:]
+    output_file = output_file[7:]
 
     input_file = os.path.join(NFS_PATH,input_file)
     output_file = os.path.join(NFS_PATH,output_file)

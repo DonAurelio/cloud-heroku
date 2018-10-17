@@ -26,7 +26,7 @@ docker run --name aucar_worker \
 	-e WEB_PORT="<web-app-port>" \
 	-v ${PWD}/supervisor/conf.d/:/etc/supervisor/conf.d/ \
 	-v ${PWD}/supervisor/logs/:/home/app/logs/ \
-	-v ${PWD}/../web/aucarvideo:/home/app/nfs \
+	-v ${PWD}/../web/aucarvideo/media:/home/app/nfs \
 	-p 8030:5555 \
 	aucar_worker
 ```
@@ -97,7 +97,7 @@ docker run -it --name aucar_worker \
 	-e WEB_PORT=${WEB_PORT} \
 	-v ${PWD}/supervisor/conf.d/:/etc/supervisor/conf.d/ \
 	-v ${PWD}/supervisor/logs/:/home/app/logs/ \
-	-v /etc/nfs:/home/app/nfs \
+	-v /etc/nfs:/home/app/media/nfs \
 	-p 8030:5555 \
 	aucar_worker
 ```
