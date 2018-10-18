@@ -249,7 +249,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #  Celery settings
 # CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 
-# BROKER_URL = "sqs://"
+BROKER_URL = "sqs://"
 
 # BROKER_URL = 'https://sqs.us-west-2.amazonaws.com/660158453105/SQSC'
 
@@ -280,7 +280,7 @@ BROKER_TRANSPORT_OPTIONS = {
 # Celery
 # BROKER_URL = "sqs://"
 
-# CELERY_RESULT_BACKEND = None
+CELERY_RESULT_BACKEND = None
 # CELERY_ACCEPT_CONTENT = ['application/json']
 # CELERY_RESULT_SERIALIZER = 'json'
 # CELERY_TASK_SERIALIZER = 'json'
