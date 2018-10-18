@@ -4,7 +4,7 @@ services:
 
   web:
     build: ./aucarvideo
-    restart: on-failure
+    restart: always
     entrypoint: ./entrypoint.sh
     environment:
       # The production variable is needed by the 
@@ -37,7 +37,7 @@ services:
 
     # The on-failure policy restarts a container if the 
     # exit code indicates an on-failure error.
-    restart: on-failure
+    restart: always
 
     # The HOST port 80 is mapped with CONTAINER 80 port
     # HOST:CONTAINER
