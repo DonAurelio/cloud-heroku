@@ -136,13 +136,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if not PRODUCTION:
-    # For django-tenant-schemas
-    MIDDLEWARE = ['tenant_schemas.middleware.TenantMiddleware'] + MIDDLEWARE
+# if not PRODUCTION:
+#     # For django-tenant-schemas
+#     MIDDLEWARE = ['tenant_schemas.middleware.TenantMiddleware'] + MIDDLEWARE
 
-if PRODUCTION:
+# if PRODUCTION:
     # For django-tenant-schemas
-    MIDDLEWARE = ['customers.middleware.XHeaderTenantMiddleware'] + MIDDLEWARE
+MIDDLEWARE = ['customers.middleware.XHeaderTenantMiddleware'] + MIDDLEWARE
 
 
 # URLs for the tenants
