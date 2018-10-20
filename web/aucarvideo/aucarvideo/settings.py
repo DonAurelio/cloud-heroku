@@ -18,7 +18,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Cheking if the application is running in a production environment
-PRODUCTION = True if 'PRODUCTION' in os.environ else False
+PRODUCTION = True if os.environ.get('PRODUCTION','') else False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/

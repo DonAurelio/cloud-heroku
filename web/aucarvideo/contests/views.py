@@ -88,8 +88,9 @@ class ContestCreate(CreateView):
         The sistem creates automatically a URL 
         for the contest.
         """
-        contest = form.save()
 
+        contest = form.save(commit=False)
+        contest.user = self.request.user
         # The URL assigned to the contest 
         # is the name of the contests.
         url = contest.name
@@ -141,6 +142,10 @@ class ContestList(ListView):
     model = Contest
     # paginate_by = 1
     template_name = 'contests/contest_list.html'
+
+    def get_queryset(self):
+        queryset = Contest.objects.filter(user=self.request.user)
+        return queryset
 
 
 class ContestUpdate(UpdateView):

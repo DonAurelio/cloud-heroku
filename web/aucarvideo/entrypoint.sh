@@ -9,7 +9,7 @@ source secrets.sh
 
 ./manage.py migrate --noinput
 
-# colecting staticfiles in sstatic dir
+# colecting staticfiles in static dir
 ./manage.py collectstatic --noinput
 
 # Running the django application

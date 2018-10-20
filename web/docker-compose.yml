@@ -32,6 +32,9 @@ services:
       # between 'web' and 'cron' services
       # - media:/usr/src/app/media
 
+      # Sharing the configuration script 
+      - ./secrets.sh:/usr/src/app/secrets.sh
+
   nginx:
     image: nginx
 
