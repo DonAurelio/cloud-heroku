@@ -1,8 +1,7 @@
 from django.db import models
 
-from tenant_schemas.models import TenantMixin
 
-class Client(TenantMixin):
+class Client(models.Model):
     """
     Tennat descrition
     A Client (tenant) for this application is

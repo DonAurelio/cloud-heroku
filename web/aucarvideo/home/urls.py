@@ -2,7 +2,7 @@
 
 from django.urls import path
 
-from home_public.views import Index
+from home.views import Index
 
 
 urlpatterns = [

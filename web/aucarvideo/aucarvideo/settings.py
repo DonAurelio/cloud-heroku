@@ -31,28 +31,11 @@ DEBUG = False if PRODUCTION else True
 
 ALLOWED_HOSTS = ['*']
 
-# The name of the tenant model
-TENANT_MODEL = "customers.Client"
-
-# The domain name for the public tenant.
-# This constant is used also as base for all 
-# tenants urls created on the aplication. 
-# For example: a new tenant example1
-# will have example1.aucarvideo.com url.
-DOMAIN_NAME = 'aucarvideo.com'
-
-# When a tenant is created, we need to redirec to
-# specific tenant url. If we are in development this 
-# tenant will run over the 8000 for, but, in production
-# will run over the 80
-# we use this contant on 'customer.views'. 
-CREATED_TENANT_REDIRECTION_PORT = '80' if PRODUCTION else '8000' 
-
 # Mail settings
-if 'AWS_EMAIL' in os.environ:
-    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND','')
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID','')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY','')
+
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND','')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID','')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY','')
 
 EMAIL_HOST = os.environ.get('EMAIL_HOST','')
 EMAIL_PORT = os.environ.get('EMAIL_PORT','')
@@ -60,49 +43,11 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER','')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD','')
 EMAIL_USE_TLS = True
 
-# Application definition
-
-# These apps models will be created in the public schema 
-SHARED_APPS = (
-    'tenant_schemas',  # mandatory, should always be before any django app
-
-    # everything below here is optional
-    'customers',
-    'home_public',
-
-    # django apps
-    # 'django.contrib.contenttypes',
-    # 'django.contrib.auth',
-    # 'django.contrib.sessions',
-    # 'django.contrib.messages',
-    # 'django.contrib.admin',
-)
-
-# This apps models will be replicated in schemas
-TENANT_APPS = (
-    # your tenant-specific apps
-    
-    # 'login',
-    'auth_tenants',
-    'home_tenants',
-    'contests',
-
-    # django apps
-    'django.contrib.contenttypes',
-    'django.contrib.auth',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.admin',
-)
 
 INSTALLED_APPS = (
-    'tenant_schemas',  # mandatory, should always be before any django app
-
-    # your tenant-specific apps
     'customers',
-    'home_public',
-    'auth_tenants',
-    'home_tenants',
+    'home',
+    'register',
     'contests',
 
     # django apps
@@ -120,10 +65,6 @@ INSTALLED_APPS = (
     'bootstrap3',
 )
 
-# For django-tenant-schemas
-# Add the middleware tenant_schemas.middleware.TenantMiddleware 
-# to the top of MIDDLEWARE_CLASSES, so that each request can be 
-# set to use the correct schema.
 
 MIDDLEWARE = [
     # For django-tenant-schemas
@@ -136,19 +77,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# if not PRODUCTION:
-#     # For django-tenant-schemas
-#     MIDDLEWARE = ['tenant_schemas.middleware.TenantMiddleware'] + MIDDLEWARE
-
-# if PRODUCTION:
-    # For django-tenant-schemas
-MIDDLEWARE = ['customers.middleware.XHeaderTenantMiddleware'] + MIDDLEWARE
-
-
-# URLs for the tenants
-ROOT_URLCONF = 'aucarvideo.urls_tenants'
-# URL for the public application
-PUBLIC_SCHEMA_URLCONF = 'aucarvideo.urls_public'
 
 TEMPLATES = [
     {
@@ -185,12 +113,6 @@ DATABASES = {
     'PORT': os.environ.get('DB_PORT')
     }
 }
-
-# Add tenant_schemas.routers.TenantSyncRouter to your DATABASE_ROUTERS setting, 
-# so that the correct apps can be synced, depending on what’s being synced (shared or tenant).
-DATABASE_ROUTERS = (
-    'tenant_schemas.routers.TenantSyncRouter',
-)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -292,3 +214,5 @@ CELERY_RESULT_BACKEND = None
 # }
 
 # CELERY_DEFAULT_QUEUE = 'django_sqs_example'
+
+ROOT_URLCONF = 'aucarvideo.urls'
