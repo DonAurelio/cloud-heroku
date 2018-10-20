@@ -45,7 +45,6 @@ EMAIL_USE_TLS = True
 
 
 INSTALLED_APPS = (
-    'customers',
     'home',
     'profile',
     'contests',
