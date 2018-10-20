@@ -49,7 +49,7 @@ class LoginView(TemplateView):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home_tenants:index')
+                return redirect('contests:contest_list')
         else:
             template_name = 'profile/login.html'
             context = {

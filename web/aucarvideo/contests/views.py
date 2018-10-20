@@ -267,13 +267,11 @@ class VideoCreate(TemplateView):
                         en la página del concurso te notificaremos por email.
                         """
 
-                        domain_url = request.tenant.domain_url,
-                        video_id = video.id, 
-                        input_file = video.file.url, 
+                        video_id = video.id
+                        input_file = video.file.url
                         output_file =  video.converted_url
 
                         data = [
-                            domain_url, 
                             video_id,
                             input_file,
                             output_file

@@ -45,7 +45,7 @@
             <div class="container-fluid">
                 <!-- begin mobile sidebar expand / collapse button -->
                 <div class="navbar-header">
-                    <a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> {{ request.tenant.name |title }}</a>
+                    <a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> {{ request.user.company_name |title }}</a>
                     <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -73,12 +73,12 @@
                             {% if request.user.is_staff %}
                             <li><a href="{% url 'admin:login' %}">Setting</a></li>
                             {% endif %}
-                            <li><a href="{% url 'auth_tenants:logout' %}">Log Out</a></li>
+                            <li><a href="{% url 'profile:logout' %}">Log Out</a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="dropdown navbar-user">
-                        <a href="{% url 'auth_tenants:login' %}">
+                        <a href="{% url 'profile:login' %}">
                             <i class="fa fa-2x p-r-5 fa-user"></i>
                             <span class="hidden-xs">Iniciar sesion</span> <b class="caret"></b>
                         </a>

@@ -53,13 +53,13 @@
             <div class="desc">
                 Para iniciar esta espectacular aventura.
             </div>
-            <div class="input-group">
-                <div class="input-group-btn">
-                    <a href="{% url 'profile:register' %}">
-                        <button type="button" class="btn btn-success">Registrate</button>
-                    </a>
-                </div>
-            </div>
+            <a href="{% url 'profile:register' %}">
+                <button type="button" class="btn btn-success">Registrate</button>
+            </a>
+            <a href="{% url 'profile:login' %}">
+                <button type="button" class="btn btn-success">Ingresar</button>
+            </a>
+            <!-- </div> -->
             <p class="help-block m-b-25"><i>No enviaremos correos no deseados a tu cuenta</i></p>
             <p>
                 Siguenos

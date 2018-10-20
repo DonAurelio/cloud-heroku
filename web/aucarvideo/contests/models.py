@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django import forms
+from django.contrib.auth.models import User
 
 import os
 import datetime
@@ -30,6 +31,7 @@ def validate_star_date(start_date):
 
 class Contest(models.Model):
 
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
     # The conetxt unique URL
     url = models.CharField(max_length=200,blank=True,null=True,unique=True)
     # The name of the competition

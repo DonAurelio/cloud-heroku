@@ -49,7 +49,7 @@
             </div>
             <!-- end brand -->
             <div class="login-content">
-                <form action="{% url 'auth_tenants:login' %}" method="POST" class="margin-bottom-0">
+                <form action="{% url 'profile:login' %}" method="POST" class="margin-bottom-0">
                     {% csrf_token %}
                     {% bootstrap_form login_form %}
                     <div class="login-buttons">
