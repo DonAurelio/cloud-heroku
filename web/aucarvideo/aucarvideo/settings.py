@@ -47,7 +47,7 @@ EMAIL_USE_TLS = True
 INSTALLED_APPS = (
     'customers',
     'home',
-    'register',
+    'profile',
     'contests',
 
     # django apps
@@ -102,13 +102,10 @@ WSGI_APPLICATION = 'aucarvideo.wsgi.application'
 
 DATABASES = {
     'default': {
-    'ENGINE': 'tenant_schemas.postgresql_backend',
-    #'NAME': os.environ.get('DB_NAME' if PRODUCTION else 'POSTGRES_DB'),
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
     'NAME': os.environ.get('DB_NAME'),
     'USER': os.environ.get('DB_USER'),
     'PASSWORD': os.environ.get('DB_PASS'),
-    # If your are in development put in '' the IP addres
-    # of the postgres server
     'HOST': os.environ.get('DB_HOST') ,
     'PORT': os.environ.get('DB_PORT')
     }
