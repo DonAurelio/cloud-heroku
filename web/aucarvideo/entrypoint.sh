@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Setting env variables required to send emails
-# and other settings required for the application 
-# to work correctly
-source secrets.sh
-
 ./manage.py makemigrations --noinput
 
 ./manage.py migrate --noinput

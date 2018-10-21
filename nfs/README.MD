@@ -1,19 +1,6 @@
-# NFS Service
+# Configuring NFS Service in AWS
 
 The NFS server will be available for the WebServers and Workers. So they will share a media path on whih videos will be uploaded by mean of the WebServer. Then those videos will be processed by the Workers.
-
-## Requirements
-
-1. Development: Docker
-2. Deployment: Centos OS (AWS EC2 Instance), Docker
-
-## Run in Development
-
-Deploy the nfs server as follows within a Docker container
-
-```sh
-docker run -d --name aucar_nfs --privileged cpuguy83/nfs-server /etc/nfs/
-```
 
 ## Deployment in AWS
 

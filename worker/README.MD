@@ -4,43 +4,21 @@ The cellery worker is resposible for processing the videos placed in the nfs fol
 
 ## Requirements
 
-1. Development: Docker
-2. Production: Docker, nfs-utils
+1. Development: Linux OS (Local), Docker
+2. Production: Centos OS (AWS), Docker, nfs-utils
 
 ## Run in Development
 
-```sh
-docker build -t aucar_worker .
-```
-Export the **BROKER_IP**
-
-```sh
-export BROKER_IP="$(docker inspect -f "{{ .NetworkSettings.Networks.bridge.IPAddress }}" aucar_rabbit)"
-```
-Run the worker container and set the **BROKER_URL**, **WEB_IP** and **WEB_PORT** env variables.
+An place the **secrests.sh** file into worker directory to load the credentials into the container. Then run this command from the **worker directory**. .
 
 ```sh
 docker run --name aucar_worker \
-	-e BROKER_URL="pyamqp://aucar:aucar@${BROKER_IP}:5672/aucar" \
-	-e WEB_IP="<web-app-ip>" \
-	-e WEB_PORT="<web-app-port>" \
-	-v ${PWD}/supervisor/conf.d/:/etc/supervisor/conf.d/ \
-	-v ${PWD}/supervisor/logs/:/home/app/logs/ \
+	-v ${PWD}/celery:/home/app/celery \
+	-v ${PWD}/supervisor/conf.d:/etc/supervisor/conf.d \
+	-v ${PWD}/supervisor/logs:/home/app/logs \
 	-v ${PWD}/../web/aucarvideo/media:/home/app/nfs \
-	-p 8030:5555 \
 	aucar_worker
 ```
-
-BROKER_URL has the following format:
-
-```sh
-'pyamqp://${BROKER_PASS}:${BROKER_USER}@${BROKER_IP}:${BROKER_PORT}/${BROKER_VHOST}'
-```
-
-Get the Celery Flower monitoring GUI:
-
-* Using the container http://container-ip:5555
-* Using the host http://host-ip:8030 or localhost:8030.
 
 ## Run in AWS
 
@@ -76,29 +54,14 @@ nfs:/etc/nfs /etc/nfs	nfs	rw,sync,hard,intr	0	0
 
 ### Run the Worker in a Docker Container
 
-Exporrt the worker AWS instace env variables
-
-```sh
-export WEB_IP="ip-web"
-export WEB_PORT="port-web"
-export BROKER_IP="ip-broker"
-export BROKER_PORT=5672
-export BROKER_VHOST=aucar
-export BROKER_USER=aucar
-export BROKER_PASS=aucar
-```
-
 Run the container that will use the env variables defined on the AWS instance
 
 ```sh
-docker run -it --name aucar_worker \
-	-e BROKER_URL="pyamqp://${BROKER_PASS}:${BROKER_USER}@${BROKER_IP}:${BROKER_PORT}/${BROKER_VHOST}" \
-	-e WEB_IP=${WEB_IP} \
-	-e WEB_PORT=${WEB_PORT} \
-	-v ${PWD}/supervisor/conf.d/:/etc/supervisor/conf.d/ \
-	-v ${PWD}/supervisor/logs/:/home/app/logs/ \
-	-v /etc/nfs:/home/app/media/nfs \
-	-p 8030:5555 \
+docker run --name aucar_worker \
+	-v ${PWD}/celery:/home/app/celery \
+	-v ${PWD}/supervisor/conf.d:/etc/supervisor/conf.d \
+	-v ${PWD}/supervisor/logs:/home/app/logs \
+	-v /etc/home/nfs:/home/app/nfs \
 	aucar_worker
 ```
 

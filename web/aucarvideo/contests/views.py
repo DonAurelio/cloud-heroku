@@ -352,26 +352,6 @@ class VideoProcessingStatus(TemplateView):
     def dispatch(self,request,*args,**kwargs):
         return super().dispatch(request,*args,**kwargs)
 
-    def get(self,request,*args,**kwargs):
-        pending_videos = Video.objects.filter(
-            status=Video.PROCESSING,
-        ).exclude(
-            file__icontains='.mp4'
-        )
-
-        paths = []
-        for video in pending_videos:
-            data = (
-                request.tenant.domain_url,
-                video.id, 
-                video.file.url, 
-                video.converted_url
-            )
-            paths.append(data)
-
-
-        return JsonResponse(data=paths,safe=False)
-
     def post(self,request,*args,**kwargs):
         video_id = request.POST.get('video_id')
         video_id = int(video_id)

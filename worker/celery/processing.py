@@ -97,7 +97,7 @@ def process_video(input_file, output_file):
     return process.returncode, process.stdout, process.stderr
 
 
-def process_client_video(domain_url, video_id, input_file, output_file):
+def process_client_video(video_id, input_file, output_file):
     """
         Processes a video.
 
@@ -107,8 +107,6 @@ def process_client_video(domain_url, video_id, input_file, output_file):
         Example:
 
             [
-                # Domain URL where te video came from
-                "whatsapp.aucarvideo.com",
                 # The ID of the video
                 11,
                 # The path to the video in the media folder
@@ -122,31 +120,27 @@ def process_client_video(domain_url, video_id, input_file, output_file):
     success = 0
     if code == success:
         logging.info(f'Process success {input_file}')
-        notify_client(domain_url,video_id)
+        notify_client(video_id)
         return code
        
     logging.error(f'{out} {err} {input_file}')
     return code
 
 
-def notify_client(domain_url,video_id):
+def notify_client(video_id):
     """
         Notify to a client that a video has been processed
         succesfully.
-
-        domain_url (str): is the client home url without path,
-            example: facebook.aucarvideo.com.
 
         video_id (int): The id of the video being processed.
     """
 
     response = requests.post(
         url=CLIENT_VIDEO_STATUS_URL, 
-        headers={'host':domain_url},
         data= {'video_id':video_id}
     )
 
     if response.status_code == 200:
-        logging.info(f'Notification sended to {domain_url} about video {video_id}')
+        logging.info(f'Notification sended for video {video_id}')
     else:
-        logging.error(f'Notification error to {domain_url} about videos {video_id}')
+        logging.error(f'Notification error for videos {video_id}')

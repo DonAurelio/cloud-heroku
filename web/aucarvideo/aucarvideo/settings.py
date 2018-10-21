@@ -165,50 +165,18 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 #  Celery settings
-# CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+BROKER_URL =os.environ.get('BROKER_URL')
 
-BROKER_URL = "sqs://"
+# IF we use AWS SQS
+if 'sqs' in BROKER_URL:
+    # BROKER_URL = "sqs://"
+    BROKER_TRANSPORT_OPTIONS = {
+        'region': 'us-west-2',
+        'polling_interval': 20,
+        "queue_name_prefix": "aucar-sqs-C-"
+    }
 
-# BROKER_URL = 'https://sqs.us-west-2.amazonaws.com/660158453105/SQSC'
+    CELERY_RESULT_BACKEND = None
 
-# CELERY_DEFAULT_QUEUE = 'SQSC'
-# CELERY_SEND_TASK_ERROR_EMAILS = True
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_BACKEND = None # Disabling the results backend
-
-
-# CELERY_CONTENT_ENCODING = 'utf-8'
-# CELERY_ENABLE_REMOTE_CONTROL = False 
-# CELERY_SEND_EVENTS = False
-# Reason why we need the above is explained in Configuration Gotchas section.
-# CELERY_SQS_QUEUE_NAME = 'SQSC'
-# TASK_APPS = (
-#    'aucarvideo.celery',
-# )
-
-BROKER_TRANSPORT_OPTIONS = {
-    'region': 'us-west-2',
-    'polling_interval': 20,
-    "queue_name_prefix": "aucar-sqs-C-"
-}
-
-
-# Celery
-# BROKER_URL = "sqs://"
-
-CELERY_RESULT_BACKEND = None
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TASK_SERIALIZER = 'json'
-
-
-# BROKER_TRANSPORT_OPTIONS = {
-#     'region': 'us-west-2',
-#     'polling_interval': 20,
-# }
-
-# CELERY_DEFAULT_QUEUE = 'django_sqs_example'
 
 ROOT_URLCONF = 'aucarvideo.urls'
