@@ -47,14 +47,18 @@ if os.environ.get('AWS_ACCESS_KEY_ID',''):
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID','')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY','')
 
-    BROKER_URL = 'sqs://{0}:{1}@'.format(
-        urllib.quote(AWS_SQS_ACCESS_KEY, safe=''),
-        urllib.quote(AWS_SQS_SECRET_ACCESS_KEY, safe='')
+    BROKER_URL = 'sqs://{0}:{1}@{2}'.format(
+        # AWS_ACCESS_KEY_ID,
+        urllib.parse.quote(AWS_ACCESS_KEY_ID, safe=''),
+        # AWS_SECRET_ACCESS_KEY
+        urllib.parse.quote(AWS_SECRET_ACCESS_KEY, safe=''),
+        'sqs.us-west-2.amazonaws.com/660158453105/aucar-sqs-C-celery'
     )
 
     app = Celery('tasks',
         broker=BROKER_URL,
         result_backend=None,
+        task_default_queue='aucar-sqs-C-celery',
         broker_transport_options={
             'region': 'us-west-2',
             'polling_interval': 20,

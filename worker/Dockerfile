@@ -17,6 +17,9 @@ RUN mkdir -p /home/app
 # Working directory inside the container
 WORKDIR /home/app
 
+COPY ./requirements.txt .
+COPY ./entrypoint.sh .
+
 # Directory to mount the remote nfs folder
 RUN mkdir -p /home/app/nfs
 
