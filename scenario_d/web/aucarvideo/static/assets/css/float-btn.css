@@ -1,0 +1,26 @@
+.btn {
+  background-color: rgba(235,30, 0, 1);
+  color: white;
+  border: none;
+}
+
+.btn.focus, .uv-btn:focus, .uv-btn:hover {
+  color: white;
+  text-decoration: none;
+  background-color: #CC2525;
+  border-color: #ED2626;
+}
+
+.float-btn {
+  position: fixed;
+  z-index: 998;
+  right: 35px;
+  bottom: 35px;
+  margin-bottom: 0;
+  padding-top: 15px;
+}
+
+.float-btn button {
+  border-radius: 50%; 
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+}

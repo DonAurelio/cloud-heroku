@@ -1,0 +1,13 @@
+amqp==2.3.2
+celery==4.2.1
+boto==2.49.0
+boto3==1.9.23
+Django==2.1
+django-bootstrap3==10.0.1
+django-ses==0.8.6
+django-smtp-ssl==1.0
+future==0.16.0
+gunicorn==19.9.0
+Pillow==5.2.0
+psycopg2==2.7.5
+pytz==2018.5
