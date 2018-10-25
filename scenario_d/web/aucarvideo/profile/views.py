@@ -3,8 +3,11 @@ from django.views.generic import TemplateView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import views
+from django.db import transaction
 
 from profile.forms import UserCreateForm
+from profile.models import DynamoCompanyManager
+
 
 class RegisterView(TemplateView):
     def get(self, request,*args,**kwargs):
@@ -18,16 +21,22 @@ class RegisterView(TemplateView):
     def post(self, request,*args,**kwargs):
         user_form = UserCreateForm(request.POST)
         if user_form.is_valid():
-            user_form.save()
+            
+            # If some error occurs the database is rolled back
+            with transaction.atomic():
+                new_user = user_form.save()
+                manager = DynamoCompanyManager()
+                manager.create_company(company_name=new_user.company_name)
+            
             return redirect('profile:login')
             
-        else:
-            template_name = 'profile/register_form.html'
-            context = {
-                'user_form': user_form,
-            }
 
-            return render(request,template_name,context)
+        template_name = 'profile/register_form.html'
+        context = {
+            'user_form': user_form,
+        }
+
+        return render(request,template_name,context)
 
 
 

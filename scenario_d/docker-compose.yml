@@ -31,9 +31,10 @@ services:
     restart: always
     entrypoint: ./entrypoint.sh
     env_file:
-      # - ./development.env
-      - ./production.env
+      - ./development.env
+      # - ./production.env
     volumes:
+      - ./web/aucarvideo/entrypoint.sh:/usr/src/app/entrypoint.sh
       # Every changes made in the aucarvideo source code
       # is being seen by the container. Some times 
       # container reboot is required.
@@ -53,6 +54,8 @@ services:
       - nginx
       # - rabbitmq
       - worker
+    stdin_open: true
+    tty: true
 
 
   worker:
@@ -60,8 +63,8 @@ services:
     restart: always
     entrypoint: ./entrypoint.sh
     env_file:
-      # - ./development.env
-      - ./production.env 
+      - ./development.env
+      # - ./production.env 
     volumes:
       - ./worker/entrypoint.sh:/home/app/entrypoint.sh
       - ./worker/celery:/home/app/celery
@@ -79,8 +82,8 @@ services:
     image: postgres
     restart: always
     env_file:
-      # - ./development.env
-      - ./production.env
+      - ./development.env
+      # - ./production.env
     expose:
      - "5432"  # database port
 

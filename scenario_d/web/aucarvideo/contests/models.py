@@ -1,136 +1,119 @@
-from django.db import models
-from django.core.exceptions import ValidationError
 from django import forms
-from django.contrib.auth.models import User
 
-import os
 import datetime
-import pytz
+import boto3
+import botocore
 
-now = datetime.datetime.now()
 
+class DynamoContestManager(object):
 
-def validate_star_date(start_date):
-    """Validate start date."""
-    now = datetime.date.today()
+    def __init__(self):
+        # Dynamo resource
+        dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+        # Company Table
+        self.table_companies = dynamodb.Table('Companies')
+        # Each company has a contest and each contest has a map of videos
+        self.table_contest_videos = dynamodb.Table('ContestVideos')
 
-    # Now datetime is naive, so it is localized
-    # to the current user timezone.
-    #now_aware = pytz.utc.localize(now)
-    now_aware = now
+    def create_contest(self, company_name, contest_name, url, image_url, start_date, end_date, award_description ):
 
-    if start_date < now_aware:
-        raise ValidationError(
-            'Start date %(start)s must be greater than current time %(now)s',
-            params={
-                'start': start_date,
-                'now': now_aware
+        # We add a new contest the company contests map
+        response = self.table_companies.update_item(
+            Key={
+                'name': company_name
             },
-)
-
-
-class Contest(models.Model):
-
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
-    # The conetxt unique URL
-    url = models.CharField(max_length=200,blank=True,null=True,unique=True)
-    # The name of the competition
-    name = models.CharField(max_length=100,blank=False,null=False,unique=True)
-    # The banner image of the contests
-    banner = models.ImageField(upload_to='contests/banner',blank=True,null=False)
-    # The date on which te contests start
-    start_date = models.DateField(
-        validators=[validate_star_date],
-        help_text="Please use the following format: YYYY-MM-DD HH:MM:ss. e.g, 2018-08-14 22:10:24."
-    )
-    # The date on which the contests ends
-    end_date = models.DateField(blank=False,null=False)
-    # Description of the award
-    award_description = models.TextField(blank=False,null=False)
-
-    def __str__(self):
-        return self.name.title()
-
-    class Meta:
-        # Ordering by descending order
-        ordering = ['-start_date']
-
-    def public_videos_set(self):
-        return self.video_set.exclude(
-            status='Processing'
+            UpdateExpression = "SET Contests.#new_contest = :new_data",
+            ExpressionAttributeNames = { 
+                "#new_contest" : contest_name
+            },
+            ExpressionAttributeValues={
+                ':new_data': {
+                    'url': url,
+                    'image_url': image_url,
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'award_description': award_description
+                }
+            },
+            # Does not allow repeated Contests
+            ConditionExpression = "attribute_not_exists(Contests.#new_contest)"
         )
 
-    def clean(self):
-        """Check if start_date is lower than end_date."""
-        super(Contest, self).clean()
-        if self.start_date >= self.end_date:
-            raise forms.ValidationError('Start date must be less than the End date.')
+        # for every contest we create a video repository (Dynamo Table)
+        response = self.table_contest_videos.put_item(
+          Item={
+              'company': company_name,
+              'contest': contest_name,
+              'contest': {}
+          }
+        )
+
+        return response.get('ResponseMetadata').get('HTTPStatusCode')
+
+    def get_company_contests(self, company_name):
+        # Bringing the company data
+        try:
+            response = table_companies.get_item(
+                Key={
+                    'company': company_name,
+                }
+            )
+        except botocore.exceptions.ClientError as e:
+            print(e.response['Error']['Message'])
+            return {}
+        else:
+            item = response['Item']
+            print("GetItem succeeded:")
+            data_str = json.dumps(item, indent=4)
+            data_dic = json.loads(data_str)
+            print(data_dic)
+            print(type(data_dic))
+
+        return data_dic
 
 
-class Participant(models.Model):
-    """
-    A Participant is a persona that upload a video
-    for a given Video Contest.
-    """
-
-    # The first name of the person who upload the video
-    first_name = models.CharField(max_length=100,blank=True,null=True)
-    # The last name of the person who upload the video
-    last_name = models.CharField(max_length=100,blank=True,null=True)
-    # The email of the person who upload the video
-    email = models.EmailField(max_length=100,blank=True,null=True)
-
-    def __str__(self):
-        return self.email
-
-
-class Video(models.Model):
-    """
-    A video represents a video that a participant
-    upload to a given Video Context.
-    """
+class DynamoVideoManager(object):
 
     PROCESSING = 'Processing'
     CONVERTED = 'Converted'
 
-    STATUS = (
-        (PROCESSING, 'Processing'),
-        (CONVERTED, 'Converted'),
-    )
+    def __init__(self):
+        # Dynamo resource
+        dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+        # Each company has a contest and each contest has a map of videos
+        self.table_contest_videos = dynamodb.Table('ContestVideos')
 
-    # The proper video uploaded by the participant
-    file = models.FileField(upload_to='contests/videos')
-    # The contests to which the video belongs
-    contest = models.ForeignKey(Contest,on_delete=models.CASCADE,blank=True,null=True)
-    # The participant who uploaded the video
-    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
-    # The date on which the video was uploaded
-    uploaded_at = models.DateField(auto_now_add=True)
-    # How the vieo is related with the product the organization promotes
-    description = models.CharField(max_length=20)
-    # The status of the video convertion.
-    status = models.CharField(max_length=20,choices=STATUS,default=PROCESSING)
+    def create_video(self, company_name, contest_name, video_name, url, person_fname, person_lname, person_email ):
 
-    class Meta:
-        # Ordering by descending order
-        ordering = ['-uploaded_at']
+        # NOTE: we have to add an UUID to the video name to ensure the videos has unique identification
+        status = PROCESSING
+        uploaded_at = datetime.datetime.now()
 
-    @property
-    def url(self):
-        if '.mp4' in self.file.url:
-            return self.file.url 
+        response = self.table_contest_videos.update_item(
+            Key={
+                'company': company_name,
+                'contest': contest_name
+            },
+            UpdateExpression = "SET CompanyVideos.#new_video = :new_data",
+            ExpressionAttributeNames = { 
+                "#new_video" : video_name
+            },
+            ExpressionAttributeValues={
+                ':new_data': {
+                    'url': url,
+                    'status': status,
+                    'uploaded_at': uploaded_at,
+                    'person_fname': person_fname,
+                    'person_lname': person_lname,
+                    'person_email': person_email,
 
-        if self.status == self.CONVERTED:
-            return self.converted_url
+                }
+            },
+            # Does not allow repeated Contests
+            ConditionExpression = "attribute_not_exists(CompanyVideos.#new_video)"
+        )
 
-    @property
-    def converted_url(self):
-        # File name without extension
-        file_name = self.file.url[:-4]
-        # The name of the file that should be assigned to the 
-        # converted file
-        return f'{file_name}_{self.CONVERTED}.mp4'
+        return response.get('ResponseMetadata').get('HTTPStatusCode')
 
-    @property
-    def name(self):
-        return os.path.basename(self.file.name)
+    def get_videos(self, company_name, contest_name):
+        pass
