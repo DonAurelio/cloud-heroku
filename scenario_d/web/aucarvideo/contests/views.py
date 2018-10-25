@@ -22,6 +22,8 @@ from aucarvideo.celery import app as celery_app
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from django.shortcuts import reverse
+from django.shortcuts import render
+from django.http import HttpResponse
 
 from contests.forms import ContestForm
 
@@ -74,8 +76,8 @@ def slugify(s):
     return s
 
 
-class ContestCreate(FormView):
-    template_name = 'contest/contest_form.html'
+class ContestAdminCreate(FormView):
+    template_name = 'contests/contest_form.html'
     form_class = ContestForm
     # success_url = '/thanks/'
 
@@ -89,7 +91,20 @@ class ContestCreate(FormView):
         end_date = form.cleaned_data['end_date']
         award_description = form.cleaned_data['award_description']
         
-        # SAVE IN DYNAMO
+        manager = DynamoCompanyManager()
+        # Getting the company data as a Python dict
+        # Ex: {'Contests': {}, 'Name': 'company2'}
+        company = manager.create_contest(
+            company_name=self.request.user.company_name, 
+            contest_name=name,
+            url=url,
+            image_url=image,
+            start_date=start_date,
+            end_date=end_date,
+            award_description=award_description,
+        )
+
+        # UPLOAD IMAGE TO S3
 
         return super().form_valid(form)
 
@@ -97,14 +112,24 @@ class ContestCreate(FormView):
         return reverse('contests:contest_admin_list')
 
 
-class ContestList(TemplateView):
+class ContestAdminList(TemplateView):
 
     def get(self, request, *args, **kwargs):
         manager = DynamoCompanyManager()
         # Getting the company data as a Python dict
+        # Ex: {'Contests': {}, 'Name': 'company2'}
         company = manager.get_company(
-            company_name=request.user.get_company
+            company_name=request.user.company_name
         )
+
+        print(company)
+
+
+        template_name = 'contests/contest_admin_list.html'
+        context = {
+            'objects_list': company.get('Company',{})
+        }
+        return render(request,template_name,context)
 
 
 

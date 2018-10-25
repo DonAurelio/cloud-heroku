@@ -52,7 +52,7 @@ services:
       # - postgres
       - nginx
       # - rabbitmq
-      - worker
+      # - worker
 
 
   worker:

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 import boto3
+import botocore
+import json
 
 
 company_name = models.CharField(max_length=32, unique=True, null=True)
@@ -68,10 +70,11 @@ class DynamoCompanyManager(object):
 
     def get_company(self, company_name):
         # Bringing the company data
+        print('company_name',company_name)
         try:
-            response = table_companies.get_item(
+            response = self.table_companies.get_item(
                 Key={
-                    'company': company_name,
+                    'Name': company_name,
                 }
             )
         except botocore.exceptions.ClientError as e:
@@ -79,10 +82,7 @@ class DynamoCompanyManager(object):
             return {}
         else:
             item = response['Item']
-            print("GetItem succeeded:")
             data_str = json.dumps(item, indent=4)
             data_dic = json.loads(data_str)
-            print(data_dic)
-            print(type(data_dic))
 
         return data_dic
