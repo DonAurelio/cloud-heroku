@@ -25,9 +25,8 @@ from django.shortcuts import reverse
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from contests.forms import ContestForm
-
-from profile.models import DynamoCompanyManager
+from contests.forms import ContestCreateForm
+from contests.models import DynamoContestManager
 
 
 import re
@@ -78,33 +77,29 @@ def slugify(s):
 
 class ContestAdminCreate(FormView):
     template_name = 'contests/contest_form.html'
-    form_class = ContestForm
+    form_class = ContestCreateForm
     # success_url = '/thanks/'
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         name = form.cleaned_data['name']
-        url = slugify(form.cleaned_data['url'])
-        image = form.cleaned_data['image']
+        url = slugify(name)
+        image = self.request.FILES['image']
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
         award_description = form.cleaned_data['award_description']
         
-        manager = DynamoCompanyManager()
-        # Getting the company data as a Python dict
-        # Ex: {'Contests': {}, 'Name': 'company2'}
-        company = manager.create_contest(
+        manager = DynamoContestManager()
+        company = manager.create_or_update_contest(
             company_name=self.request.user.company_name, 
             contest_name=name,
             url=url,
-            image_url=image,
+            image=image,
             start_date=start_date,
             end_date=end_date,
             award_description=award_description,
         )
-
-        # UPLOAD IMAGE TO S3
 
         return super().form_valid(form)
 
