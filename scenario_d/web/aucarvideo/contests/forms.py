@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.forms import ModelForm
 from django import forms
 from django.forms.utils import ErrorList
@@ -80,13 +82,13 @@ class ContestUpdateForm(forms.Form):
 
 
 class VideoForm(forms.Form):
-    contest_name = forms.CharField(max_length=200, widget=forms.HiddenInput())
+    # contest_name = forms.CharField(max_length=200, widget=forms.HiddenInput(),required=False)
     video = forms.FileField()
-    participant_fname = forms.CharField(max_length=200)
-    participant_lname = forms.CharField(max_length=200)
-    participant_email = forms.EmailField()
+    participant_fname = forms.CharField(label='Nombre del Participante',max_length=200)
+    participant_lname = forms.CharField(label='Apellido del Participante',max_length=200)
+    participant_email = forms.EmailField(label='Correo del Participante')
     # upload_at = forms.DateField(auto_now_add=True)
-    description = forms.CharField(max_length=600)
+    description = forms.CharField(label='Descripción del Video',max_length=600)
     # status = forms.CharField(max_length=20)
     # S3 image url
-    s3_video_url = forms.CharField(max_length=200, widget=forms.HiddenInput())
+    s3_video_url = forms.CharField(max_length=200, widget=forms.HiddenInput(),required=False)

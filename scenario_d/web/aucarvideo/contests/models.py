@@ -1,3 +1,5 @@
+from django.conf import settings
+
 import datetime
 import boto3
 import botocore
@@ -24,20 +26,20 @@ class DynamoContestManager(object):
 
         # S3 resouce
         self.s3 = boto3.resource('s3')
-        self.bucket = self.s3.Bucket('aucarvideobucket')
+        self.bucket = self.s3.Bucket(settings.S3_BUCKET_NAME)
 
-    def add_object_to_bucket(file_obj):
+    def add_object_to_bucket(self, file_obj):
         # Creating a key to store data into s3 bucket. 
         # each file in s3 must have unique key.
         obj_key = uuid.uuid4().hex
 
-        self.bucket.upload_fileobj(Fileobj=file_obj,Key=obj_key)
+        self.bucket.upload_fileobj(Fileobj=file_obj, Key=obj_key)
         
         # Giving acces permissions to images 
-        object_acl = self.s3.ObjectAcl('aucarvideobucket', obj_key)
+        object_acl = self.s3.ObjectAcl(settings.S3_BUCKET_NAME, obj_key)
         response = object_acl.put(ACL='public-read')
 
-        return f'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{obj_key}' 
+        return obj_key, settings.FRONT_CONTENT_URL_FORMAT.format(s3_obj_key=obj_key)
 
     def delete_object_from_bucket(self,obj_url):
         obj_key = obj_url.split('/')[-1]
@@ -59,7 +61,7 @@ class DynamoContestManager(object):
 
     def create_contest(self, company_name, contest_name, image, url, start_date, end_date, award_description):
 
-        image_url = self.add_object_to_bucket(image.file)
+        obj_key, image_url = self.add_object_to_bucket(image.file)
 
         # Creating the new contest inside the company map 
         contest_kwargs = {
@@ -111,7 +113,7 @@ class DynamoContestManager(object):
         
         if new_image and image_url:
             self.delete_object_from_bucket(image_url)
-            image_url = self.add_object_to_bucket(image.file)
+            obj_key, image_url = self.add_object_to_bucket(image.file)
 
         # Creating the new contest inside the company map 
         kwargs = {
@@ -200,9 +202,9 @@ class DynamoVideoManager(object):
         self.table_contest_videos = dynamodb.Table('ContestVideos')
         # S3 resouce
         self.s3 = boto3.resource('s3')
-        self.bucket = self.s3.Bucket('aucarvideobucket')
+        self.bucket = self.s3.Bucket(settings.S3_BUCKET_NAME)
 
-    def add_object_to_bucket(file_obj):
+    def add_object_to_bucket(self, file_obj):
         # Creating a key to store data into s3 bucket. 
         # each file in s3 must have unique key.
         obj_key = uuid.uuid4().hex
@@ -210,10 +212,10 @@ class DynamoVideoManager(object):
         self.bucket.upload_fileobj(Fileobj=file_obj,Key=obj_key)
         
         # Giving acces permissions to images 
-        object_acl = self.s3.ObjectAcl('aucarvideobucket', obj_key)
+        object_acl = self.s3.ObjectAcl(settings.S3_BUCKET_NAME, obj_key)
         response = object_acl.put(ACL='public-read')
 
-        return f'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{obj_key}' 
+        return obj_key, settings.FRONT_CONTENT_URL_FORMAT.format(s3_obj_key=obj_key)
 
     def delete_object_from_bucket(self,obj_url):
         obj_key = obj_url.split('/')[-1]
@@ -235,55 +237,35 @@ class DynamoVideoManager(object):
 
     def create_video(self, company_name, contest_name, video, description, status, p_fname, p_lname, p_email):
 
-        video_url = self.add_object_to_bucket(video.file)
+        obj_key, video_url = self.add_object_to_bucket(video.file)
 
-        # kwargs = {
-        #     'Key': {
-        #         'Company': company_name,
-        #         'Contest': contest_name
-        #     },
-        #     'UpdateExpression': "SET Videos = list_append(Videos, :new_video)",
-        #     'ExpressionAttributeValues':{
-        #         ':new_data': {
-        #             'Name': video.file_name,
-        #             'Url': video_url,
-        #             'Status': status,
-        #             'Person_fname': person_fname,
-        #             'Person_lname': person_lname,
-        #             'Person_email': person_email,
-        #         }
-        #     }
-        # }
-
-        # Creating the new contest inside the company map 
         kwargs = {
-            'Key':{
-                'Name': company_name
+            'Key': {
+                'Company': company_name,
+                'Contest': contest_name
             },
-            'UpdateExpression':"SET Contests.#new_contest = :new_data",
+            'UpdateExpression': "SET Videos.#new_video = :new_data",
             'ExpressionAttributeNames': { 
-                "#new_contest" : contest_name
+                "#new_video" : video_url
             },
             'ExpressionAttributeValues':{
                 ':new_data': {
-                    'Url': url,
-                    'Image_url': image_url,
-                    'Start_date': str(start_date),
-                    'End_date': str(end_date),
-                    'Award_description': award_description
+                    'Name': video.name,
+                    'Url': video_url,
+                    'Description': description,
+                    'Status': status,
+                    'Person_fname': p_fname,
+                    'Person_lname': p_lname,
+                    'Person_email': p_email,
                 }
-            },
-
+            }
         }
 
-        try:
-            response = self.table_contest_videos.update_item(**kwargs)
+        # try:
+        response = self.table_contest_videos.update_item(**kwargs)
 
-        except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
-                raise Exception(f'El video \'{contest_name}\' ya existe.')
-            else:
-                raise Exception('No es posible insertar datos en DynamoDB.')
+        # except botocore.exceptions.ClientError as e:
+        #     raise Exception('No es posible insertar datos en DynamoDB.')
 
         return response.get('ResponseMetadata').get('HTTPStatusCode')
 

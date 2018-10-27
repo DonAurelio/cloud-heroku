@@ -164,7 +164,7 @@ if PRODUCTION:
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-#  Celery settings
+# Celery settings
 BROKER_URL =os.environ.get('BROKER_URL')
 
 # IF we use AWS SQS
@@ -180,3 +180,8 @@ if 'sqs' in BROKER_URL:
 
 
 ROOT_URLCONF = 'aucarvideo.urls'
+
+# S3 settings
+S3_BUCKET_NAME = 'aucarvideobucket'
+# FRONT_CONTENT_URL_FORMAT = 'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{s3_obj_key}'
+FRONT_CONTENT_URL_FORMAT = 'http://d145tcqebewora.cloudfront.net/{s3_obj_key}'
