@@ -1,11 +1,11 @@
 from django.forms import ModelForm
 from django import forms
+from django.forms.utils import ErrorList
 
 import datetime
 
 
 class ContestCreateForm(forms.Form):
-    
     name = forms.CharField(max_length=200)
     image = forms.FileField()
     start_date = forms.DateField(
@@ -13,6 +13,7 @@ class ContestCreateForm(forms.Form):
     )
     end_date = forms.DateField()
     award_description = forms.CharField(max_length=200)
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -38,6 +39,11 @@ class ContestCreateForm(forms.Form):
             )
         if start_date >= end_date:
             raise forms.ValidationError('Start date must be less than the End date.')
+
+    def save(self, commit=True):
+        instance = None
+        print('THE SAVE METHOD WAS CALLED')
+        return instance
 
 
 class ContestUpdateForm(forms.Form):

@@ -1,9 +1,12 @@
-from django import forms
-
 import datetime
 import boto3
 import botocore
 import uuid
+import logging
+
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 class DynamoContestManager(object):
@@ -22,7 +25,7 @@ class DynamoContestManager(object):
         self.s3 = boto3.resource('s3')
         self.bucket = self.s3.Bucket('aucarvideobucket')
 
-    def create_or_update_contest(self, company_name, contest_name, url, image, start_date, end_date, award_description):
+    def create_or_update_contest(self, company_name, contest_name, url, image, start_date, end_date, award_description, update=False):
 
         # Creating a key to store data into s3 bucket. 
         # each file in s3 must have unique key.
@@ -35,21 +38,16 @@ class DynamoContestManager(object):
 
         image_url = f'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{image_key}' 
 
-        bucket_location = boto3.client('s3').get_bucket_location(Bucket=s3_bucket_name)
-        object_url = "https://s3-{0}.amazonaws.com/{1}/{2}".format(
-            bucket_location['LocationConstraint'],
-            s3_bucket_name,
-            key_name)
-
-        response = self.table_companies.update_item(
-            Key={
+        # Creating the new contest inside the company map 
+        kwargs = {
+            'Key':{
                 'Name': company_name
             },
-            UpdateExpression = "SET Contests.#new_contest = :new_data",
-            ExpressionAttributeNames = { 
+            'UpdateExpression':"SET Contests.#new_contest = :new_data",
+            'ExpressionAttributeNames': { 
                 "#new_contest" : contest_name
             },
-            ExpressionAttributeValues={
+            'ExpressionAttributeValues':{
                 ':new_data': {
                     'Url': url,
                     'Image_url': image_url,
@@ -58,21 +56,32 @@ class DynamoContestManager(object):
                     'Award_description': award_description
                 }
             },
-            # Does not allow repeated Contests
-            ConditionExpression = "attribute_not_exists(Contests.#new_contest)"
-        )
-        print('Update item',response)
 
-        # for every contest, we create a video repository (Dynamo Table)
-        response = self.table_contest_videos.put_item(
-          Item={
-              'Company': company_name,
-              'Contest': contest_name,
-              'Videos': {}
-          }
-        )
+        }
 
-        print('Update item ii',response)
+        # If we are performing an create operation we check for no repeated 
+        # contest names
+        if not update:
+            # Does not allow repeated Contests names
+            kwargs['ConditionExpression'] = "attribute_not_exists(Contests.#new_contest)"
+        try:
+            response = self.table_companies.update_item(**kwargs)
+
+            # for every contest, we create a video repository (Dynamo Table)
+            response = self.table_contest_videos.put_item(
+              Item={
+                  'Company': company_name,
+                  'Contest': contest_name,
+                  'Videos': {}
+              }
+            )
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+                raise Exception(f'El concurso \'{contest_name}\' ya existe.')
+            else:
+                raise Exception('No es posible insertar datos en DynamoDB.')
+
+
 
         return response.get('ResponseMetadata').get('HTTPStatusCode')
 

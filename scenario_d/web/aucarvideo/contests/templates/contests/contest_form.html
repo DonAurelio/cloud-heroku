@@ -47,6 +47,8 @@
               <div class="panel-body">
                 <form method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
+                  {# To display messages #}
+                  {% include 'messages.html' %}
                   {% bootstrap_form form %}
                   <div class="pull-right">
                     <input class="btn btn-success text-white custom-shadow" type="submit" value="Aceptar"/>
