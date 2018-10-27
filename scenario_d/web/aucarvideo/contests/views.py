@@ -34,7 +34,9 @@ from django.http import Http404
 
 from contests.forms import ContestCreateForm
 from contests.forms import ContestUpdateForm
+from contests.forms import VideoForm
 from contests.models import DynamoContestManager
+from contests.models import DynamoVideoManager
 
 
 import re
@@ -101,20 +103,20 @@ class ContestAdminCreate(FormView):
         
         try:
             manager = DynamoContestManager()
-            company = manager.create_or_update_contest(
+            company = manager.create_contest(
                 company_name=self.request.user.company_name, 
                 contest_name=name,
+                image=image,
                 url=url,
                 start_date=start_date,
                 end_date=end_date,
                 award_description=award_description,
-                image=image
             )
             messages.success(self.request,'El concurso fue creado con exito')
         except Exception as e:
             messages.warning(self.request,str(e))
 
-        return HttpResponseRedirect(reverse('contests:contest_admin_create'))
+        return HttpResponseRedirect(reverse('contests:contest_admin_list'))
 
 
 class ContestAdminList(TemplateView):
@@ -123,7 +125,7 @@ class ContestAdminList(TemplateView):
         manager = DynamoContestManager()
         # Getting the company data as a Python dict
         # Ex: {'Contests': {}, 'Name': 'company2'}
-        data = manager.get_company_contests(
+        data = manager.get_contests(
             company_name=request.user.company_name
         )
 
@@ -170,10 +172,11 @@ class ContestAdminUpdate(FormView):
 
         initial['name'] = contest_name
         initial['url'] = contest_data.get('Url')
-        initial['image'] = contest_data.get('Image_url')
         initial['start_date'] = contest_data.get('Start_date')
         initial['end_date'] = contest_data.get('End_date')
         initial['award_description'] = contest_data.get('Award_description')
+
+        initial['s3_image_url'] = contest_data.get('Image_url')
 
         # If the contest os not found we will return a 404 error
         return initial
@@ -182,15 +185,8 @@ class ContestAdminUpdate(FormView):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
 
-        image = None
-        image_url = ''
-        if 'image' in self.request.FILES:
-            image = self.request.FILES['image']
-            # SUBIR A S3
-            print("NUEVA IMAGEN")
-        else:
-            image_url = form.cleaned_data['image']
-            print("VIEJA IMAGEN")
+        image = self.request.FILES['image'] if 'image' in self.request.FILES else None
+        s3_image_url = form.cleaned_data['s3_image_url']
 
         url = slugify(form.cleaned_data['url'])
         name = form.cleaned_data['name']
@@ -198,24 +194,50 @@ class ContestAdminUpdate(FormView):
         end_date = form.cleaned_data['end_date']
         award_description = form.cleaned_data['award_description']
         
-        # try:
-        manager = DynamoContestManager()
-        company = manager.create_or_update_contest(
-            company_name=self.request.user.company_name, 
-            contest_name=name,
-            url=url,
-            start_date=start_date,
-            end_date=end_date,
-            award_description=award_description,
-            image=image,
-            image_url=image_url,
-            update=True
-        )
-        messages.success(self.request,f'El concurso {name} fue actualizado')
-        # except Exception as e:
-        #     messages.warning(self.request,str(e))
+        try:
+            manager = DynamoContestManager()
+            company = manager.update_contest(
+                company_name=self.request.user.company_name, 
+                contest_name=name,
+                url=url,
+                new_image=image,
+                image_url=s3_image_url,
+                start_date=start_date,
+                end_date=end_date,
+                award_description=award_description,
+                image=image,
+                image_url=image_url,
+                update=True
+            )
+            messages.success(self.request,f'El concurso {name} fue actualizado')
+        except Exception as e:
+            messages.warning(self.request,str(e))
 
-        return HttpResponseRedirect(reverse('contests:contest_admin_create'))
+        return HttpResponseRedirect(reverse('contests:contest_admin_list'))
+
+
+class ContestAdminDetail(TemplateView):
+
+    def get(self, request, *args, **kwargs):
+        company_name = self.request.user.company_name
+        contest_url = kwargs.get('url')
+        c_manager = DynamoContestManager()
+        data = c_manager.get_contest_by_url(company_name,contest_url)
+        contest_name, contest_data = data
+        # Traer los detalles del concurso 
+        # Traer los videos del concurso
+        # v_manager = DynamoVideoManager()
+        # videos_dict = v_manager.get_videos(company_name,contest_name)
+
+        template_name = 'contests/contest_admin_detail.html'
+        context = {
+            'contest' :{
+                'name': contest_name,
+                'award_description': contest_data.get('Award_description')
+            }
+        }
+        return render(request,template_name,context)
+
 
 
 class ContestAdminDelete(TemplateView):
@@ -246,6 +268,64 @@ class ContestAdminDelete(TemplateView):
         
         messages.error(request,f'El concurso {contest_url} no fue eliminado.')
         return HttpResponseRedirect(reverse('contests_contest_admin_list'))
+
+
+class VideoAdminCreate(FormView):
+
+    template_name = 'contests/video_form.html'
+    form_class = VideoForm
+
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        initial = super(VideoAdminCreate, self).get_initial()
+        initial['contest_name'] = self.kwargs.get('name')
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        company_name=self.request.user.company_name
+        contest_name = form.cleaned_data['contest_name']
+
+        video = form.cleaned_data['video']
+        p_fname = form.cleaned_data['participant_fname']
+        p_lname = form.cleaned_data['participant_lname']
+        p_email = form.cleaned_data['participant_email']
+        description = form.cleaned_data['description']
+        status = 'PROCESSING'
+
+        manager = DynamoVideoManager()
+        manager.create_video(
+            company_name=company_name,
+            contest_name=contest_name,
+            video=video,
+            description=description,
+            status=status,
+            p_fname=p_fname,
+            p_lname=p_lname,
+            p_email=p_email
+        )
+
+        return HttpResponse('Building ...')
+     
+        # try:
+        #     manager = DynamoVideoManager()
+        #     company = manager.create_or_update_video(
+        #         company_name=self.request.user.company_name, 
+        #         contest_name=name,
+        #         participant_fname=participant_fname,
+        #         participant_lname=participant_lname,
+        #         participant_email=participant_email,
+        #         description=description,
+        #         status=status,
+        #         video=file,
+        #     )
+        #     messages.success(self.request,'El video fue creado con exito')
+        # except Exception as e:
+        #     messages.warning(self.request,str(e))
+
+        # return HttpResponseRedirect(reverse('contests:contest_admin_detail'))
 
 # class ContestDetail(ListView):
 #     """

@@ -46,8 +46,9 @@
               </div>
               <div class="panel-body">
                 <form method="POST" enctype="multipart/form-data">
-                  {% bootstrap_form video_form %}
-                  {% bootstrap_form participant_form %}
+                  {# To display messages #}
+                  {% include 'messages.html' %}
+                  {% bootstrap_form form %}
                   <label class="checkbox-inline"><input type="checkbox" name="send_mail" value="send_mail">Enviar correo?</label>
                   <div class="pull-right">
                     <input class="btn btn-success text-white custom-shadow" type="submit" value="Aceptar"/>

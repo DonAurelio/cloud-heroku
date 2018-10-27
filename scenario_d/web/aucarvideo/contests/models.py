@@ -26,19 +26,92 @@ class DynamoContestManager(object):
         self.s3 = boto3.resource('s3')
         self.bucket = self.s3.Bucket('aucarvideobucket')
 
-    def create_or_update_contest(self, company_name, contest_name, url, start_date, end_date, award_description, image=None, image_url='', update=False):
+    def add_object_to_bucket(file_obj):
+        # Creating a key to store data into s3 bucket. 
+        # each file in s3 must have unique key.
+        obj_key = uuid.uuid4().hex
 
-        if image:
-            # Creating a key to store data into s3 bucket. 
-            # each file in s3 must have unique key.
-            image_key = uuid.uuid4().hex
-            # Saving image into s3 bucket
-            self.bucket.upload_fileobj(Fileobj=image.file,Key=image_key)
-            # Giving acces permissions to images 
-            object_acl = self.s3.ObjectAcl('aucarvideobucket', image_key)
-            response = object_acl.put(ACL='public-read')
+        self.bucket.upload_fileobj(Fileobj=file_obj,Key=obj_key)
+        
+        # Giving acces permissions to images 
+        object_acl = self.s3.ObjectAcl('aucarvideobucket', obj_key)
+        response = object_acl.put(ACL='public-read')
 
-            image_url = f'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{image_key}' 
+        return f'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{obj_key}' 
+
+    def delete_object_from_bucket(self,obj_url):
+        obj_key = obj_url.split('/')[-1]
+
+        response = self.bucket.delete_objects(
+            Delete={
+                'Objects': [
+                    {
+                        'Key': obj_key,
+                    },
+                ],
+                'Quiet': False
+            },
+            MFA='string',
+            RequestPayer='requester'
+        )
+
+        return response.get('ResponseMetadata').get('HTTPStatusCode')
+
+    def create_contest(self, company_name, contest_name, image, url, start_date, end_date, award_description):
+
+        image_url = self.add_object_to_bucket(image.file)
+
+        # Creating the new contest inside the company map 
+        contest_kwargs = {
+            'Key':{
+                'Name': company_name
+            },
+            'UpdateExpression':"SET Contests.#new_contest = :new_data",
+            'ExpressionAttributeNames': { 
+                "#new_contest" : contest_name
+            },
+            'ExpressionAttributeValues':{
+                ':new_data': {
+                    'Url': url,
+                    'Image_url': image_url,
+                    'Start_date': str(start_date),
+                    'End_date': str(end_date),
+                    'Award_description': award_description
+                }
+            },
+            # If the contest already exists it will raise and exeption
+            'ConditionExpression': "attribute_not_exists(Contests.#new_contest)"
+        }
+
+        # Creating the contest videos repository (dynamo table) as empty
+        videos_table_kwargs = {              
+            'Item':{
+              'Company': company_name,
+              'Contest': contest_name,
+              'Videos': {}
+            }
+        }
+
+        try:
+
+            response = self.table_companies.update_item(**contest_kwargs)
+            response = self.table_contest_videos.put_item(**videos_table_kwargs)
+
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+                raise Exception(f'El concurso \'{contest_name}\' ya existe.')
+            else:
+                raise Exception('No es posible insertar datos en DynamoDB.')
+
+        return response.get('ResponseMetadata').get('HTTPStatusCode')
+
+    def update_contest(self, company_name, contest_name, new_image, image_url, url, start_date, end_date, award_description):
+
+        assert image_url, 'image_url must be provided!'
+        
+        if new_image and image_url:
+            self.delete_object_from_bucket(image_url)
+            image_url = self.add_object_to_bucket(image.file)
 
         # Creating the new contest inside the company map 
         kwargs = {
@@ -61,33 +134,16 @@ class DynamoContestManager(object):
 
         }
 
-        # If we are performing an create operation we check for no repeated 
-        # contest names
-        if not update:
-            # Does not allow repeated Contests names
-            kwargs['ConditionExpression'] = "attribute_not_exists(Contests.#new_contest)"
         try:
             response = self.table_companies.update_item(**kwargs)
 
-            # for every contest, we create a video repository (Dynamo Table)
-            response = self.table_contest_videos.put_item(
-              Item={
-                  'Company': company_name,
-                  'Contest': contest_name,
-                  'Videos': {}
-              }
-            )
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
-                raise Exception(f'El concurso \'{contest_name}\' ya existe.')
-            else:
-                raise Exception('No es posible insertar datos en DynamoDB.')
+            raise Exception('No es posible insertar datos en DynamoDB.')
 
         return response.get('ResponseMetadata').get('HTTPStatusCode')
 
-    def get_company_contests(self, company_name):
+    def get_contests(self, company_name):
         # Bringing the company data
-        print('company_name',company_name)
         try:
             response = self.table_companies.get_item(
                 Key={
@@ -95,10 +151,8 @@ class DynamoContestManager(object):
                 }
             )
         except botocore.exceptions.ClientError as e:
-            print(e.response['Error']['Message'])
             return {}
         else:
-            print(response)
             item = response['Item']
             data_str = json.dumps(item, indent=4)
             data_dic = json.loads(data_str)
@@ -107,10 +161,11 @@ class DynamoContestManager(object):
 
     def get_contest_by_url(self, company_name, contest_url):
 
-        data = self.get_company_contests(company_name)
+        data = self.get_contests(company_name)
         contests = data.get('Contests',{})
         contest = None
         for contest_name, contest_data in contests.items():
+            print('data',contest_name,contest_data, contest_url, contest_data.get('Url') == contest_url)
             if contest_data.get('Url') == contest_url:
                 contest = contest_name, contest_data
 
@@ -135,48 +190,137 @@ class DynamoContestManager(object):
 
         return response.get('ResponseMetadata').get('HTTPStatusCode')
 
-class DynamoVideoManager(object):
 
-    PROCESSING = 'Processing'
-    CONVERTED = 'Converted'
+class DynamoVideoManager(object):
 
     def __init__(self):
         # Dynamo resource
         dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
         # Each company has a contest and each contest has a map of videos
         self.table_contest_videos = dynamodb.Table('ContestVideos')
+        # S3 resouce
+        self.s3 = boto3.resource('s3')
+        self.bucket = self.s3.Bucket('aucarvideobucket')
 
-    def create_video(self, company_name, contest_name, video_name, url, person_fname, person_lname, person_email ):
+    def add_object_to_bucket(file_obj):
+        # Creating a key to store data into s3 bucket. 
+        # each file in s3 must have unique key.
+        obj_key = uuid.uuid4().hex
 
-        # NOTE: we have to add an UUID to the video name to ensure the videos has unique identification
-        status = PROCESSING
-        uploaded_at = datetime.datetime.now()
+        self.bucket.upload_fileobj(Fileobj=file_obj,Key=obj_key)
+        
+        # Giving acces permissions to images 
+        object_acl = self.s3.ObjectAcl('aucarvideobucket', obj_key)
+        response = object_acl.put(ACL='public-read')
 
-        response = self.table_contest_videos.update_item(
-            Key={
-                'company': company_name,
-                'contest': contest_name
+        return f'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{obj_key}' 
+
+    def delete_object_from_bucket(self,obj_url):
+        obj_key = obj_url.split('/')[-1]
+
+        response = self.bucket.delete_objects(
+            Delete={
+                'Objects': [
+                    {
+                        'Key': obj_key,
+                    },
+                ],
+                'Quiet': False
             },
-            UpdateExpression = "SET CompanyVideos.#new_video = :new_data",
-            ExpressionAttributeNames = { 
-                "#new_video" : video_name
-            },
-            ExpressionAttributeValues={
-                ':new_data': {
-                    'url': url,
-                    'status': status,
-                    'uploaded_at': uploaded_at,
-                    'person_fname': person_fname,
-                    'person_lname': person_lname,
-                    'person_email': person_email,
-
-                }
-            },
-            # Does not allow repeated Contests
-            ConditionExpression = "attribute_not_exists(CompanyVideos.#new_video)"
+            MFA='string',
+            RequestPayer='requester'
         )
 
         return response.get('ResponseMetadata').get('HTTPStatusCode')
 
+    def create_video(self, company_name, contest_name, video, description, status, p_fname, p_lname, p_email):
+
+        video_url = self.add_object_to_bucket(video.file)
+
+        # kwargs = {
+        #     'Key': {
+        #         'Company': company_name,
+        #         'Contest': contest_name
+        #     },
+        #     'UpdateExpression': "SET Videos = list_append(Videos, :new_video)",
+        #     'ExpressionAttributeValues':{
+        #         ':new_data': {
+        #             'Name': video.file_name,
+        #             'Url': video_url,
+        #             'Status': status,
+        #             'Person_fname': person_fname,
+        #             'Person_lname': person_lname,
+        #             'Person_email': person_email,
+        #         }
+        #     }
+        # }
+
+        # Creating the new contest inside the company map 
+        kwargs = {
+            'Key':{
+                'Name': company_name
+            },
+            'UpdateExpression':"SET Contests.#new_contest = :new_data",
+            'ExpressionAttributeNames': { 
+                "#new_contest" : contest_name
+            },
+            'ExpressionAttributeValues':{
+                ':new_data': {
+                    'Url': url,
+                    'Image_url': image_url,
+                    'Start_date': str(start_date),
+                    'End_date': str(end_date),
+                    'Award_description': award_description
+                }
+            },
+
+        }
+
+        try:
+            response = self.table_contest_videos.update_item(**kwargs)
+
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+                raise Exception(f'El video \'{contest_name}\' ya existe.')
+            else:
+                raise Exception('No es posible insertar datos en DynamoDB.')
+
+        return response.get('ResponseMetadata').get('HTTPStatusCode')
+
+    def delete_video_by_url(self, company_name, contest_name, video_url):
+
+        contest_name, contest_data = self.get_contest_by_url(company_name, contest_url)
+
+        # Creating the new contest inside the company map 
+        kwargs = {
+            'Key':{
+                'Name': company_name
+            },
+            'UpdateExpression':"REMOVE Contests.#contest",
+            'ExpressionAttributeNames': { 
+                "#contest" : contest_name
+            }
+        }
+
+        response = self.table_companies.update_item(**kwargs)
+
+        return response.get('ResponseMetadata').get('HTTPStatusCode')
+
     def get_videos(self, company_name, contest_name):
-        pass
+        try:
+            response = self.table_contest_videos.get_item(
+                Key={
+                    'Company': company_name,
+                    'Contest': contest_name
+                }
+            )
+        except botocore.exceptions.ClientError as e:
+            print(e.response['Error']['Message'])
+            return {}
+        else:
+            print(response)
+            item = response['Item']
+            data_str = json.dumps(item, indent=4)
+            data_dic = json.loads(data_str)
+
+        return data_dic.get('Videos')

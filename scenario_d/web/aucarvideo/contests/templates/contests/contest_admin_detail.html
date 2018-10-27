@@ -25,7 +25,7 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Videos <small>mantente acerca de los videos subidos por los usuarios</small></h1>
+    <h1 class="page-header">Videos de {{ contest.name }} <small>{{ contest.award_description }}</small></h1>
     <!-- end page-header -->
 
     <div class="row">
@@ -36,6 +36,8 @@
             <h4 class="panel-title">Videos</h4>
           </div>
           <div class="panel-body">
+            {# To display messages #}
+            {% include 'messages.html' %}
             {% if object_list %}
             <div class="table-responsive">
               <table id="concurso" class="table table-bordered table-striped">
@@ -116,7 +118,7 @@
       </div>
     </div>
     <div class="btn-group pull-right float-btn">
-      <a href="{% url 'contests:video_create' contest.pk %}">
+      <a href="{% url 'contests:video_admin_create' contest.name %}">
         <button type="button" class="btn btn-success "><i class="fa fa-plus"></i></button>
       </a>
     </div>
