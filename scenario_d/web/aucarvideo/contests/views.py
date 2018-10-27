@@ -218,6 +218,9 @@ class ContestAdminUpdate(FormView):
 
 
 class ContestAdminDetail(TemplateView):
+    """
+    Display videos and data from a given contest.
+    """
 
     def get(self, request, *args, **kwargs):
         company_name = self.request.user.company_name
@@ -225,21 +228,50 @@ class ContestAdminDetail(TemplateView):
         c_manager = DynamoContestManager()
         data = c_manager.get_contest_by_url(company_name,contest_url)
         contest_name, contest_data = data
-        # Traer los detalles del concurso 
-        # Traer los videos del concurso
-        # v_manager = DynamoVideoManager()
-        # videos_dict = v_manager.get_videos(company_name,contest_name)
+
+        v_manager = DynamoVideoManager()
+        object_list = v_manager.get_videos(company_name,contest_name)
+        
+        # Show 23 contacts per page
+        paginator = Paginator(list(object_list.items()), 1)
+
+        page = request.GET.get('page')
+        object_list = paginator.get_page(page)
 
         template_name = 'contests/contest_admin_detail.html'
         context = {
             'contest' :{
                 'name': contest_name,
                 'award_description': contest_data.get('Award_description')
-            }
+            },
+            'is_paginated': True,
+            'object_list': object_list
         }
         return render(request,template_name,context)
 
+    # def get(self, request, *args, **kwargs):
+    #     manager = DynamoContestManager()
+    #     # Getting the company data as a Python dict
+    #     # Ex: {'Contests': {}, 'Name': 'company2'}
+    #     data = manager.get_contests(
+    #         company_name=request.user.company_name
+    #     )
 
+    #     contests_dict = data.get('Contests')
+    #     ordered_contests = sorted(contests_dict.items(), key=lambda x: int(x[1]['Start_date'].replace('-','')))
+
+    #     # Show 23 contacts per page
+    #     paginator = Paginator(ordered_contests, 1)
+
+    #     page = request.GET.get('page')
+    #     object_list = paginator.get_page(page)
+
+    #     template_name = 'contests/contest_admin_list.html'
+    #     context = {
+    #         'is_paginated': True,
+    #         'object_list': object_list
+    #     }
+    #     return render(request,template_name,context)
 
 class ContestAdminDelete(TemplateView):
 
@@ -282,13 +314,15 @@ class VideoAdminCreate(FormView):
         Returns the initial data to use for forms on this view.
         """
         initial = super(VideoAdminCreate, self).get_initial()
-        # initial['contest_name'] = 
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         company_name=self.request.user.company_name
-        contest_name = self.kwargs.get('name')
+        contest_url = self.kwargs.get('url')
+
+        manager = DynamoContestManager()
+        contest_name, contest_data = manager.get_contest_by_url(company_name,contest_url)
 
         video = form.cleaned_data['video']
         p_fname = form.cleaned_data['participant_fname']
@@ -314,36 +348,7 @@ class VideoAdminCreate(FormView):
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
 
-        return HttpResponseRedirect(reverse('contests:video_admin_list'))
-
-
-# class VideoAdminList(TemplateView):
-
-#     def get(self, request, *args, **kwargs):
-
-
-#         contests_dict = data.get('Contests')
-#         ordered_contests = sorted(contests_dict.items(), key=lambda x: int(x[1]['Start_date'].replace('-','')))
-
-#         # Show 23 contacts per page
-#         paginator = Paginator(ordered_contests, 1)
-
-#         page = request.GET.get('page')
-#         object_list = paginator.get_page(page)
-
-#         template_name = 'contests/contest_admin_list.html'
-#         context = {
-#             'is_paginated': True,
-#             'object_list': object_list
-#         }
-#         return render(request,template_name,context)
-
-#     def get(self, request, *args, **kwargs):
-#         manager = DynamoVideoManager()
-#         data = manager.get_videos(
-#             company_name=request.user.company_name
-#             contest_name=
-#         )
+        return HttpResponseRedirect(reverse('contests:contest_admin_detail', args=[contest_url]))
 
 # class ContestDetail(ListView):
 #     """

@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/contest/<str:url>/delete/',ContestAdminDelete.as_view(),name='contest_admn_delete'),
     path('admin/contest/<str:url>/detail/',ContestAdminDetail.as_view(),name='contest_admin_detail'),
  
-    path('admin/contest/<str:name>/video/add/',VideoAdminCreate.as_view(),name='video_admin_create'),
+    path('admin/contest/<str:url>/video/add/',VideoAdminCreate.as_view(),name='video_admin_create'),
     # path('contest/<int:pk>/video/list/',VideoAdminList.as_view(),name='video_admin_list'),
     # path('api/contest/videos/status/',VideoProcessingStatus.as_view(),name='video_status'),
     # path('contest/<int:url>/video/list/',VideoAdminList.as_view(),name='video_admin_list'),

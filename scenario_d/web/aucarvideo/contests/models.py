@@ -246,7 +246,7 @@ class DynamoVideoManager(object):
             },
             'UpdateExpression': "SET Videos.#new_video = :new_data",
             'ExpressionAttributeNames': { 
-                "#new_video" : video_url
+                "#new_video" : obj_key
             },
             'ExpressionAttributeValues':{
                 ':new_data': {
