@@ -40,16 +40,11 @@ class ContestCreateForm(forms.Form):
         if start_date >= end_date:
             raise forms.ValidationError('Start date must be less than the End date.')
 
-    def save(self, commit=True):
-        instance = None
-        print('THE SAVE METHOD WAS CALLED')
-        return instance
-
 
 class ContestUpdateForm(forms.Form):
-    name = forms.CharField(max_length=200)
+    name = forms.CharField(max_length=200, widget=forms.HiddenInput())
     url = forms.CharField()
-    image = forms.FileField()
+    image = forms.FileField(required=False)
     start_date = forms.DateField(
         help_text="Please use the following format: YYYY-MM-DD HH:MM:ss. e.g, 2018-08-14 22:10:24."
     )

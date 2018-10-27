@@ -5,7 +5,7 @@ from django.conf.urls import url
 
 from contests.views import ContestAdminCreate
 from contests.views import ContestAdminList
-# from contests.views import ContestUpdate
+from contests.views import ContestAdminUpdate
 # from contests.views import ContestDetail
 # from contests.views import ContestAdminList
 # from contests.views import ContestDelete
@@ -18,8 +18,9 @@ from contests.views import ContestAdminList
 urlpatterns = [
     path('admin/contest/add/', ContestAdminCreate.as_view(), name='contest_admin_create'),
     path('admin/contest/list/',ContestAdminList.as_view(),name='contest_admin_list'),
+    path('admin/contest/<str:url>/update/',ContestAdminUpdate.as_view(),name='contest_admin_update'),
     # path('contest/<int:pk>/delete/',ContestDelete.as_view(),name='contest_delete'),
-    # path('contest/<str:url>/update/',ContestUpdate.as_view(),name='contest_update'),
+    
     # path('contest/<str:url>/detail/',ContestDetail.as_view(),name='contest_detail'),
     # path('contest/list/',ContestList.as_view(),name='contest_list'),
     

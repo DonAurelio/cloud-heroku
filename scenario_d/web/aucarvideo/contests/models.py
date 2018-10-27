@@ -26,18 +26,19 @@ class DynamoContestManager(object):
         self.s3 = boto3.resource('s3')
         self.bucket = self.s3.Bucket('aucarvideobucket')
 
-    def create_or_update_contest(self, company_name, contest_name, url, image, start_date, end_date, award_description, update=False):
+    def create_or_update_contest(self, company_name, contest_name, url, start_date, end_date, award_description, image=None, image_url='', update=False):
 
-        # Creating a key to store data into s3 bucket. 
-        # each file in s3 must have unique key.
-        image_key = uuid.uuid4().hex
-        # Saving image into s3 bucket
-        self.bucket.upload_fileobj(Fileobj=image.file,Key=image_key)
-        # Giving acces permissions to images 
-        object_acl = self.s3.ObjectAcl('aucarvideobucket', image_key)
-        response = object_acl.put(ACL='public-read')
+        if image:
+            # Creating a key to store data into s3 bucket. 
+            # each file in s3 must have unique key.
+            image_key = uuid.uuid4().hex
+            # Saving image into s3 bucket
+            self.bucket.upload_fileobj(Fileobj=image.file,Key=image_key)
+            # Giving acces permissions to images 
+            object_acl = self.s3.ObjectAcl('aucarvideobucket', image_key)
+            response = object_acl.put(ACL='public-read')
 
-        image_url = f'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{image_key}' 
+            image_url = f'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{image_key}' 
 
         # Creating the new contest inside the company map 
         kwargs = {
@@ -103,6 +104,17 @@ class DynamoContestManager(object):
             data_dic = json.loads(data_str)
 
         return data_dic
+
+    def get_contest_by_url(self, company_name, contest_url):
+
+        data = self.get_company_contests(company_name)
+        contests = data.get('Contests',{})
+        contest = None
+        for contest_name, contest_data in contests.items():
+            if contest_data.get('Url') == contest_url:
+                contest = contest_name, contest_data
+
+        return contest
 
 
 class DynamoVideoManager(object):

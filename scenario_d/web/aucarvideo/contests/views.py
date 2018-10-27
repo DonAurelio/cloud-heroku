@@ -29,8 +29,10 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.http import Http404
 
 from contests.forms import ContestCreateForm
+from contests.forms import ContestUpdateForm
 from contests.models import DynamoContestManager
 
 
@@ -102,16 +104,15 @@ class ContestAdminCreate(FormView):
                 company_name=self.request.user.company_name, 
                 contest_name=name,
                 url=url,
-                image=image,
                 start_date=start_date,
                 end_date=end_date,
                 award_description=award_description,
+                image=image
             )
             messages.success(self.request,'El concurso fue creado con exito')
         except Exception as e:
             messages.warning(self.request,str(e))
 
-        # return render(self.request,'contests/contest_form.html',{})
         return HttpResponseRedirect(reverse('contests:contest_admin_create'))
 
 
@@ -142,6 +143,78 @@ class ContestAdminList(TemplateView):
         return render(request,template_name,context)
 
 
+class ContestAdminUpdate(FormView):
+
+    template_name = 'contests/contest_form.html'
+    form_class = ContestUpdateForm
+
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        initial = super(ContestAdminUpdate, self).get_initial()
+
+        company_name = self.request.user.company_name
+        contest_url = self.kwargs.get('url')
+
+        manager = DynamoContestManager()
+        contest = manager.get_contest_by_url(company_name,contest_url)
+
+        # If the contest with 'contest_url' is not found. The 
+        # server will raise a 404 error
+        if not contest:
+            raise Http404(f'Concurso {contest_url} no encontrado')
+
+        contest_name, contest_data = contest
+
+        initial['name'] = contest_name
+        initial['url'] = contest_data.get('Url')
+        initial['image'] = contest_data.get('Image_url')
+        initial['start_date'] = contest_data.get('Start_date')
+        initial['end_date'] = contest_data.get('End_date')
+        initial['award_description'] = contest_data.get('Award_description')
+
+        # If the contest os not found we will return a 404 error
+        return initial
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+
+        image = None
+        image_url = ''
+        if 'image' in self.request.FILES:
+            image = self.request.FILES['image']
+            # SUBIR A S3
+            print("NUEVA IMAGEN")
+        else:
+            image_url = form.cleaned_data['image']
+            print("VIEJA IMAGEN")
+
+        url = slugify(form.cleaned_data['url'])
+        name = form.cleaned_data['name']
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        award_description = form.cleaned_data['award_description']
+        
+        # try:
+        manager = DynamoContestManager()
+        company = manager.create_or_update_contest(
+            company_name=self.request.user.company_name, 
+            contest_name=name,
+            url=url,
+            start_date=start_date,
+            end_date=end_date,
+            award_description=award_description,
+            image=image,
+            image_url=image_url,
+            update=True
+        )
+        messages.success(self.request,'El concurso {name} fue actualizado con exito')
+        # except Exception as e:
+        #     messages.warning(self.request,str(e))
+
+        return HttpResponseRedirect(reverse('contests:contest_admin_create'))
 
 # class ContestDetail(ListView):
 #     """
