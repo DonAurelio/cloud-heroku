@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # from __future__ import absolute_import, unicode_literals
 from aucarvideo.celery import app as celery_app
 
@@ -210,11 +211,41 @@ class ContestAdminUpdate(FormView):
             image_url=image_url,
             update=True
         )
-        messages.success(self.request,'El concurso {name} fue actualizado con exito')
+        messages.success(self.request,f'El concurso {name} fue actualizado')
         # except Exception as e:
         #     messages.warning(self.request,str(e))
 
         return HttpResponseRedirect(reverse('contests:contest_admin_create'))
+
+
+class ContestAdminDelete(TemplateView):
+
+    def get(self, request, *args, **kwargs):
+        contest_url = self.kwargs.get('url')
+
+        manager = DynamoContestManager()
+        data = manager.get_contest_by_url(
+            company_name=request.user.company_name,
+            contest_url=contest_url
+        )
+
+        contest_name, contest_data = data
+        template_name = 'contests/contest_confirm_delete.html'
+        context = { 'contest_name':contest_name }
+
+        return render(request,template_name,context)
+
+    def post(self, request, *args, **kwargs):
+        contest_url = self.kwargs.get('url')
+        company_name = self.request.user.company_name
+        manager = DynamoContestManager()
+        status = manager.delete_contest_by_url(company_name,contest_url)
+        if status == 200:
+            messages.success(request,f'El consurso {contest_url} fue eliminado.')
+            return HttpResponseRedirect(reverse('contests:contest_admin_list'))
+        
+        messages.error(request,f'El concurso {contest_url} no fue eliminado.')
+        return HttpResponseRedirect(reverse('contests_contest_admin_list'))
 
 # class ContestDetail(ListView):
 #     """

@@ -116,6 +116,24 @@ class DynamoContestManager(object):
 
         return contest
 
+    def delete_contest_by_url(self, company_name, contest_url):
+
+        contest_name, contest_data = self.get_contest_by_url(company_name, contest_url)
+
+        # Creating the new contest inside the company map 
+        kwargs = {
+            'Key':{
+                'Name': company_name
+            },
+            'UpdateExpression':"REMOVE Contests.#contest",
+            'ExpressionAttributeNames': { 
+                "#contest" : contest_name
+            }
+        }
+
+        response = self.table_companies.update_item(**kwargs)
+
+        return response.get('ResponseMetadata').get('HTTPStatusCode')
 
 class DynamoVideoManager(object):
 

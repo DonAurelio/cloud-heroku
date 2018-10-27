@@ -35,7 +35,7 @@
         <div class="panel-body">
 
           <form action="" method="post">{% csrf_token %}
-            <p>Esta seguro que desea eliminar el concurso <strong>"{{ object.name }}"</strong>?</p>
+            <p>Esta seguro que desea eliminar el concurso <strong>"{{ contest_name }}"</strong>?</p>
             <div class="pull-right">
               <input class="btn btn-success text-white custom-shadow" type="submit" value="Confirm"/>
               <button onclick="window.history.back();" class="btn btn-light custom-shadow" type="button">Cancelar</button>

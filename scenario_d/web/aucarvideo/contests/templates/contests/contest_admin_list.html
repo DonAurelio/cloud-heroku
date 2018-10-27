@@ -36,6 +36,8 @@
             <h4 class="panel-title">Concursos</h4>
           </div>
           <div class="panel-body">
+            {# To display messages #}
+            {% include 'messages.html' %}
             {% if object_list %}
             <div class="table-responsive">
               <table id="concurso" class="table table-bordered table-striped">
@@ -65,7 +67,7 @@
                     </td>
                     <td class="text-center">
                       <a href="{% url 'contests:contest_admin_update' data.Url %}"><i class="fa fa-2x fa-edit"></i></a>
-                      {#<a href="{% url 'contests:contest_delete' concurso.pk %}"><i class="fa fa-2x fa-trash"></i></a>#}
+                      <a href="{% url 'contests:contest_admn_delete' data.Url %}"><i class="fa fa-2x fa-trash"></i></a>
                       {#<a href="{% url 'contests:contest_detail' concurso.url %}"><i class="fa fa-2x fa-eye"></i></a>#}
                     </td>
                   </tr>
