@@ -3,6 +3,7 @@ import boto3
 import botocore
 import uuid
 import logging
+import json
 
 
 # Get an instance of a logger
@@ -81,11 +82,9 @@ class DynamoContestManager(object):
             else:
                 raise Exception('No es posible insertar datos en DynamoDB.')
 
-
-
         return response.get('ResponseMetadata').get('HTTPStatusCode')
 
-    def get_company(self, company_name):
+    def get_company_contests(self, company_name):
         # Bringing the company data
         print('company_name',company_name)
         try:

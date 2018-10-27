@@ -25,8 +25,10 @@ from django.views.generic import TemplateView
 from django.shortcuts import reverse
 from django.urls import reverse_lazy
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 from contests.forms import ContestCreateForm
 from contests.models import DynamoContestManager
@@ -116,19 +118,26 @@ class ContestAdminCreate(FormView):
 class ContestAdminList(TemplateView):
 
     def get(self, request, *args, **kwargs):
-        manager = DynamoCompanyManager()
+        manager = DynamoContestManager()
         # Getting the company data as a Python dict
         # Ex: {'Contests': {}, 'Name': 'company2'}
-        company = manager.get_company(
+        data = manager.get_company_contests(
             company_name=request.user.company_name
         )
 
-        print(company)
+        contests_dict = data.get('Contests')
+        ordered_contests = sorted(contests_dict.items(), key=lambda x: int(x[1]['Start_date'].replace('-','')))
 
+        # Show 23 contacts per page
+        paginator = Paginator(ordered_contests, 1)
+
+        page = request.GET.get('page')
+        object_list = paginator.get_page(page)
 
         template_name = 'contests/contest_admin_list.html'
         context = {
-            'objects_list': company.get('Company',{})
+            'is_paginated': True,
+            'object_list': object_list
         }
         return render(request,template_name,context)
 

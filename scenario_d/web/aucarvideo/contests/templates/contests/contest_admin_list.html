@@ -49,24 +49,24 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for concurso in object_list %}
+                  {% for contest_name, data in object_list %}
                   <tr>
                     <td class="text-center">
-                      <a href="{% url 'contests:video_admin_list' concurso.pk %}">{{ concurso.name |title }}</a>
+                      {#<a href="{% url 'contests:video_admin_list' concurso.pk %}">{{ contest_name |title }}</a>#}
                     </td>
                     <td class="text-center">
-                      {{ concurso.start_date }}
+                      {{ data.Start_date }}
                     </td>
                     <td class="text-center">
-                      {{ concurso.end_date }}
+                      {{ data.End_date }}
                     </td>
                     <td class="text-center">
-                      {{ concurso.url}}
+                      {{ data.Url}}
                     </td>
                     <td class="text-center">
-                      <!-- <a href="{% url 'contests:contest_update' concurso.url %}"><i class="fa fa-2x fa-edit"></i></a>
-                      <a href="{% url 'contests:contest_delete' concurso.pk %}"><i class="fa fa-2x fa-trash"></i></a>
-                      <a href="{% url 'contests:contest_detail' concurso.url %}"><i class="fa fa-2x fa-eye"></i></a> -->
+                      {#<a href="{% url 'contests:contest_update' concurso.url %}"><i class="fa fa-2x fa-edit"></i></a>#}
+                      {#<a href="{% url 'contests:contest_delete' concurso.pk %}"><i class="fa fa-2x fa-trash"></i></a>#}
+                      {#<a href="{% url 'contests:contest_detail' concurso.url %}"><i class="fa fa-2x fa-eye"></i></a>#}
                     </td>
                   </tr>
                   {% endfor %}
@@ -83,20 +83,20 @@
             <div class="pull-right">
               {% if is_paginated %}
               <ul class="pagination">
-                {% if page_obj.has_previous %}
-                  <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% if object_list.has_previous %}
+                  <li><a href="?page={{ object_list.previous_page_number }}">&laquo;</a></li>
                 {% else %}
                   <li class="disabled"><span>&laquo;</span></li>
                 {% endif %}
-                {% for i in paginator.page_range %}
-                  {% if page_obj.number == i %}
+                {% for i in object_list.paginator.page_range %}
+                  {% if object_list.number == i %}
                     <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                   {% else %}
                     <li><a href="?page={{ i }}">{{ i }}</a></li>
                   {% endif %}
                 {% endfor %}
-                {% if page_obj.has_next %}
-                  <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% if object_list.has_next %}
+                  <li><a href="?page={{ object_list.next_page_number }}">&raquo;</a></li>
                 {% else %}
                   <li class="disabled"><span>&raquo;</span></li>
                 {% endif %}
