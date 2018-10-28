@@ -304,3 +304,25 @@ class DynamoVideoManager(object):
             data_dic = json.loads(data_str)
 
         return data_dic.get('Videos')
+
+    def update_video_status(self, company_name, contest_name, video_id):
+
+        kwargs = {
+            'Key': {
+                'Company': company_name,
+                'Contest': contest_name
+            },
+            'UpdateExpression': "SET Videos.#video_id.Status = :new_data",
+            'ExpressionAttributeNames': { 
+                "#video_id" : video_id
+            },
+            'ExpressionAttributeValues':{
+                ':new_data': 'Converted'
+            }
+        }
+
+
+        response = self.table_contest_videos.update_item(**kwargs)
+        status = response.get('ResponseMetadata').get('HTTPStatusCode')
+
+        return status

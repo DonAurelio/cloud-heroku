@@ -192,4 +192,4 @@ ELB_BASE_URL = 'http://escenarioc-lb-18168930.us-west-2.elb.amazonaws.com'
 ELB_URL_FORMAT = ELB_BASE_URL + '{path}'
 
 # Django pagination
-PAGINATION_BY = 1
+PAGINATION_BY = 25

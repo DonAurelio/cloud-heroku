@@ -10,8 +10,6 @@ import datetime
 class ContestCreateForm(forms.Form):
     name = forms.CharField(max_length=200)
     image = forms.FileField()
-    # S3 image url
-    s3_image_url = forms.CharField(max_length=200, widget=forms.HiddenInput())
     start_date = forms.DateField(
         help_text="Please use the following format: YYYY-MM-DD HH:MM:ss. e.g, 2018-08-14 22:10:24."
     )
@@ -46,7 +44,13 @@ class ContestCreateForm(forms.Form):
 
 
 class ContestUpdateForm(forms.Form):
-    name = forms.CharField(max_length=200, widget=forms.HiddenInput())
+    name = forms.CharField(
+        max_length=200, widget=forms.HiddenInput(), required=False
+    )
+    # S3 image url
+    s3_image_url = forms.CharField(
+        max_length=200, widget=forms.HiddenInput(), required=False
+    )
     url = forms.CharField()
     image = forms.FileField(required=False)
     start_date = forms.DateField(

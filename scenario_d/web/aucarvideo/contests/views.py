@@ -185,16 +185,13 @@ class ContestAdminUpdate(FormView):
             company = manager.update_contest(
                 company_name=self.request.user.company_name, 
                 contest_name=name,
-                image=image,
                 new_image=image,
                 # contest url
                 url=url,
                 image_url=s3_image_url,
                 start_date=start_date,
                 end_date=end_date,
-                award_description=award_description,
-                
-                update=True
+                award_description=award_description
             )
             messages.success(self.request,f'El concurso {name} fue actualizado')
         except Exception as e:
@@ -372,41 +369,52 @@ class VideoAdminCreate(FormView):
                 )
                 web_url = settings.ELB_URL_FORMAT.format(path=path)
 
-                self.send_mail(video,p_email,web_url)
-            self.send_video_processing_job(obj_key)
+                self.send_mail(
+                    video.name,
+                    p_email,
+                    web_url
+                )
+
+            if 'mp4' not in video.name:
+                self.send_video_processing_job(
+                    company_name,contest_name,obj_key,web_url
+                )
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
 
         return HttpResponseRedirect(reverse('contests:contest_admin_detail', args=[contest_url]))
 
-    def send_mail(self,video, email, contest_web_url):
+    def send_mail(self, video_name, receiver, web_url):
     
-        if 'mp4' in video.name:
+        if 'mp4' in video_name:
 
             subject = 'Video Publicado'
             message = (
-                f"Tu video {video.name} ha sido publicado en la página web"
-                f"oficial del concursos {contest_web_url}."
+                f"Tu video {video_name} ha sido publicado en la página web"
+                f"oficial del concursos {web_url}."
             )
         else:
+
             subject = 'Video en Procesamiento'
             message = (
-                f"Hemos recibido tu video {video.name} y lo estamos procesando."
+                f"Hemos recibido tu video {video_name} y lo estamos procesando."
                 "Apenas se encuentre disonible podras verlo en la página oficial"
-                f"del concursos {contest_web_url}."
+                f"del concursos {web_url}."
             )
+
 
         send_mail(
             subject,
             message,
             settings.EMAIL_HOST_USER,
-            [email],
+            [receiver],
             fail_silently=False
         )
 
-    def send_video_processing_job(self,video_id):
-        data = [video_id]
+    def send_video_processing_job(self, company_name, contest_name, video_id, web_url):
+        data = [company_name,contest_name,video_id, web_url]
         celery_app.send_task('tasks.process_video_from_s3',data)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class VideoPublicCreate(FormView):
@@ -454,30 +462,73 @@ class VideoPublicCreate(FormView):
                 )
                 web_url = settings.ELB_URL_FORMAT.format(path=path)
 
-                self.send_mail(video,p_email,web_url)
-            self.send_video_processing_job(obj_key)
+                self.send_mail(
+                    video.name,
+                    p_email,
+                    web_url
+                )
+
+            if 'mp4' not in video.name:
+                self.send_video_processing_job(
+                    company_name,contest_name,obj_key,web_url
+                )
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
 
-        return HttpResponseRedirect(reverse('contests:contest_admin_detail', args=[contest_url]))
+        return HttpResponseRedirect(
+            reverse('contests:contest_public_detail', args=[company_name,contest_url])
+        )
 
-    def send_mail(self,video, email, contest_web_url):
+    def send_mail(self,video_name, receiver, web_url):
     
-        if 'mp4' in video.name:
+        if 'mp4' in video_name:
 
             subject = 'Video Publicado'
             message = (
-                f"Tu video {video.name} ha sido publicado en la página web"
-                f"oficial del concursos {contest_web_url}."
+                f"Tu video {video_name} ha sido publicado en la página web"
+                f"oficial del concursos {web_url}."
             )
         else:
             subject = 'Video en Procesamiento'
             message = (
-                f"Hemos recibido tu video {video.name} y lo estamos procesando."
+                f"Hemos recibido tu video {video_name} y lo estamos procesando."
                 "Apenas se encuentre disonible podras verlo en la página oficial"
-                f"del concursos {contest_web_url}."
+                f"del concursos {web_url}."
             )
 
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [receiver],
+            fail_silently=False
+        )
+
+    def send_video_processing_job(self, company_name, contest_name, video_id, web_url):
+        data = [company_name,contest_name,video_id, web_url]
+        celery_app.send_task('tasks.process_video_from_s3',data)
+
+
+class VideoProcessingStatus(TemplateView):
+
+    @csrf_exempt
+    def dispatch(self,request,*args,**kwargs):
+        return super().dispatch(request,*args,**kwargs)
+
+    def post(self,request,*args,**kwargs):
+        company_name = request.POST.get('company_name')
+        contest_name = request.POST.get('contest_name')
+        video_id = request.POST.get('video_id')
+
+        manager = DynamoVideoManager()
+        manager.update_video_status(company_name, contest_name, video_id)
+
+        # Participants email notification
+        subject = 'Video Publicado'
+        message = (
+            f"Tu video ha sido publicado en la página web"
+            f"oficial del concursos {contest_web_url}."
+        )
         send_mail(
             subject,
             message,
@@ -486,38 +537,6 @@ class VideoPublicCreate(FormView):
             fail_silently=False
         )
 
-    def send_video_processing_job(self,video_id):
-        data = [video_id]
-        celery_app.send_task('tasks.process_video_from_s3',data)
-
-
-# class VideoProcessingStatus(TemplateView):
-
-#     @csrf_exempt
-#     def dispatch(self,request,*args,**kwargs):
-#         return super().dispatch(request,*args,**kwargs)
-
-#     def post(self,request,*args,**kwargs):
-#         video_id = request.POST.get('video_id')
-#         video_id = video_id
-
-#         video = Video.objects.get(id=video_id)
-#         video.status = video.CONVERTED
-#         video.save()
-
-#         # Participants email notification
-#         contest = video.contest.name.title()
-#         subject = f'Video Publicado en {contest}'
-#         message = f'El video {video.name} ha sido publicado satisfactoriamente'
-        
-#         send_mail(
-#             subject,
-#             message,
-#             settings.EMAIL_HOST_USER,
-#             [video.participant.email],
-#             fail_silently=False,
-#         )
-
-#         return JsonResponse(data=None,status=200,safe=False)
+        return JsonResponse(data=None,status=200,safe=False)
 
 
