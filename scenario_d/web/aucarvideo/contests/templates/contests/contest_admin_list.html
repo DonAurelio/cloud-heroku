@@ -72,7 +72,7 @@
                     <td class="text-center">
                       <a href="{% url 'contests:contest_admin_update' data.Url %}"><i class="fa fa-2x fa-edit"></i></a>
                       <a href="{% url 'contests:contest_admn_delete' data.Url %}"><i class="fa fa-2x fa-trash"></i></a>
-                      {#<a href="{% url 'contests:contest_public_detail' data.Url %}"><i class="fa fa-2x fa-eye"></i></a>#}
+                      <a href="{% url 'contests:contest_public_detail' user.company_name data.Url %}"><i class="fa fa-2x fa-eye"></i></a>
                     </td>
                   </tr>
                   {% endfor %}

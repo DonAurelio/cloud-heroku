@@ -23,24 +23,23 @@
   <!-- begin page-header -->
   <h1 class="page-header">{{ contest.name |title }} <small>{{ contest.award_description }}</small></h1>
   <!-- end page-header -->
-  
 
   <div id="gallery" class="gallery">
-      {% for video in object_list %}
+      {% for video_key, video_data in object_list %}
       <div class="image">
         <div class="image-inner">
           <video class="video-js" controls>
-            <source src="{{ video.url }}" type="video/mp4">
+            <source src="{{ video_data.Url }}_converted" type="video/mp4">
               Your browser does not support the video tag.
             </video>
             <p class="image-caption">
-              #1382 - 3D Arch
+              {{ video_data.Name }}
             </p>
           </div>
           <div class="image-info">
-            <h5 class="title">{{ video.name }}</h5>
+            <h5 class="title">{{ video_data.Name }}</h5>
             <div class="pull-right">
-              <small>by</small> <a href="javascript:;">{{ video.participant.first_name }}</a>
+              <small>by</small> <a href="javascript:;">{{ video_data.Person_fname }} {{ video_data.Person_lname }}</a>
             </div>
             <div class="rating">
               <span class="star active"></span>
@@ -50,7 +49,7 @@
               <span class="star"></span>
             </div>
             <div class="desc">
-              {{ video.description }}
+              {{ video.Description }}
             </div>
           </div>
         </div>
@@ -80,7 +79,7 @@
   {% endif %}
   </div>
   <div class="btn-group pull-right float-btn">
-    <a href="{% url 'contests:video_admin_create' contest.pk %}">
+    <a href="{% url 'contests:video_public_create' company.name contest.url %}">
       <button type="button" class="btn btn-success "><i class="fa fa-plus"></i></button>
     </a>
   </div>

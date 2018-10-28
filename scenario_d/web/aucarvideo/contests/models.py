@@ -235,7 +235,7 @@ class DynamoVideoManager(object):
 
         return response.get('ResponseMetadata').get('HTTPStatusCode')
 
-    def create_video(self, company_name, contest_name, video, description, status, p_fname, p_lname, p_email):
+    def create_video(self, company_name, contest_name, video, description, uploaded_at, status, p_fname, p_lname, p_email):
 
         obj_key, video_url = self.add_object_to_bucket(video.file)
 
@@ -253,6 +253,7 @@ class DynamoVideoManager(object):
                     'Name': video.name,
                     'Url': video_url,
                     'Description': description,
+                    'Uploaded_at': uploaded_at,
                     'Status': status,
                     'Person_fname': p_fname,
                     'Person_lname': p_lname,

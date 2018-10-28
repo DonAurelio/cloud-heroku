@@ -9,13 +9,8 @@ from contests.views import ContestAdminUpdate
 from contests.views import ContestAdminDelete
 from contests.views import ContestAdminDetail
 from contests.views import VideoAdminCreate
-# from contests.views import ContestDetail
-# from contests.views import ContestAdminList
-# from contests.views import ContestDelete
-
-# from contests.views import VideoCreate
-# from contests.views import VideoAdminList
-# from contests.views import VideoProcessingStatus
+from contests.views import ContestPublicDetail
+from contests.views import VideoPublicCreate
 
 
 urlpatterns = [
@@ -26,10 +21,9 @@ urlpatterns = [
     path('admin/contest/<str:url>/detail/',ContestAdminDetail.as_view(),name='contest_admin_detail'),
  
     path('admin/contest/<str:url>/video/add/',VideoAdminCreate.as_view(),name='video_admin_create'),
-    # path('contest/<int:pk>/video/list/',VideoAdminList.as_view(),name='video_admin_list'),
-    # path('api/contest/videos/status/',VideoProcessingStatus.as_view(),name='video_status'),
-    # path('contest/<int:url>/video/list/',VideoAdminList.as_view(),name='video_admin_list'),
 
-
+    # Public URLs
+    path('company/<str:company_name>/contest/<str:contest_url>/video/add/',VideoPublicCreate.as_view(),name='video_public_create'),
+    path('company/<str:company_name>/contest/<str:contest_url>/',ContestPublicDetail.as_view(),name='contest_public_detail'),
 ]
 

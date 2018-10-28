@@ -15,7 +15,6 @@ from aucarvideo.celery import app as celery_app
 # from django.http import JsonResponse
 # from django.core.mail import send_mail
 # from django.db import transaction
-# from django.conf import settings
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -31,6 +30,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import Http404
+from django.conf import settings
 
 from contests.forms import ContestCreateForm
 from contests.forms import ContestUpdateForm
@@ -41,6 +41,7 @@ from contests.models import DynamoVideoManager
 
 import re
 import logging
+import datetime
 
 
 logger = logging.getLogger(__name__)
@@ -133,7 +134,7 @@ class ContestAdminList(TemplateView):
         ordered_contests = sorted(contests_dict.items(), key=lambda x: int(x[1]['Start_date'].replace('-','')))
 
         # Show 23 contacts per page
-        paginator = Paginator(ordered_contests, 1)
+        paginator = Paginator(ordered_contests, settings.PAGINATION_BY)
 
         page = request.GET.get('page')
         object_list = paginator.get_page(page)
@@ -219,7 +220,8 @@ class ContestAdminUpdate(FormView):
 
 class ContestAdminDetail(TemplateView):
     """
-    Display videos and data from a given contest.
+    Display videos and data from a given contest for
+    admin purposes.
     """
 
     def get(self, request, *args, **kwargs):
@@ -231,9 +233,11 @@ class ContestAdminDetail(TemplateView):
 
         v_manager = DynamoVideoManager()
         object_list = v_manager.get_videos(company_name,contest_name)
-        
+        print('object_list', object_list)
+        ordered_contests = sorted(object_list.items(), key=lambda x: int(x[1].get('Uploaded_at','0').replace('-','')))
+
         # Show 23 contacts per page
-        paginator = Paginator(list(object_list.items()), 1)
+        paginator = Paginator(ordered_contests, settings.PAGINATION_BY)
 
         page = request.GET.get('page')
         object_list = paginator.get_page(page)
@@ -249,29 +253,6 @@ class ContestAdminDetail(TemplateView):
         }
         return render(request,template_name,context)
 
-    # def get(self, request, *args, **kwargs):
-    #     manager = DynamoContestManager()
-    #     # Getting the company data as a Python dict
-    #     # Ex: {'Contests': {}, 'Name': 'company2'}
-    #     data = manager.get_contests(
-    #         company_name=request.user.company_name
-    #     )
-
-    #     contests_dict = data.get('Contests')
-    #     ordered_contests = sorted(contests_dict.items(), key=lambda x: int(x[1]['Start_date'].replace('-','')))
-
-    #     # Show 23 contacts per page
-    #     paginator = Paginator(ordered_contests, 1)
-
-    #     page = request.GET.get('page')
-    #     object_list = paginator.get_page(page)
-
-    #     template_name = 'contests/contest_admin_list.html'
-    #     context = {
-    #         'is_paginated': True,
-    #         'object_list': object_list
-    #     }
-    #     return render(request,template_name,context)
 
 class ContestAdminDelete(TemplateView):
 
@@ -303,6 +284,49 @@ class ContestAdminDelete(TemplateView):
         return HttpResponseRedirect(reverse('contests_contest_admin_list'))
 
 
+class ContestPublicDetail(TemplateView):
+    """
+    Display videos and data from a given contest
+    for public purposes
+    """
+
+    def get(self, request, *args, **kwargs):
+        company_name = kwargs.get('company_name')
+        contest_url = kwargs.get('contest_url')
+
+        c_manager = DynamoContestManager()
+        data = c_manager.get_contest_by_url(company_name,contest_url)
+        contest_name, contest_data = data
+
+        v_manager = DynamoVideoManager()
+        object_list = v_manager.get_videos(company_name,contest_name)
+
+        condition = lambda obj: 'Processing' not in obj[1]['Status']
+        object_list = list(filter(condition,object_list.items()))
+
+        ordered_contests = sorted(object_list, key=lambda x: int(x[1].get('Uploaded_at','0').replace('-','')))
+
+        paginator = Paginator(ordered_contests, settings.PAGINATION_BY)
+
+        page = request.GET.get('page')
+        object_list = paginator.get_page(page)
+
+        template_name = 'contests/contest_public_detail.html'
+        context = {
+            'company':{
+                'name': company_name
+            },
+            'contest' :{
+                'name': contest_name,
+                'url': contest_url,
+                'award_description': contest_data.get('Award_description')
+            },
+            'is_paginated': True,
+            'object_list': object_list
+        }
+        return render(request,template_name,context)
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class VideoAdminCreate(FormView):
 
@@ -329,7 +353,7 @@ class VideoAdminCreate(FormView):
         p_lname = form.cleaned_data['participant_lname']
         p_email = form.cleaned_data['participant_email']
         description = form.cleaned_data['description']
-        status = 'Processing..'
+        status = 'Processing'
 
         manager = DynamoVideoManager()
         status = manager.create_video(
@@ -337,6 +361,7 @@ class VideoAdminCreate(FormView):
             contest_name=contest_name,
             video=video,
             description=description,
+            uploaded_at=str(datetime.date.today()),
             status=status,
             p_fname=p_fname,
             p_lname=p_lname,
@@ -349,6 +374,50 @@ class VideoAdminCreate(FormView):
             messages.error(self.request,f'El video {video.name} no fue creado.')
 
         return HttpResponseRedirect(reverse('contests:contest_admin_detail', args=[contest_url]))
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class VideoPublicCreate(FormView):
+
+    template_name = 'contests/video_form.html'
+    form_class = VideoForm
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        company_name = self.kwargs.get('company_name')
+        contest_url = self.kwargs.get('company_url')
+
+        manager = DynamoContestManager()
+        contest_name, contest_data = manager.get_contest_by_url(company_name,contest_url)
+
+        video = form.cleaned_data['video']
+        p_fname = form.cleaned_data['participant_fname']
+        p_lname = form.cleaned_data['participant_lname']
+        p_email = form.cleaned_data['participant_email']
+        description = form.cleaned_data['description']
+        status = 'Processing'
+
+        manager = DynamoVideoManager()
+        status = manager.create_video(
+            company_name=company_name,
+            contest_name=contest_name,
+            video=video,
+            description=description,
+            uploaded_at=str(datetime.date.today()),
+            status=status,
+            p_fname=p_fname,
+            p_lname=p_lname,
+            p_email=p_email
+        )
+
+        if status == 200:
+            messages.success(self.request,f'El video {video.name} fue creado.')
+        else:
+            messages.error(self.request,f'El video {video.name} no fue creado.')
+
+        return HttpResponseRedirect(reverse('contests:contest_admin_detail', args=[contest_url]))
+
 
 # class ContestDetail(ListView):
 #     """

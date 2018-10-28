@@ -185,3 +185,6 @@ ROOT_URLCONF = 'aucarvideo.urls'
 S3_BUCKET_NAME = 'aucarvideobucket'
 # FRONT_CONTENT_URL_FORMAT = 'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{s3_obj_key}'
 FRONT_CONTENT_URL_FORMAT = 'http://d145tcqebewora.cloudfront.net/{s3_obj_key}'
+
+# Django pagination
+PAGINATION_BY = 1
