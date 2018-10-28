@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import FormView
@@ -10,6 +9,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import Http404
@@ -288,7 +288,7 @@ class ContestPublicDetail(TemplateView):
         v_manager = DynamoVideoManager()
         object_list = v_manager.get_videos(company_name,contest_name)
 
-        condition = lambda obj: 'Processing' not in obj[1]['Status']
+        condition = lambda obj: 'Processing' not in obj[1]['Stat']
         object_list = list(filter(condition,object_list.items()))
 
         ordered_contests = sorted(
@@ -378,7 +378,7 @@ class VideoAdminCreate(FormView):
 
             if 'mp4' not in video.name:
                 self.send_video_processing_job(
-                    company_name,contest_name,video.name,obj_key,web_url
+                    company_name,contest_name,video.name,obj_key,web_url,p_email
                 )
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
@@ -412,8 +412,8 @@ class VideoAdminCreate(FormView):
             fail_silently=False
         )
 
-    def send_video_processing_job(self, company_name, contest_name, video_name, video_id, web_url):
-        data = [company_name,contest_name,video_name,video_id, web_url]
+    def send_video_processing_job(self, company_name, contest_name, video_name, video_id, web_url,email_rcv):
+        data = [company_name,contest_name,video_name,video_id, web_url,email_rcv]
         celery_app.send_task('tasks.process_video_from_s3',data)
 
 
@@ -471,7 +471,7 @@ class VideoPublicCreate(FormView):
 
             if 'mp4' not in video.name:
                 self.send_video_processing_job(
-                    company_name,contest_name,video.name,obj_key,web_url
+                    company_name,contest_name,video.name,obj_key,web_url,p_email
                 )
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
@@ -505,8 +505,8 @@ class VideoPublicCreate(FormView):
             fail_silently=False
         )
 
-    def send_video_processing_job(self, company_name, contest_name,video_name,video_id, web_url):
-        data = [company_name,contest_name,video_name,video_id, web_url]
+    def send_video_processing_job(self, company_name, contest_name,video_name,video_id, web_url, email_rcv):
+        data = [company_name,contest_name,video_name,video_id, web_url,email_rcv]
         celery_app.send_task('tasks.process_video_from_s3',data)
 
 
@@ -523,6 +523,7 @@ class VideoProcessingStatus(TemplateView):
         video_name = request.POST.get('video_name')
         web_url = request.POST.get('web_url')
         video_id = request.POST.get('video_id')
+        email_rcv = request.POST.get('email_rcv')
 
         manager = DynamoVideoManager()
         manager.update_video_status(company_name, contest_name, video_id)
@@ -537,7 +538,7 @@ class VideoProcessingStatus(TemplateView):
             subject,
             message,
             settings.EMAIL_HOST_USER,
-            [email],
+            [email_rcv],
             fail_silently=False
         )
 

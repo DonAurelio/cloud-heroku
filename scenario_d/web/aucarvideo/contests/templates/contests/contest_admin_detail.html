@@ -67,10 +67,10 @@
                       {{ data.Person_email }}
                     </td>
                     <td class="text-center">
-                      {{ data.Status}}
+                      {{ data.Stat}}
                     </td>
                     <td class="text-center">
-                      {% if data.Status == 'Converted' %}
+                      {% if data.Stat == 'Converted' %}
                       <video id="my_video" width="50%" height="100px" controls>
                         {% if 'mp4' in data.Name %}
                         <source src="{{ data.Url }}" type="video/mp4">

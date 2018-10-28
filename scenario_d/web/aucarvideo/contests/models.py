@@ -253,7 +253,7 @@ class DynamoVideoManager(object):
                     'Url': video_url,
                     'Description': description,
                     'Uploaded_at': uploaded_at,
-                    'Status': status,
+                    'Stat': status,
                     'Person_fname': p_fname,
                     'Person_lname': p_lname,
                     'Person_email': p_email,
@@ -312,7 +312,7 @@ class DynamoVideoManager(object):
                 'Company': company_name,
                 'Contest': contest_name
             },
-            'UpdateExpression': "SET Videos.#video_id.Status = :new_data",
+            'UpdateExpression': "SET Videos.#video_id.Stat = :new_data",
             'ExpressionAttributeNames': { 
                 "#video_id" : video_id
             },

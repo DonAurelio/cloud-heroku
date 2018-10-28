@@ -122,7 +122,7 @@ def process_video(input_file, output_file):
     return process.returncode, process.stdout, process.stderr
 
 
-def notify_client(company_name,contest_name,video_name,video_id,web_url):
+def notify_client(company_name,contest_name,video_name,video_id,web_url,email_rcv):
     """
         Notify to a client that a video has been processed
         succesfully.
@@ -137,7 +137,8 @@ def notify_client(company_name,contest_name,video_name,video_id,web_url):
             'contest_name': contest_name,
             'video_name': video_name,
             'web_url':web_url,
-            'video_id':video_id
+            'video_id':video_id,
+            'email_rcv': email_rcv
         }
     )
 
@@ -147,7 +148,7 @@ def notify_client(company_name,contest_name,video_name,video_id,web_url):
         logging.error(f'Notification error for videos {video_id}')
 
 
-def process_s3_video(company_name,contest_name,video_name,video_id, web_url):
+def process_s3_video(company_name,contest_name,video_name,video_id,web_url,email_rcv):
 
     video_ext = video_name.split('.')[-1]
     input_file = video_id + '.' + video_ext
@@ -177,7 +178,7 @@ def process_s3_video(company_name,contest_name,video_name,video_id, web_url):
             object_acl = s3.ObjectAcl(S3_BUCKET_NAME, bucket_file_name)
             response = object_acl.put(ACL='public-read')
 
-            notify_client(company_name,contest_name,video_name,video_id, web_url)
+            notify_client(company_name,contest_name,video_name,video_id,web_url,email_rcv)
             return code
            
         logging.error(f'{out} {err} {input_file_path}')

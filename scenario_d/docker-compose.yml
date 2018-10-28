@@ -20,12 +20,6 @@ services:
       # so nginx can serve the static files.
       - static:/usr/src/app/static
 
-      # The media folder is being shared 
-      # between 'web' and 'cron' services
-      # - /etc/nfs:/usr/src/app/media # production
-      - media:/usr/src/app/media # development
-    
-
   web:
     build: ./web/aucarvideo
     restart: always
@@ -45,17 +39,13 @@ services:
       # so nginx can serve the static files.
       - static:/usr/src/app/static
 
-      # Getting the nfs shared folder by means of the host
-      # this is the folder on whihc the medio folder resides
-      # - /etc/nfs:/usr/src/app/media # production
-      - media:/usr/src/app/media # development
     depends_on:
       # - postgres
       # - rabbitmq
       - nginx
       - worker
-    # stdin_open: true
-    # tty: true
+    stdin_open: true
+    tty: true
 
 
   worker:
@@ -70,36 +60,11 @@ services:
       - ./worker/celery:/home/app/celery
       - ./worker/supervisor/conf.d:/etc/supervisor/conf.d
       - ./worker/supervisor/logs:/home/app/logs
-      - media:/home/app/nfs  # development
-      # - /etc/home/nfs:/home/app/nfs # production
+
     ports: # HOST:CONTAINER
       - "8100:5555"
     expose:
      - "5555"  # Flower web GUI
 
-
-  postgres:
-    image: postgres
-    restart: always
-    env_file:
-      # - ./development.env
-      - ./production.env
-    expose:
-     - "5432"  # database port
-
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    restart: always
-    env_file:
-      # - ./development.env
-      - ./production.env
-    ports: # HOST:CONTAINER
-      - "8200:15672"
-    expose:
-     - "15672" # Management web GUI
-     - "5672"  # Queue
-
 volumes:
   static:
-  media:
