@@ -362,13 +362,14 @@ class VideoAdminCreate(FormView):
         if status == 200:
             messages.success(self.request,f'El video {video.name} fue creado.')
 
+            path = reverse(
+                'contests:contest_public_detail',
+                args=[company_name,contest_url]
+            )
+            web_url = settings.ELB_URL_FORMAT.format(path=path)
+
             mail = self.request.POST.get('send_mail',None)
             if mail:
-                path = reverse(
-                    'contests:contest_public_detail',
-                    args=[company_name,contest_url]
-                )
-                web_url = settings.ELB_URL_FORMAT.format(path=path)
 
                 self.send_mail(
                     video.name,
@@ -455,14 +456,14 @@ class VideoPublicCreate(FormView):
         if status == 200:
             messages.success(self.request,f'El video {video.name} fue creado.')
 
+            path = reverse(
+                'contests:contest_public_detail',
+                args=[company_name,contest_url]
+            )
+            web_url = settings.ELB_URL_FORMAT.format(path=path)
+
             mail = self.request.POST.get('send_mail',None)
             if mail:
-                path = reverse(
-                    'contests:contest_public_detail',
-                    args=[company_name,contest_url]
-                )
-                web_url = settings.ELB_URL_FORMAT.format(path=path)
-
                 self.send_mail(
                     video.name,
                     p_email,
