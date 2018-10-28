@@ -1,4 +1,4 @@
-INFO : 2018-10-28 08:56:00,243 : Running with settings
+INFO : 2018-10-28 09:40:33,872 : Running with settings
 NFS_PATH:	/home/app/nfs
 WEB_IP:	nginx
 WEB_PORT:	80
@@ -10,10 +10,10 @@ WEB_IP:	nginx
 WEB_PORT:	80
 WEB_VIDEO_STAT_ENPOINT:	http://nginx:80/api/contest/videos/status/
 WORKER_TIME_FILE_PATH	/home/app/logs/time.txt
-INFO : 2018-10-28 08:56:00,244 : Rabbitmq broker selected
+INFO : 2018-10-28 09:40:33,872 : Rabbitmq broker selected
 Rabbitmq broker selected
 Rabbitmq broker selected
-INFO : 2018-10-28 08:56:00,245 : AWS SQS broker selected
+INFO : 2018-10-28 09:40:33,873 : AWS SQS broker selected
 AWS SQS broker selected
 AWS SQS broker selected
 /usr/local/lib/python3.6/site-packages/celery/platforms.py:796: RuntimeWarning: You're running the worker with superuser privileges: this is
@@ -24,31 +24,5 @@ Please specify a different user using the --uid option.
 User information: uid=0 euid=0 gid=0 egid=0
 
   uid=uid, euid=euid, gid=gid, egid=egid,
-[2018-10-28 08:56:00,781: INFO/MainProcess] Connected to sqs://AKIAJM5AFZN4YWLUJFKQ:**@sqs.us-west-2.amazonaws.com/660158453105/aucar-sqs-D-celery
-[2018-10-28 08:56:01,362: INFO/MainProcess] celery@87fe01945cf0 ready.
-[2018-10-28 08:58:27,285: INFO/MainProcess] Received task: tasks.process_video_from_s3[59541b88-2bd3-4b47-9ac7-c7792840a249]  
-/usr/local/lib/python3.6/site-packages/celery/platforms.py:796: RuntimeWarning: You're running the worker with superuser privileges: this is
-absolutely not recommended!
-
-Please specify a different user using the --uid option.
-
-User information: uid=0 euid=0 gid=0 egid=0
-
-  uid=uid, euid=euid, gid=gid, egid=egid,
-[2018-10-28 08:58:27,495: INFO/ForkPoolWorker-1] Found credentials in environment variables.
-[2018-10-28 08:58:31,980: INFO/ForkPoolWorker-1] Start processing /tmp/tmpm7khwot7/f6ee6b671ea84563b808ec4b7be8ee85.webm to /tmp/tmpm7khwot7/f6ee6b671ea84563b808ec4b7be8ee85.mp4
-[2018-10-28 08:58:45,530: INFO/ForkPoolWorker-1] End processing file /tmp/tmpm7khwot7/f6ee6b671ea84563b808ec4b7be8ee85.webm
-[2018-10-28 08:58:45,531: INFO/ForkPoolWorker-1] 13.550303088999499	/tmp/tmpm7khwot7/f6ee6b671ea84563b808ec4b7be8ee85.webm	/tmp/tmpm7khwot7/f6ee6b671ea84563b808ec4b7be8ee85.mp4
-
-[2018-10-28 08:58:45,531: INFO/ForkPoolWorker-1] Process success /tmp/tmpm7khwot7/f6ee6b671ea84563b808ec4b7be8ee85.webm
-[2018-10-28 08:58:53,192: ERROR/ForkPoolWorker-1] Task tasks.process_video_from_s3[59541b88-2bd3-4b47-9ac7-c7792840a249] raised unexpected: NameError("name 'settings' is not defined",)
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/celery/app/trace.py", line 382, in trace_task
-    R = retval = fun(*args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/celery/app/trace.py", line 641, in __protected_call__
-    return self.run(*args, **kwargs)
-  File "/home/app/celery/tasks.py", line 85, in process_video_from_s3
-    return process_s3_video(company_name,contest_name,video_name,video_id, web_url)
-  File "/home/app/celery/processing.py", line 174, in process_s3_video
-    object_acl = s3.ObjectAcl(settings.S3_BUCKET_NAME, bucket_file_name)
-NameError: name 'settings' is not defined
+[2018-10-28 09:40:34,488: INFO/MainProcess] Connected to sqs://AKIAJM5AFZN4YWLUJFKQ:**@sqs.us-west-2.amazonaws.com/660158453105/aucar-sqs-D-celery
+[2018-10-28 09:40:35,198: INFO/MainProcess] celery@a579491104ce ready.
