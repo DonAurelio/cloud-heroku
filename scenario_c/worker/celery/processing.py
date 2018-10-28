@@ -31,16 +31,43 @@ WEB_PORT = os.environ.get('WEB_PORT')
 # The endpoint URL to send the notification when a video has been processed successfully
 CLIENT_VIDEO_STATUS_URL = f"http://{WEB_IP}:{WEB_PORT}/api/contest/videos/status/"
 
+WORKER_TIME_FILE_PATH = os.environ.get('WORKER_TIME_FILE_PATH','.')
+
 # Print the values of the varuables
 status = 'Running with settings' + '\n'
 status += 'NFS_PATH:' + '\t' + NFS_PATH + '\n'
 status += 'WEB_IP:' + '\t' + WEB_IP + '\n'
 status += 'WEB_PORT:' + '\t' + WEB_PORT + '\n'
 status += 'WEB_VIDEO_STAT_ENPOINT:' + '\t' + CLIENT_VIDEO_STATUS_URL
+status += 'WORKER_TIME_FILE_PATH' + '\t' + WORKER_TIME_FILE_PATH
+
 
 logging.info(status)
 
 
+def timer(func):
+    """
+        Measures the execution time of the decorated 
+        function and place the resuts in a .log file
+    """
+    def wrapper(*args):
+        start = time.perf_counter()
+        code, out, err = func(*args)
+        end = time.perf_counter()
+
+        #  Save the time in miliseconds, the video processing
+        #  status code, input and output files path.
+        
+        with lock:
+            with open(WORKER_TIME_FILE_PATH,'a+') as file:
+                file.write(text)
+
+
+        return code, out, err
+
+    return wrapper
+
+@timer
 def process_video(input_file, output_file):
     """
         Process a video located at input_file path

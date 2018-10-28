@@ -49,13 +49,13 @@ services:
       # this is the folder on whihc the medio folder resides
       # - /etc/nfs:/usr/src/app/media # production
       - media:/usr/src/app/media # development
-    # depends_on:
+    depends_on:
       # - postgres
-      # - nginx
       # - rabbitmq
-      # - worker
-    stdin_open: true
-    tty: true
+      - nginx
+      - worker
+    # stdin_open: true
+    # tty: true
 
 
   worker:
@@ -63,8 +63,8 @@ services:
     restart: always
     entrypoint: ./entrypoint.sh
     env_file:
-      - ./development.env
-      # - ./production.env 
+      # - ./development.env
+      - ./production.env 
     volumes:
       - ./worker/entrypoint.sh:/home/app/entrypoint.sh
       - ./worker/celery:/home/app/celery
@@ -82,8 +82,8 @@ services:
     image: postgres
     restart: always
     env_file:
-      - ./development.env
-      # - ./production.env
+      # - ./development.env
+      - ./production.env
     expose:
      - "5432"  # database port
 

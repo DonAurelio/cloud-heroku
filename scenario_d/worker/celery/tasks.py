@@ -1,5 +1,4 @@
 from celery import Celery
-from processing import process_client_video
 from processing import process_video_from_s3
 
 import os
@@ -59,11 +58,11 @@ if os.environ.get('AWS_ACCESS_KEY_ID',''):
     app = Celery('tasks',
         broker=BROKER_URL,
         result_backend=None,
-        task_default_queue='aucar-sqs-C-celery',
+        task_default_queue='aucar-sqs-D-celery',
         broker_transport_options={
             'region': 'us-west-2',
             'polling_interval': 20,
-            'queue_name_prefix:': 'aucar-sqs-C-'
+            'queue_name_prefix:': 'aucar-sqs-D-'
         }
     )
 

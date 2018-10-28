@@ -516,8 +516,11 @@ class VideoProcessingStatus(TemplateView):
         return super().dispatch(request,*args,**kwargs)
 
     def post(self,request,*args,**kwargs):
+
         company_name = request.POST.get('company_name')
         contest_name = request.POST.get('contest_name')
+        video_name = request.POST.get('video_name')
+        web_url = request.POST.get('web_url')
         video_id = request.POST.get('video_id')
 
         manager = DynamoVideoManager()
@@ -526,8 +529,8 @@ class VideoProcessingStatus(TemplateView):
         # Participants email notification
         subject = 'Video Publicado'
         message = (
-            f"Tu video ha sido publicado en la página web"
-            f"oficial del concursos {contest_web_url}."
+            f"El video {video_name} ha sido publicado en la página web"
+            f"oficial del concursos {web_url}."
         )
         send_mail(
             subject,

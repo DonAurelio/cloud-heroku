@@ -18,7 +18,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Cheking if the application is running in a production environment
-PRODUCTION = True if os.environ.get('PRODUCTIO','') else False
+PRODUCTION = True if os.environ.get('PRODUCTION','') else False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -173,7 +173,7 @@ if 'sqs' in BROKER_URL:
     BROKER_TRANSPORT_OPTIONS = {
         'region': 'us-west-2',
         'polling_interval': 20,
-        "queue_name_prefix": "aucar-sqs-C-"
+        "queue_name_prefix": "aucar-sqs-D-"
     }
 
     CELERY_RESULT_BACKEND = None
@@ -183,7 +183,7 @@ ROOT_URLCONF = 'aucarvideo.urls'
 
 # S3 settings
 S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-# FRONT_CONTENT_URL_FORMAT = 'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{s3_obj_key}'
+
 CLOUD_FRONT_BASE_URL = os.environ.get('CLOUD_FRONT_BASE_URL','')
 FRONT_CONTENT_URL_FORMAT = CLOUD_FRONT_BASE_URL + '/{s3_obj_key}'
 
