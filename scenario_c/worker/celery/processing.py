@@ -38,7 +38,7 @@ status = 'Running with settings' + '\n'
 status += 'NFS_PATH:' + '\t' + NFS_PATH + '\n'
 status += 'WEB_IP:' + '\t' + WEB_IP + '\n'
 status += 'WEB_PORT:' + '\t' + WEB_PORT + '\n'
-status += 'WEB_VIDEO_STAT_ENPOINT:' + '\t' + CLIENT_VIDEO_STATUS_URL
+status += 'WEB_VIDEO_STAT_ENPOINT:' + '\t' + CLIENT_VIDEO_STATUS_URL + '\n'
 status += 'WORKER_TIME_FILE_PATH' + '\t' + WORKER_TIME_FILE_PATH
 
 
@@ -57,10 +57,10 @@ def timer(func):
 
         #  Save the time in miliseconds, the video processing
         #  status code, input and output files path.
-        
-        with lock:
-            with open(WORKER_TIME_FILE_PATH,'a+') as file:
-                file.write(text)
+        text = f'{end-start}\t{args[0]}\t{args[1]}\n'
+        logging.info(text)
+        with open(WORKER_TIME_FILE_PATH,'a+') as file:
+            file.write(text)
 
 
         return code, out, err
