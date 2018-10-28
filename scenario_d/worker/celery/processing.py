@@ -41,7 +41,7 @@ status = 'Running with settings' + '\n'
 status += 'NFS_PATH:' + '\t' + NFS_PATH + '\n'
 status += 'WEB_IP:' + '\t' + WEB_IP + '\n'
 status += 'WEB_PORT:' + '\t' + WEB_PORT + '\n'
-status += 'WEB_VIDEO_STAT_ENPOINT:' + '\t' + CLIENT_VIDEO_STATUS_URL
+status += 'WEB_VIDEO_STAT_ENPOINT:' + '\t' + CLIENT_VIDEO_STATUS_URL + '\n'
 status += 'WORKER_TIME_FILE_PATH' + '\t' + WORKER_TIME_FILE_PATH
 
 logging.info(status)
@@ -61,10 +61,10 @@ def timer(func):
 
         #  Save the time in miliseconds, the video processing
         #  status code, input and output files path.
-        
-        with lock:
-            with open(WORKER_TIME_FILE_PATH,'a+') as file:
-                file.write(text)
+        text = f'{end-start}\t{args[0]}\t{args[1]}\n'
+        logging.info(text)
+        with open(WORKER_TIME_FILE_PATH,'a+') as file:
+            file.write(text)
 
 
         return code, out, err
@@ -85,13 +85,6 @@ def process_video(input_file, output_file):
         output_file (str): Path to the processed file,
             example: /media/contests/videos/rihana_converted.mp4.
     """
-
-    # Remove the first '/media/' on the video path
-    input_file = input_file[7:]
-    output_file = output_file[7:]
-
-    input_file = os.path.join(NFS_PATH,input_file)
-    output_file = os.path.join(NFS_PATH,output_file)
 
     exists = os.path.isfile(output_file)
     if exists:
@@ -160,6 +153,7 @@ def process_s3_video(company_name,contest_name,video_name,video_id, web_url):
     input_file = video_id + '.' + video_ext
     output_file = video_id + '.mp4'
 
+    logging.info(f'Selecting {S3_BUCKET_NAME} bucket')
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(S3_BUCKET_NAME)
 
@@ -167,6 +161,7 @@ def process_s3_video(company_name,contest_name,video_name,video_id, web_url):
         input_file_path = os.path.join(dir_path,input_file)
         output_file_path = os.path.join(dir_path,output_file)
 
+        logging.info(f'Downloading {video_id} in bucket to {input_file_path}')
         bucket.download_file(video_id,input_file_path)
 
         code, out, err = process_video(input_file_path,output_file_path)
@@ -174,8 +169,13 @@ def process_s3_video(company_name,contest_name,video_name,video_id, web_url):
         if code == success:
             logging.info(f'Process success {input_file_path}')
 
+            logging.info(f'Uploading {output_file_path} in bucket {S3_BUCKET_NAME}')
             bucket_file_name = video_id + '_converted'
             bucket.upload_file(output_file_path, bucket_file_name)
+
+            # Giving acces permissions to images 
+            object_acl = s3.ObjectAcl(S3_BUCKET_NAME, bucket_file_name)
+            response = object_acl.put(ACL='public-read')
 
             notify_client(company_name,contest_name,video_name,video_id, web_url)
             return code

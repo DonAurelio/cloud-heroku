@@ -231,6 +231,7 @@ class ContestAdminDetail(TemplateView):
         template_name = 'contests/contest_admin_detail.html'
         context = {
             'contest' :{
+                'url': contest_url,
                 'name': contest_name,
                 'award_description': contest_data.get('Award_description')
             },

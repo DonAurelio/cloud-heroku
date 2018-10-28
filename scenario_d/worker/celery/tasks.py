@@ -1,5 +1,5 @@
 from celery import Celery
-from processing import process_video_from_s3
+from processing import process_s3_video
 
 import os
 import urllib
@@ -52,7 +52,7 @@ if os.environ.get('AWS_ACCESS_KEY_ID',''):
         urllib.parse.quote(AWS_ACCESS_KEY_ID, safe=''),
         # AWS_SECRET_ACCESS_KEY
         urllib.parse.quote(AWS_SECRET_ACCESS_KEY, safe=''),
-        'sqs.us-west-2.amazonaws.com/660158453105/aucar-sqs-C-celery'
+        'sqs.us-west-2.amazonaws.com/660158453105/aucar-sqs-D-celery'
     )
 
     app = Celery('tasks',
@@ -60,10 +60,19 @@ if os.environ.get('AWS_ACCESS_KEY_ID',''):
         result_backend=None,
         task_default_queue='aucar-sqs-D-celery',
         broker_transport_options={
-            'region': 'us-west-2',
-            'polling_interval': 20,
+            'region': 'sqs.us-west-2',
+            # 'polling_interval': 20,
             'queue_name_prefix:': 'aucar-sqs-D-'
         }
+    )
+
+    app.conf.update(
+        broker_transport_options={
+            'region': 'us-west-2',
+        #    'polling_interval': 20,
+            'queue_name_prefix:': 'aucar-sqs-D-'
+        },
+        task_default_queue='aucar-sqs-D-celery'
     )
 
 
@@ -73,4 +82,4 @@ def hello_world():
 
 @app.task
 def process_video_from_s3(company_name,contest_name,video_name,video_id, web_url):
-    return process_video_from_s3(company_name,contest_name,video_name,video_id, web_url)
+    return process_s3_video(company_name,contest_name,video_name,video_id, web_url)
