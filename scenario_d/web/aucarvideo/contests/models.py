@@ -167,7 +167,6 @@ class DynamoContestManager(object):
         contests = data.get('Contests',{})
         contest = None
         for contest_name, contest_data in contests.items():
-            print('data',contest_name,contest_data, contest_url, contest_data.get('Url') == contest_url)
             if contest_data.get('Url') == contest_url:
                 contest = contest_name, contest_data
 
@@ -264,11 +263,11 @@ class DynamoVideoManager(object):
 
         # try:
         response = self.table_contest_videos.update_item(**kwargs)
-
+        status = response.get('ResponseMetadata').get('HTTPStatusCode')
         # except botocore.exceptions.ClientError as e:
         #     raise Exception('No es posible insertar datos en DynamoDB.')
 
-        return response.get('ResponseMetadata').get('HTTPStatusCode')
+        return obj_key, status
 
     def delete_video_by_url(self, company_name, contest_name, video_url):
 
@@ -298,10 +297,8 @@ class DynamoVideoManager(object):
                 }
             )
         except botocore.exceptions.ClientError as e:
-            print(e.response['Error']['Message'])
             return {}
         else:
-            print(response)
             item = response['Item']
             data_str = json.dumps(item, indent=4)
             data_dic = json.loads(data_str)

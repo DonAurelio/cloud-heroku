@@ -184,7 +184,12 @@ ROOT_URLCONF = 'aucarvideo.urls'
 # S3 settings
 S3_BUCKET_NAME = 'aucarvideobucket'
 # FRONT_CONTENT_URL_FORMAT = 'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{s3_obj_key}'
-FRONT_CONTENT_URL_FORMAT = 'http://d145tcqebewora.cloudfront.net/{s3_obj_key}'
+CLOUD_FRONT_BASE_URL = 'http://d145tcqebewora.cloudfront.net'
+FRONT_CONTENT_URL_FORMAT = CLOUD_FRONT_BASE_URL + '/{s3_obj_key}'
+
+# Balancer URL
+ELB_BASE_URL = 'http://escenarioc-lb-18168930.us-west-2.elb.amazonaws.com'
+ELB_URL_FORMAT = ELB_BASE_URL + '{path}'
 
 # Django pagination
 PAGINATION_BY = 1

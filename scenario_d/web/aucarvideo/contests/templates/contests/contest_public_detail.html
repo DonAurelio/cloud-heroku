@@ -29,9 +29,11 @@
       <div class="image">
         <div class="image-inner">
           <video class="video-js" controls>
+            {% if 'mp4' in video_data.Name %}
+            <source src="{{ video_data.Url }}" type="video/mp4">
+            {% else %}
             <source src="{{ video_data.Url }}_converted" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
+            {% endif %}
             <p class="image-caption">
               {{ video_data.Name }}
             </p>

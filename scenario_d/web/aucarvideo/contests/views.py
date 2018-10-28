@@ -1,25 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from aucarvideo.celery import app as celery_app
-
-# from django.views.generic.edit import CreateView
-# from django.views.generic.edit import DeleteView
-# from django.views.generic.edit import UpdateView
-# from django.views.generic.detail import DetailView
-# from django.views.generic.list import ListView
-# from django.views.generic import TemplateView
-# from django.shortcuts import reverse, render
-# from django.urls import reverse_lazy
-# from django.http import HttpResponseRedirect
-# from django.shortcuts import get_object_or_404
-# from django.http import JsonResponse
-# from django.core.mail import send_mail
-# from django.db import transaction
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
-
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from django.shortcuts import reverse
@@ -31,6 +14,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.conf import settings
+from django.core.mail import send_mail
 
 from contests.forms import ContestCreateForm
 from contests.forms import ContestUpdateForm
@@ -38,6 +22,7 @@ from contests.forms import VideoForm
 from contests.models import DynamoContestManager
 from contests.models import DynamoVideoManager
 
+from aucarvideo.celery import app as celery_app
 
 import re
 import logging
@@ -233,8 +218,12 @@ class ContestAdminDetail(TemplateView):
 
         v_manager = DynamoVideoManager()
         object_list = v_manager.get_videos(company_name,contest_name)
-        print('object_list', object_list)
-        ordered_contests = sorted(object_list.items(), key=lambda x: int(x[1].get('Uploaded_at','0').replace('-','')))
+
+        ordered_contests = sorted(
+            object_list.items(), 
+            key=lambda x: int(x[1].get('Uploaded_at','0').replace('-','')),
+            reverse=True
+        )
 
         # Show 23 contacts per page
         paginator = Paginator(ordered_contests, settings.PAGINATION_BY)
@@ -304,7 +293,11 @@ class ContestPublicDetail(TemplateView):
         condition = lambda obj: 'Processing' not in obj[1]['Status']
         object_list = list(filter(condition,object_list.items()))
 
-        ordered_contests = sorted(object_list, key=lambda x: int(x[1].get('Uploaded_at','0').replace('-','')))
+        ordered_contests = sorted(
+            object_list, 
+            key=lambda x: int(x[1].get('Uploaded_at','0').replace('-','')),
+            reverse=True
+        )
 
         paginator = Paginator(ordered_contests, settings.PAGINATION_BY)
 
@@ -353,10 +346,10 @@ class VideoAdminCreate(FormView):
         p_lname = form.cleaned_data['participant_lname']
         p_email = form.cleaned_data['participant_email']
         description = form.cleaned_data['description']
-        status = 'Processing'
+        status = 'Converted' if 'mp4' in video.name else 'Processing'
 
         manager = DynamoVideoManager()
-        status = manager.create_video(
+        obj_key, status = manager.create_video(
             company_name=company_name,
             contest_name=contest_name,
             video=video,
@@ -370,11 +363,50 @@ class VideoAdminCreate(FormView):
 
         if status == 200:
             messages.success(self.request,f'El video {video.name} fue creado.')
+
+            mail = self.request.POST.get('send_mail',None)
+            if mail:
+                path = reverse(
+                    'contests:contest_public_detail',
+                    args=[company_name,contest_url]
+                )
+                web_url = settings.ELB_URL_FORMAT.format(path=path)
+
+                self.send_mail(video,p_email,web_url)
+            self.send_video_processing_job(obj_key)
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
 
         return HttpResponseRedirect(reverse('contests:contest_admin_detail', args=[contest_url]))
 
+    def send_mail(self,video, email, contest_web_url):
+    
+        if 'mp4' in video.name:
+
+            subject = 'Video Publicado'
+            message = (
+                f"Tu video {video.name} ha sido publicado en la página web"
+                f"oficial del concursos {contest_web_url}."
+            )
+        else:
+            subject = 'Video en Procesamiento'
+            message = (
+                f"Hemos recibido tu video {video.name} y lo estamos procesando."
+                "Apenas se encuentre disonible podras verlo en la página oficial"
+                f"del concursos {contest_web_url}."
+            )
+
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False
+        )
+
+    def send_video_processing_job(self,video_id):
+        data = [video_id]
+        celery_app.send_task('tasks.process_video_from_s3',data)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class VideoPublicCreate(FormView):
@@ -386,7 +418,7 @@ class VideoPublicCreate(FormView):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         company_name = self.kwargs.get('company_name')
-        contest_url = self.kwargs.get('company_url')
+        contest_url = self.kwargs.get('contest_url')
 
         manager = DynamoContestManager()
         contest_name, contest_data = manager.get_contest_by_url(company_name,contest_url)
@@ -396,10 +428,10 @@ class VideoPublicCreate(FormView):
         p_lname = form.cleaned_data['participant_lname']
         p_email = form.cleaned_data['participant_email']
         description = form.cleaned_data['description']
-        status = 'Processing'
+        status = 'Converted' if 'mp4' in video.name else 'Processing'
 
         manager = DynamoVideoManager()
-        status = manager.create_video(
+        obj_key, status = manager.create_video(
             company_name=company_name,
             contest_name=contest_name,
             video=video,
@@ -413,250 +445,50 @@ class VideoPublicCreate(FormView):
 
         if status == 200:
             messages.success(self.request,f'El video {video.name} fue creado.')
+
+            mail = self.request.POST.get('send_mail',None)
+            if mail:
+                path = reverse(
+                    'contests:contest_public_detail',
+                    args=[company_name,contest_url]
+                )
+                web_url = settings.ELB_URL_FORMAT.format(path=path)
+
+                self.send_mail(video,p_email,web_url)
+            self.send_video_processing_job(obj_key)
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
 
         return HttpResponseRedirect(reverse('contests:contest_admin_detail', args=[contest_url]))
 
+    def send_mail(self,video, email, contest_web_url):
+    
+        if 'mp4' in video.name:
 
-# class ContestDetail(ListView):
-#     """
-#     View for contest detail, the contest
-#     detail contains the contest itself and 
-#     a list of videos that belongs to the contest.
-#     """
+            subject = 'Video Publicado'
+            message = (
+                f"Tu video {video.name} ha sido publicado en la página web"
+                f"oficial del concursos {contest_web_url}."
+            )
+        else:
+            subject = 'Video en Procesamiento'
+            message = (
+                f"Hemos recibido tu video {video.name} y lo estamos procesando."
+                "Apenas se encuentre disonible podras verlo en la página oficial"
+                f"del concursos {contest_web_url}."
+            )
 
-#     model = Video
-#     template_name = 'contests/contest_detail.html'
-#     paginate_by = 50
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False
+        )
 
-#     def get_queryset(self):
-#         """
-#         Return videos filtered by contest
-#         """
-#         contest_url = self.kwargs.get('url')
-#         videos = Video.objects.filter(contest__url=contest_url)
-#         # If the video has URL it was already converted 
-#         videos = [ video for video in videos if video.url ]
-#         return videos
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-#         contest_url = self.kwargs.get('url')
-#         context['contest'] = Contest.objects.get(url=contest_url)
-#         return context
-
-
-# class ContestList(ListView):
-#     """
-#     View for contest objects listing 
-#     for the general public.
-#     """
-#     model = Contest
-#     # paginate_by = 1
-#     template_name = 'contests/contest_list.html'
-
-#     def get_queryset(self):
-#         queryset = Contest.objects.filter(user=self.request.user)
-#         return queryset
-
-
-# class ContestUpdate(UpdateView):
-#     model = Contest
-#     fields = [
-#         'name','banner','url',
-#         'start_date','end_date',
-#         'award_description'
-#     ]
-
-#     def form_valid(self, form):
-#         """
-#         The sistem creates automatically a URL 
-#         for the contest.
-#         """
-#         contest = form.save()
-
-#         # The URL assigned to the contest 
-#         # is the name of the contests.
-#         url = contest.url
-#         contest.url = slugify(url)
-#         contest.save()
-#         return HttpResponseRedirect(self.get_success_url())
-
-#     def get_object(self):
-#         """
-#         Return the contest with the given URL.
-#         """
-#         return get_object_or_404(self.model, url=self.kwargs['url'])
-
-#     def get_success_url(self):
-#         return reverse('contests:contest_admin_list')
-
-
-# class ContestDelete(DeleteView):
-#     """
-#     View for contest delection.
-#     """
-#     model = Contest
-#     success_url = reverse_lazy('contests:contest_admin_list')
-
-
-# class ContestAdminList(ListView):
-#     """
-#     View for contest objects listing 
-#     for admin purposes.
-#     """
-
-#     model = Contest
-#     paginate_by = 10
-#     template_name = 'contests/contest_admin_list.html'
-
-
-# @method_decorator(csrf_exempt, name='dispatch')
-# class VideoCreate(TemplateView):
-#     """
-#     View for video objects creation.
-#     """
-
-#     # @csrf_exempt
-#     def dispatch(self,request,*args,**kwargs):
-#         return super().dispatch(request,*args,**kwargs)
-
-#     def get(self,request,*args,**kwargs):
-#         video_form = VideoForm()
-#         participant_form = ParticipantForm()
-
-#         template_name = 'contests/video_form.html'
-#         context = {
-#             'video_form': video_form,
-#             'participant_form': participant_form
-#         }
-
-#         return render(request,template_name,context)
-
-#     def post(self,request,*args,**kwargs):
-
-#         video_form = VideoForm(request.POST,request.FILES)
-#         participant_form = ParticipantForm(request.POST)
-
-#         needs_send_mail = request.POST.get('send_mail',None)
-
-#         if video_form.is_valid() and participant_form.is_valid():
-#             participant = participant_form.save()
-#             contest = Contest.objects.get(pk=kwargs.get('pk'))
-
-           
-#             try:
-
-
-#                 # If some error happens during the processing 
-#                 # of this block of code the database is 
-#                 # rolled back, i.e, in case the email
-#                 # sending fails or some process carried 
-#                 # out on the following block of code.
-#                 with transaction.atomic():
-
-#                     video = video_form.save(commit=False)
-#                     video.contest = contest
-#                     video.participant = participant
-#                     video.save()
-
-#                     # If the uploaded video already has the .mp4
-#                     # format it will not be converted.
-#                     if '.mp4' in video.file.name:
-#                         video.status = Video.CONVERTED
-#                         video.save()
-
-#                         # Participants email notification
-#                         contest = video.contest.name.title()
-#                         subject = f'Video Publicado'
-#                         message = f"""
-#                         Tu video '{video.name}' ha sido publicado
-#                         directamente ya que cumple con el formato
-#                         que requiere el concurso.
-#                         """
-#                     else:
-#                         # Participants email notification
-#                         contest = video.contest.name.title()
-#                         subject = f'Video para Procesamiento'
-#                         message = f"""
-#                         Hemos recibido tu video '{video.name}' y los estamos  procesado para  
-#                         que  sea  publicado. Tan  pronto el  video quede publicado 
-#                         en la página del concurso te notificaremos por email.
-#                         """
-
-#                         video_id = video.id
-#                         input_file = video.file.url
-#                         output_file =  video.converted_url
-
-#                         data = [
-#                             video_id,
-#                             input_file,
-#                             output_file
-#                         ]
-
-#                         # Sending the videp processing job to the queue
-#                         # celery_tasks.hello_world.delay()
-#                         # celery_app.send_task(
-#                         #     name='tasks.hello_world', 
-#                         # )
-#                         celery_app.send_task(
-#                             'tasks.process_video',
-#                             data
-#                         )
-                
-#                     if needs_send_mail:
-#                         send_mail(
-#                             subject,
-#                             message,
-#                             settings.EMAIL_HOST_USER,
-#                             [video.participant.email],
-#                             fail_silently=False,
-#                         )
-
-
-#             except Exception as e:
-#                 logger.exception(e)
-
-
-#             current_contest_pk = kwargs.get('pk')
-
-#             return HttpResponseRedirect(
-#                 reverse('contests:video_admin_list', kwargs={'pk':current_contest_pk})
-#             )
-
-#         template_name = 'contests/video_form.html'
-#         context = {
-#             'video_form': video_form,
-#             'participant_form': participant_form
-#         }
-
-#         return render(request,template_name,context)
-
-
-# class VideoAdminList(ListView):
-#     """
-#     List videos for a given contest
-#     for admin purposes. 
-#     """
-
-#     model = Video
-#     template_name = 'contests/video_admin_list.html'
-#     paginate_by = 50
-
-#     def get_queryset(self):
-#         """
-#         Return videos filtered by contest
-#         """
-#         contest_pk = self.kwargs.get('pk')
-#         videos = Video.objects.filter(contest__pk=contest_pk)
-#         return videos
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-#         contest_pk = self.kwargs.get('pk')
-#         context['contest'] = Contest.objects.get(pk=contest_pk)
-#         return context
+    def send_video_processing_job(self,video_id):
+        data = [video_id]
+        celery_app.send_task('tasks.process_video_from_s3',data)
 
 
 # class VideoProcessingStatus(TemplateView):
@@ -667,7 +499,7 @@ class VideoPublicCreate(FormView):
 
 #     def post(self,request,*args,**kwargs):
 #         video_id = request.POST.get('video_id')
-#         video_id = int(video_id)
+#         video_id = video_id
 
 #         video = Video.objects.get(id=video_id)
 #         video.status = video.CONVERTED

@@ -72,7 +72,11 @@
                     <td class="text-center">
                       {% if data.Status == 'Converted' %}
                       <video id="my_video" width="50%" height="100px" controls>
+                        {% if 'mp4' in data.Name %}
+                        <source src="{{ data.Url }}" type="video/mp4">
+                        {% else %}
                         <source src="{{ data.Url }}_converted" type="video/mp4">
+                        {% endif %}
                       </video>
                       {% else %}
                         No disponible
