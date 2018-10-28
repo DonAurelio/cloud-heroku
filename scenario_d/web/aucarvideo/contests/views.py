@@ -180,22 +180,22 @@ class ContestAdminUpdate(FormView):
         end_date = form.cleaned_data['end_date']
         award_description = form.cleaned_data['award_description']
         
-        try:
-            manager = DynamoContestManager()
-            company = manager.update_contest(
-                company_name=self.request.user.company_name, 
-                contest_name=name,
-                new_image=image,
-                # contest url
-                url=url,
-                image_url=s3_image_url,
-                start_date=start_date,
-                end_date=end_date,
-                award_description=award_description
-            )
-            messages.success(self.request,f'El concurso {name} fue actualizado')
-        except Exception as e:
-            messages.warning(self.request,str(e))
+        # try:
+        manager = DynamoContestManager()
+        company = manager.update_contest(
+            company_name=self.request.user.company_name, 
+            contest_name=name,
+            new_image=image,
+            # contest url
+            url=url,
+            image_url=s3_image_url,
+            start_date=start_date,
+            end_date=end_date,
+            award_description=award_description
+        )
+        messages.success(self.request,f'El concurso {name} fue actualizado')
+        # except Exception as e:
+        #     messages.warning(self.request,str(e))
 
         return HttpResponseRedirect(reverse('contests:contest_admin_list'))
 
@@ -377,7 +377,7 @@ class VideoAdminCreate(FormView):
 
             if 'mp4' not in video.name:
                 self.send_video_processing_job(
-                    company_name,contest_name,obj_key,web_url
+                    company_name,contest_name,video.name,obj_key,web_url
                 )
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
@@ -411,8 +411,8 @@ class VideoAdminCreate(FormView):
             fail_silently=False
         )
 
-    def send_video_processing_job(self, company_name, contest_name, video_id, web_url):
-        data = [company_name,contest_name,video_id, web_url]
+    def send_video_processing_job(self, company_name, contest_name, video_name, video_id, web_url):
+        data = [company_name,contest_name,video_name,video_id, web_url]
         celery_app.send_task('tasks.process_video_from_s3',data)
 
 
@@ -470,7 +470,7 @@ class VideoPublicCreate(FormView):
 
             if 'mp4' not in video.name:
                 self.send_video_processing_job(
-                    company_name,contest_name,obj_key,web_url
+                    company_name,contest_name,video.name,obj_key,web_url
                 )
         else:
             messages.error(self.request,f'El video {video.name} no fue creado.')
@@ -504,8 +504,8 @@ class VideoPublicCreate(FormView):
             fail_silently=False
         )
 
-    def send_video_processing_job(self, company_name, contest_name, video_id, web_url):
-        data = [company_name,contest_name,video_id, web_url]
+    def send_video_processing_job(self, company_name, contest_name,video_name,video_id, web_url):
+        data = [company_name,contest_name,video_name,video_id, web_url]
         celery_app.send_task('tasks.process_video_from_s3',data)
 
 

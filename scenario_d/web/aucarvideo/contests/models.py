@@ -112,8 +112,8 @@ class DynamoContestManager(object):
         assert image_url, 'image_url must be provided!'
         
         if new_image and image_url:
-            self.delete_object_from_bucket(image_url)
-            obj_key, image_url = self.add_object_to_bucket(image.file)
+            # self.delete_object_from_bucket(image_url)
+            obj_key, image_url = self.add_object_to_bucket(new_image.file)
 
         # Creating the new contest inside the company map 
         kwargs = {

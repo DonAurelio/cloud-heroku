@@ -11,6 +11,7 @@ from contests.views import ContestAdminDetail
 from contests.views import VideoAdminCreate
 from contests.views import ContestPublicDetail
 from contests.views import VideoPublicCreate
+from contests.views import VideoProcessingStatus
 
 
 urlpatterns = [
@@ -25,5 +26,8 @@ urlpatterns = [
     # Public URLs
     path('company/<str:company_name>/contest/<str:contest_url>/video/add/',VideoPublicCreate.as_view(),name='video_public_create'),
     path('company/<str:company_name>/contest/<str:contest_url>/',ContestPublicDetail.as_view(),name='contest_public_detail'),
+
+    path('api/contest/videos/status/',VideoProcessingStatus.as_view(),name='video_status'),
+
 ]
 

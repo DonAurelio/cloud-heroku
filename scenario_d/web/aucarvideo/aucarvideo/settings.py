@@ -182,14 +182,14 @@ if 'sqs' in BROKER_URL:
 ROOT_URLCONF = 'aucarvideo.urls'
 
 # S3 settings
-S3_BUCKET_NAME = 'aucarvideobucket'
+S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
 # FRONT_CONTENT_URL_FORMAT = 'https://s3-us-west-2.amazonaws.com/aucarvideobucket/{s3_obj_key}'
-CLOUD_FRONT_BASE_URL = 'http://d145tcqebewora.cloudfront.net'
+CLOUD_FRONT_BASE_URL = os.environ.get('CLOUD_FRONT_BASE_URL','')
 FRONT_CONTENT_URL_FORMAT = CLOUD_FRONT_BASE_URL + '/{s3_obj_key}'
 
 # Balancer URL
-ELB_BASE_URL = 'http://escenarioc-lb-18168930.us-west-2.elb.amazonaws.com'
+ELB_BASE_URL = os.environ.get('ELB_BASE_URL','')
 ELB_URL_FORMAT = ELB_BASE_URL + '{path}'
 
 # Django pagination
-PAGINATION_BY = 25
+PAGINATION_BY = int(os.environ.get('PAGINATION_BY','50'))
