@@ -6,8 +6,10 @@ import logging
 import sys
 import subprocess
 import os
-import time
-import multiprocessing
+import boto3
+import tempfile
+
+from . import utils
 
 
 logging.basicConfig(
@@ -31,16 +33,20 @@ WEB_PORT = os.environ.get('WEB_PORT')
 # The endpoint URL to send the notification when a video has been processed successfully
 CLIENT_VIDEO_STATUS_URL = f"http://{WEB_IP}:{WEB_PORT}/api/contest/videos/status/"
 
+S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
+
 # Print the values of the varuables
 status = 'Running with settings' + '\n'
 status += 'NFS_PATH:' + '\t' + NFS_PATH + '\n'
 status += 'WEB_IP:' + '\t' + WEB_IP + '\n'
 status += 'WEB_PORT:' + '\t' + WEB_PORT + '\n'
 status += 'WEB_VIDEO_STAT_ENPOINT:' + '\t' + CLIENT_VIDEO_STATUS_URL
+status += 'WORKER_TIME_FILE_PATH' + '\t' + utils.WORKER_TIME_FILE_PATH
 
 logging.info(status)
 
 
+@utils.timer
 def process_video(input_file, output_file):
     """
         Process a video located at input_file path
@@ -97,37 +103,7 @@ def process_video(input_file, output_file):
     return process.returncode, process.stdout, process.stderr
 
 
-def process_client_video(video_id, input_file, output_file):
-    """
-        Processes a video.
-
-        video_data (list): Information of the video to be
-            processed.
-
-        Example:
-
-            [
-                # The ID of the video
-                11,
-                # The path to the video in the media folder
-                "/media/contests/videos/Nelly_Furtado_-_Promiscuous_ft._Timbaland.avi",
-                # The name of the converted version of the video.
-                "/media/contests/videos/Nelly_Furtado_-_Promiscuous_ft._Timbaland_Converted.mp4"
-            ]
-    """
-    
-    code, out, err = process_video(input_file,output_file)
-    success = 0
-    if code == success:
-        logging.info(f'Process success {input_file}')
-        notify_client(video_id)
-        return code
-       
-    logging.error(f'{out} {err} {input_file}')
-    return code
-
-
-def notify_client(video_id):
+def notify_client(company_name,contest_name,video_name,video_id,web_url):
     """
         Notify to a client that a video has been processed
         succesfully.
@@ -137,10 +113,46 @@ def notify_client(video_id):
 
     response = requests.post(
         url=CLIENT_VIDEO_STATUS_URL, 
-        data= {'video_id':video_id}
+        data= {
+            'company_name': company_name,
+            'contest_name': contest_name,
+            'video_name': video_name,
+            'web_url'_ web_url,
+            'video_id':video_id
+        }
     )
 
     if response.status_code == 200:
         logging.info(f'Notification sended for video {video_id}')
     else:
         logging.error(f'Notification error for videos {video_id}')
+
+
+def process_s3_video(company_name,contest_name,video_name,video_id, web_url):
+
+    video_ext = video_name.split('.')[-1]
+    input_file = video_id + '.' + video_ext
+    output_file = video_id + '.mp4'
+
+    s3 = boto3.resource('s3')
+    bucket = s3.Bucket(S3_BUCKET_NAME)
+
+    with tempfile.TemporaryDirectory() as dir_path:
+        input_file_path = os.path.join(dir_path,input_file)
+        output_file_path = os.path.join(dir_path,output_file)
+
+        bucket.download_file(video_id,input_file_path)
+
+        code, out, err = process_video(input_file_path,output_file_path)
+        success = 0
+        if code == success:
+            logging.info(f'Process success {input_file_path}')
+
+            bucket_file_name = video_id + '_converted'
+            bucket.upload_file(output_file_path, bucket_file_name)
+
+            notify_client(company_name,contest_name,video_name,video_id, web_url)
+            return code
+           
+        logging.error(f'{out} {err} {input_file_path}')
+        return code

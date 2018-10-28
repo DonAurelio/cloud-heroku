@@ -1,5 +1,6 @@
 from celery import Celery
 from processing import process_client_video
+from processing import process_video_from_s3
 
 import os
 import urllib
@@ -72,5 +73,5 @@ def hello_world():
     return "Hello World"
 
 @app.task
-def process_video(video_id, input_file, output_file):
-    return process_client_video(video_id, input_file, output_file)
+def process_video_from_s3(company_name,contest_name,video_name,video_id, web_url):
+    return process_video_from_s3(company_name,contest_name,video_name,video_id, web_url)
