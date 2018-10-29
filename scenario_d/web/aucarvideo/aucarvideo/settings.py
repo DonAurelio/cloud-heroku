@@ -65,11 +65,18 @@ INSTALLED_APPS = (
 )
 
 
+
 MIDDLEWARE = [
     # For django-tenant-schemas
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    # Memcache 
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
+    # Memcache 
+    'django.middleware.cache.FetchFromCacheMiddleware',
+   
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -193,3 +200,11 @@ ELB_URL_FORMAT = ELB_BASE_URL + '{path}'
 
 # Django pagination
 PAGINATION_BY = int(os.environ.get('PAGINATION_BY','50'))
+
+# Memcached
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': 'aucarvideod-mc.htrxbs.cfg.usw2.cache.amazonaws.com:11211',
+    }
+}
