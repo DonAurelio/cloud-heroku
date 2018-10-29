@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block base_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block custom_css %}
+<link href="{% static 'assets/plugins/isotope/isotope.css' %}" rel="stylesheet" />
+<link href="{% static 'assets/plugins/videojs/video.css' %}" rel="stylesheet" />
+<link href="{% static 'assets/css/float-btn.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<!-- begin #content -->
+<div id="content" class="content">
+  <!-- begin breadcrumb -->
+  <ol class="breadcrumb pull-right">
+    <li><a href="javascript:;">Home</a></li>
+    <li class="active">Gallery</li>
+  </ol>
+  <!-- end breadcrumb -->
+  <!-- begin page-header -->
+  <h1 class="page-header">{{ contest.name |title }} <small>{{ contest.award_description }}</small></h1>
+  <!-- end page-header -->
+
+  <div id="gallery" class="gallery">
+      {% for video_key, video_data in object_list %}
+      <div class="image">
+        <div class="image-inner">
+          <video class="video-js" controls>
+            {% if 'mp4' in video_data.Name %}
+            <source src="{{ video_data.Url }}" type="video/mp4">
+            {% else %}
+            <source src="{{ video_data.Url }}_converted" type="video/mp4">
+            {% endif %}
+            <p class="image-caption">
+              {{ video_data.Name }}
+            </p>
+          </div>
+          <div class="image-info">
+            <h5 class="title">{{ video_data.Name }}</h5>
+            <div class="pull-right">
+              <small>by</small> <a href="javascript:;">{{ video_data.Person_fname }} {{ video_data.Person_lname }}</a>
+            </div>
+            <div class="rating">
+              <span class="star active"></span>
+              <span class="star active"></span>
+              <span class="star active"></span>
+              <span class="star"></span>
+              <span class="star"></span>
+            </div>
+            <div class="desc">
+              {{ video_data.Description }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+  </div>
+  <div class="pull-right">
+    {% if is_paginated %}
+    <ul class="pagination">
+      {% if object_list.has_previous %}
+        <li><a href="?page={{ object_list.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in object_list.paginator.page_range %}
+        {% if object_list.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if object_list.has_next %}
+        <li><a href="?page={{ object_list.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  </div>
+  <div class="btn-group pull-right float-btn">
+    <a href="{% url 'contests:video_public_create' company.name contest.url %}">
+      <button type="button" class="btn btn-success "><i class="fa fa-plus"></i></button>
+    </a>
+  </div>
+</div>
+<!-- end #content -->
+{% endblock %}
+
+{% block base_js %}
+{{ block.super }}
+{% endblock %}
+
+{% block custom_js %}
+<script src="{% static 'assets/plugins/isotope/jquery.isotope.min.js' %}"></script>
+<script src="{% static 'assets/js/gallery.demo.min.js' %}"></script>
+<script src="{% static 'assets/js/apps.min.js' %}"></script>
+<script src="{% static 'assets/plugins/videojs/video.js' %}"></script>
+{% endblock %}
+
+{% block init_js %}
+<script>
+  $(document).ready(function() {
+      App.init();
+      Gallery.init();
+  });
+</script>
+{% endblock %}

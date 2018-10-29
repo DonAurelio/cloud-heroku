@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap3 %}
+
+{% block base_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block custom_css %}
+{{ block.super }}
+<link href="{% static 'assets/plugins/bootstrap-datepicker/css/datetimepicker3.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<!-- begin #content -->
+<div id="content" class="content">
+
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Admin</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">Video <small>mantente al día la información de tus concursos</small></h1>
+    <!-- end page-header -->
+
+    <!-- begin row -->
+    <div class="row">
+        <!-- begin col-6 -->
+        <div class="col-md-6">
+          <!-- begin panel -->
+          <div class="panel panel-inverse">
+              <div class="panel-heading">
+                  <div class="panel-heading-btn">
+                      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+                      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+                      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+                      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+                  </div>
+                  <h4 class="panel-title">Datos del Concurso</h4>
+              </div>
+              <div class="panel-body">
+                <form method="POST" enctype="multipart/form-data">
+                  {# To display messages #}
+                  {% include 'messages.html' %}
+                  {% bootstrap_form form %}
+                  <label class="checkbox-inline"><input type="checkbox" name="send_mail" value="send_mail">Enviar correo?</label>
+                  <div class="pull-right">
+                    <input class="btn btn-success text-white custom-shadow" type="submit" value="Aceptar"/>
+                    <button onclick="window.history.back();" class="btn btn-light custom-shadow" type="button">Cancelar</button>
+                  </div>
+                </form>
+              </div>
+          </div>
+          <!-- end panel -->
+      </div>
+      <!-- end col-6 -->
+    </div>
+
+</div>
+<!-- end #content -->
+{% endblock %}
+
+{% block base_js %}
+{{ block.super }}
+{% endblock %}
+
+{% block custom_js %}
+{{ block.super }}
+<script src="{% static 'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js' %}"></script>
+<script type="text/javascript">
+$( function() {
+  $( "#id_start_date" ).datepicker();
+  $( "#id_end_date" ).datepicker();
+});
+</script>
+{% endblock %}
+
+{% block init_js %}
+{{ block.super }}
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block base_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block custom_css %}
+{{ block.super }}
+<link href="{% static 'assets/css/float-btn.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<!-- begin #content -->
+<div id="content" class="content">
+
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Admin</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">Concursos <small>mantente al día la información de tus concursos</small></h1>
+    <!-- end page-header -->
+
+    <div class="row">
+      <!-- begin col-8 -->
+      <div class="col-md-12">
+        <div class="panel panel-inverse">
+          <div class="panel-heading">
+            <h4 class="panel-title">Concursos</h4>
+          </div>
+          <div class="panel-body">
+            {# To display messages #}
+            {% include 'messages.html' %}
+            {% if object_list %}
+            <div class="table-responsive">
+              <table id="concurso" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th class="text-center">Nombre del concurso</th>
+                    <th class="text-center">Fecha de inicio</th>
+                    <th class="text-center">Fecha de finalización</th>
+                    <th class="text-center">URL</th>
+                    <th class="text-center">Imagen</th>
+                    <th class="text-center">Opciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for contest_name, data in object_list %}
+                  <tr>
+                    <td class="text-center">
+                      <a href="{% url 'contests:contest_admin_detail' data.Url %}">{{ contest_name |title }}</a>
+                    </td>
+                    <td class="text-center">
+                      {{ data.Start_date }}
+                    </td>
+                    <td class="text-center">
+                      {{ data.End_date }}
+                    </td>
+                    <td class="text-center">
+                      {{ data.Url}}
+                    </td>
+                    <td class="text-center">
+                      <img src="{{ data.Image_url }}" width="50%" height="25%">
+                    </td>
+                    <td class="text-center">
+                      <a href="{% url 'contests:contest_admin_update' data.Url %}"><i class="fa fa-2x fa-edit"></i></a>
+                      <a href="{% url 'contests:contest_admn_delete' data.Url %}"><i class="fa fa-2x fa-trash"></i></a>
+                      <a href="{% url 'contests:contest_public_detail' user.company_name data.Url %}"><i class="fa fa-2x fa-eye"></i></a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info fade in m-b-15">
+              <strong>Información!</strong>
+              Aún no hay videos en el presente concurso
+              <span class="close" data-dismiss="alert">×</span>
+            </div>
+            {% endif %}
+            <div class="pull-right">
+              {% if is_paginated %}
+              <ul class="pagination">
+                {% if object_list.has_previous %}
+                  <li><a href="?page={{ object_list.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in object_list.paginator.page_range %}
+                  {% if object_list.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if object_list.has_next %}
+                  <li><a href="?page={{ object_list.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+              </ul>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-group pull-right float-btn">
+      <a href="{% url 'contests:contest_admin_create' %}">
+        <button type="button" class="btn btn-success "><i class="fa fa-plus"></i></button>
+      </a>
+    </div>
+</div>
+<!-- end #content -->
+{% endblock %}
+
+{% block base_js %}
+{{ block.super }}
+{% endblock %}
+
+{% block custom_js %}
+{{ block.super }}
+{% endblock %}
+
+{% block init_js %}
+{{ block.super }}
+{% endblock %}

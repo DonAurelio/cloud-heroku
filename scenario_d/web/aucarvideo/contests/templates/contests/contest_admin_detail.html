@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block base_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block custom_css %}
+{{ block.super }}
+<link href="{% static 'assets/css/float-btn.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<!-- begin #content -->
+<div id="content" class="content">
+
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Admin</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">Videos <small>{{ contest.award_description }}</small></h1>
+    <!-- end page-header -->
+
+    <div class="row">
+      <!-- begin col-8 -->
+      <div class="col-md-12">
+        <div class="panel panel-inverse">
+          <div class="panel-heading">
+            <h4 class="panel-title">{{ contest.name }}</h4>
+          </div>
+          <div class="panel-body">
+            {# To display messages #}
+            {% include 'messages.html' %}
+            {% if object_list %}
+            <div class="table-responsive">
+              <table id="concurso" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Subido por</th>
+                    <th class="text-center">Fecha de subida</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Previo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for video_key, data in object_list %}
+                  <tr>
+                    <td class="text-center">
+                      {{ data.Name }}
+                    </td>
+                    <td class="text-center">
+                      {{ data.Person_fname }} {{ data.Person_lname }}
+                    </td>
+                    <td class="text-center">
+                      {{ data.Uploaded_at }}
+                    </td>
+                    <td class="text-center">
+                      {{ data.Person_email }}
+                    </td>
+                    <td class="text-center">
+                      {{ data.Stat}}
+                    </td>
+                    <td class="text-center">
+                      {% if data.Stat == 'Converted' %}
+                      <video id="my_video" width="50%" height="100px" controls>
+                        {% if 'mp4' in data.Name %}
+                        <source src="{{ data.Url }}" type="video/mp4">
+                        {% else %}
+                        <source src="{{ data.Url }}_converted" type="video/mp4">
+                        {% endif %}
+                      </video>
+                      {% else %}
+                        No disponible
+                      {% endif%}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info fade in m-b-15">
+              <strong>Información!</strong>
+              Aún no hay videos en el presente concurso
+              <span class="close" data-dismiss="alert">×</span>
+            </div>
+            {% endif %}
+            <div class="pull-right">
+              {% if is_paginated %}
+              <ul class="pagination">
+                {% if object_list.has_previous %}
+                  <li><a href="?page={{ object_list.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in object_list.paginator.page_range %}
+                  {% if object_list.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if object_list.has_next %}
+                  <li><a href="?page={{ object_list.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+              </ul>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-group pull-right float-btn">
+      <a href="{% url 'contests:video_admin_create' contest.url %}">
+        <button type="button" class="btn btn-success "><i class="fa fa-plus"></i></button>
+      </a>
+    </div>
+    
+</div>
+<!-- end #content -->
+{% endblock %}
+
+{% block base_js %}
+{{ block.super }}
+{% endblock %}
+
+{% block custom_js %}
+{{ block.super }}
+{% endblock %}
+
+{% block init_js %}
+{{ block.super }}
+{% endblock %}
