@@ -13,6 +13,8 @@ from contests.views import ContestPublicDetail
 from contests.views import VideoPublicCreate
 from contests.views import VideoProcessingStatus
 
+from django.views.decorators.cache import cache_page
+
 
 urlpatterns = [
     path('admin/contest/add/', ContestAdminCreate.as_view(), name='contest_admin_create'),
@@ -25,7 +27,8 @@ urlpatterns = [
 
     # Public URLs
     path('company/<str:company_name>/contest/<str:contest_url>/video/add/',VideoPublicCreate.as_view(),name='video_public_create'),
-    path('company/<str:company_name>/contest/<str:contest_url>/',ContestPublicDetail.as_view(),name='contest_public_detail'),
+    
+    path('company/<str:company_name>/contest/<str:contest_url>/',cache_page(60 * 15)(ContestPublicDetail.as_view()),name='contest_public_detail'),
 
     path('api/contest/videos/status/',VideoProcessingStatus.as_view(),name='video_status'),
 
