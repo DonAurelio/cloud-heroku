@@ -1,1 +1,1 @@
-web: gunicorn web/aucarvideo.wsgi --log-file -
+web: gunicorn aucarvideo.wsgi --log-file -
