@@ -12,3 +12,4 @@ Pillow==5.2.0
 psycopg2==2.7.5
 pytz==2018.5
 python-memcached==1.59
+whitenoise==4.1
