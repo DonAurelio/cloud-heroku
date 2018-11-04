@@ -1,5 +1,5 @@
 from celery import Celery
-from processing import process_s3_video
+from .processing import process_s3_video
 
 import os
 import urllib
