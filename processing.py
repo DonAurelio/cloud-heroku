@@ -72,7 +72,7 @@ def timer(func):
     return wrapper
 
 
-@timer
+# @timer
 def process_video(input_file, output_file):
     """
         Process a video located at input_file path
