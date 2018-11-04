@@ -1,1 +1,1 @@
-web: gunicorn aucarvideo.wsgi --log-file -
+web: python -m celery -A worker.celery.tasks worker --loglevel=info --concurrency=1
