@@ -13,7 +13,7 @@ celery==4.2.1
 #kombu==4.2.1
 #python-dateutil==2.7.3
 #pytz==2018.5
-#pycurl==7.43.0.2
+pycurl==7.43.0.2
 requests==2.19.1
 s3transfer==0.1.13
 #six==1.11.0
