@@ -23,7 +23,7 @@ logging.getLogger().addHandler(logging.StreamHandler())
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # The path to the nfs directory on which media to be processed will reside
-NFS_PATH = os.environ.get('NFS_PATH','/home/app/nfs')
+#NFS_PATH = os.environ.get('NFS_PATH','/home/app/nfs')
 
 # The IP and PORT of the WebService
 WEB_IP = os.environ.get('WEB_IP')
@@ -38,7 +38,7 @@ S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
 
 # Print the values of the varuables
 status = 'Running with settings' + '\n'
-status += 'NFS_PATH:' + '\t' + NFS_PATH + '\n'
+#status += 'NFS_PATH:' + '\t' + NFS_PATH + '\n'
 status += 'WEB_IP:' + '\t' + WEB_IP + '\n'
 status += 'WEB_PORT:' + '\t' + WEB_PORT + '\n'
 status += 'WEB_VIDEO_STAT_ENPOINT:' + '\t' + CLIENT_VIDEO_STATUS_URL + '\n'
