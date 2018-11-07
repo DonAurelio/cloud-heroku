@@ -1,1 +1,1 @@
-worker: python -m celery -A tasks worker --loglevel=info --concurrency=1
+web: python -m celery -A tasks worker --loglevel=info --concurrency=1
