@@ -2,9 +2,9 @@
 
 from django.urls import path
 
-from profile.views import RegisterView
-from profile.views import LoginView
-from profile.views import LogoutView
+from perfiles.views import RegisterView
+from perfiles.views import LoginView
+from perfiles.views import LogoutView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),

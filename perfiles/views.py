@@ -5,14 +5,14 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth import views
 from django.db import transaction
 
-from profile.forms import UserCreateForm
-from profile.models import DynamoCompanyManager
+from perfiles.forms import UserCreateForm
+from perfiles.models import DynamoCompanyManager
 
 
 class RegisterView(TemplateView):
     def get(self, request,*args,**kwargs):
         user_form = UserCreateForm()
-        template_name = 'profile/register_form.html'
+        template_name = 'perfiles/register_form.html'
         context = {
             'user_form': user_form
         }
@@ -28,10 +28,10 @@ class RegisterView(TemplateView):
                 manager = DynamoCompanyManager()
                 manager.create_company(company_name=new_user.company_name)
             
-            return redirect('profile:login')
+            return redirect('perfiles:login')
             
 
-        template_name = 'profile/register_form.html'
+        template_name = 'perfiles/register_form.html'
         context = {
             'user_form': user_form,
         }
@@ -43,7 +43,7 @@ class RegisterView(TemplateView):
 class LoginView(TemplateView):
     def get(self, request, *args, **kwargs):
         login_form = AuthenticationForm()
-        template_name = 'profile/login.html'
+        template_name = 'perfiles/login.html'
         context = {
             'login_form': login_form
         }
@@ -60,7 +60,7 @@ class LoginView(TemplateView):
                 login(request, user)
                 return redirect('contests:contest_admin_list')
         else:
-            template_name = 'profile/login.html'
+            template_name = 'perfiles/login.html'
             context = {
                 'login_form': login_form
             }

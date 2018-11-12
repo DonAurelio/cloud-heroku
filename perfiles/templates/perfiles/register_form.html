@@ -49,7 +49,7 @@
             </div>
             <!-- end brand -->
             <div class="login-content">
-                <form action="{% url 'profile:register' %}" method="POST" class="margin-bottom-0">
+                <form action="{% url 'perfiles:register' %}" method="POST" class="margin-bottom-0">
                     {% csrf_token %}
 
                     {% bootstrap_form user_form %}
