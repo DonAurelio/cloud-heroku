@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'home',
     'perfiles',
     'contests',
+    'gunicorn',
 
     # django apps
     'django.contrib.contenttypes',
