@@ -1,3 +1,3 @@
-web: newrelic-admin run-program python manage.py run_gunicorn -b "0.0.0.0:$PORT" -w 3
+web: newrelic-admin run-program gunicorn aucarvideo.wsgi
 worker: celery -A tasks.app worker -l INFO
 
