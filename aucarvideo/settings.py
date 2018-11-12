@@ -46,7 +46,7 @@ EMAIL_USE_TLS = True
 
 INSTALLED_APPS = (
     'home',
-    'pefiles',
+    'perfiles',
     'contests',
 
     # django apps
