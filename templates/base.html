@@ -73,12 +73,12 @@
                             {% if request.user.is_staff %}
                             <li><a href="{% url 'admin:login' %}">Setting</a></li>
                             {% endif %}
-                            <li><a href="{% url 'profile:logout' %}">Log Out</a></li>
+                            <li><a href="{% url 'perfiles:logout' %}">Log Out</a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="dropdown navbar-user">
-                        <a href="{% url 'profile:login' %}">
+                        <a href="{% url 'perfiles:login' %}">
                             <i class="fa fa-2x p-r-5 fa-user"></i>
                             <span class="hidden-xs">Iniciar sesion</span> <b class="caret"></b>
                         </a>
