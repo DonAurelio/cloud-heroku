@@ -2,7 +2,7 @@ amqp==2.3.2
 celery==4.2.1
 boto==2.49.0
 boto3==1.9.23
-Django==2.1
+Django==2.1.11
 django-bootstrap3==10.0.1
 django-ses==0.8.6
 django-smtp-ssl==1.0
